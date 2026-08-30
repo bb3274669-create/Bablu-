@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bablu AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b0f19;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 600px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 34px;
+      margin-top: 20px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aab2c5;
+      margin: 8px 0 30px;
+    }
+
+    .chat-box {
+      background: #151b2b;
+      border: 1px solid #29334a;
+      border-radius: 18px;
+      padding: 20px;
+      min-height: 300px;
+      margin-bottom: 18px;
+    }
+
+    .welcome {
+      color: #cbd3e5;
+      line-height: 1.6;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      background: #151b2b;
+      color: white;
+      border: 1px solid #35415c;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 0 20px;
+      background: #5b5cff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+
+    .user {
+      background: #222a40;
+    }
+
+    .ai {
+      background: #182d25;
+    }
+
+    .footer {
+      text-align: center;
+      color: #737d91;
+      margin-top: 25px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <h1>🤖 Bablu AI</h1>
+
+    <p class="subtitle">
+      Your personal AI assistant
+    </p>
+
+    <div class="chat-box" id="chatBox">
+
+      <div class="welcome">
+        👋 Hello! I am Bablu AI.<br><br>
+        Ask me anything and I will try to help you.
+      </div>
+
+    </div>
+
+    <div class="input-area">
+
+      <input
+        id="userInput"
+        type="text"
+        placeholder="Ask Bablu AI..."
+      >
+
+      <button onclick="sendMessage()">
+        Send
+      </button>
+
+    </div>
+
+    <div class="footer">
+      Bablu AI • V1
+    </div>
+
+  </div>
+
+  <script>
+    function sendMessage() {
+
+      const input = document.getElementById("userInput");
+      const chatBox = document.getElementById("chatBox");
+
+      const message = input.value.trim();
+
+      if (message === "") {
+        return;
+      }
+
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user";
+      userMessage.innerHTML = "👤 " + escapeHTML(message);
+
+      chatBox.appendChild(userMessage);
+
+      const aiMessage = document.createElement("div");
+      aiMessage.className = "message ai";
+
+      aiMessage.innerHTML =
+        "🤖 <b>Bablu AI:</b> Hello! Your message was received. AI API will be connected in the next step.";
+
+      chatBox.appendChild(aiMessage);
+
+      input.value = "";
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function escapeHTML(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    document.getElementById("userInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+  </html>
