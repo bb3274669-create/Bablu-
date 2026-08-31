@@ -1,0 +1,28 @@
+export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ reply: "Only POST requests are allowed." });
+  }
+
+  const message = (req.body?.message || "").trim().toLowerCase();
+
+  let reply;
+
+  if (!message) {
+    reply = "मुझे कोई message भेजो 😊";
+  } else if (message.includes("hello") || message.includes("hi")) {
+    reply = "Hello Bablu! 👋 मैं Bablu AI हूँ। अभी मेरा Free Demo Mode चल रहा है 🤖";
+  } else if (message.includes("who are you") || message.includes("tum kaun")) {
+    reply = "मैं Bablu AI हूँ — तुम्हारा बनाया हुआ AI assistant! 🚀";
+  } else if (message.includes("how are you") || message.includes("kaise ho")) {
+    reply = "मैं बिल्कुल बढ़िया हूँ! 😄 तुम कैसे हो?";
+  } else if (message.includes("ai")) {
+    reply = "AI यानी Artificial Intelligence — ऐसी technology जो computer को सीखने, समझने और जवाब देने में मदद करती है। 🤖";
+  } else if (message.includes("help") || message.includes("madad")) {
+    reply = "ज़रूर! अपना सवाल लिखो, मैं Free Demo Mode में जवाब देने की कोशिश करूँगा। 😊";
+  } else {
+    reply = `तुमने पूछा: "${message}"\n\nमैं अभी Free Demo Mode में हूँ। असली AI जोड़ने के बाद मैं इससे कहीं ज्यादा intelligent जवाब दे पाऊँगा! 🚀`;
+  }
+
+  return res.status(200).json({ reply });
+}
+
