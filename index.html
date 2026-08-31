@@ -75,7 +75,6 @@
       color: white;
       cursor: pointer;
       text-align: center;
-      transition: 0.2s;
     }
 
     .tool:hover {
@@ -123,6 +122,7 @@
       border-radius: 12px;
       margin-bottom: 8px;
       line-height: 1.4;
+      white-space: pre-wrap;
     }
 
     .input-area {
@@ -247,7 +247,7 @@
   </main>
 
   <footer>
-    Bablu AI • Version 1.1
+    Bablu AI • Free Demo Version
   </footer>
 
   <script>
@@ -257,15 +257,16 @@
 
       messages.innerHTML += `
         <div class="message">
-          🤖 ${tool} selected. This feature will be connected soon.
+          🤖 ${tool} selected. This feature is available in Demo Mode.
         </div>
       `;
+
+      messages.scrollTop = messages.scrollHeight;
     }
 
-    function sendMessage() {
+    async function sendMessage() {
       const input = document.getElementById("messageInput");
       const messages = document.getElementById("messages");
-
       const text = input.value.trim();
 
       if (!text) {
@@ -280,11 +281,55 @@
 
       input.value = "";
 
+      const loadingId = "loading-" + Date.now();
+
       messages.innerHTML += `
-        <div class="message">
-          🤖 Message received! AI connection will be added next.
+        <div class="message" id="${loadingId}">
+          🤖 सोच रहा हूँ...
         </div>
       `;
+
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const response = await fetch("/api", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: text
+          })
+        });
+
+        const data = await response.json();
+
+        const loading = document.getElementById(loadingId);
+
+        if (loading) {
+          loading.remove();
+        }
+
+        messages.innerHTML += `
+          <div class="message">
+            🤖 ${escapeHtml(data.reply || "कोई जवाब नहीं मिला।")}
+          </div>
+        `;
+
+      } catch (error) {
+
+        const loading = document.getElementById(loadingId);
+
+        if (loading) {
+          loading.remove();
+        }
+
+        messages.innerHTML += `
+          <div class="message">
+            🤖 Server से connection नहीं हो पाया।
+          </div>
+        `;
+      }
 
       messages.scrollTop = messages.scrollHeight;
     }
@@ -295,11 +340,15 @@
       return div.innerHTML;
     }
 
-    document.getElementById("messageInput").addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        sendMessage();
-      }
-    });
+    document
+      .getElementById("messageInput")
+      .addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+
+      });
 
   </script>
 
