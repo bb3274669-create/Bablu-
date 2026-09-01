@@ -9,35 +9,44 @@ export default async function handler(req, res) {
 
   if (!message) {
     return res.status(400).json({
-      reply: "मुझे कोई message भेजो 😊"
+      reply: "कुछ मैसेज लिखो 🙂"
     });
   }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-5.6-luna",
-        input: message
-      })
-    });
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "openrouter/free",
+          messages: [
+            {
+              role: "user",
+              content: message
+            }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
 
-  if (!response.ok) {
-  console.error("OpenAI Error:", data);
-  return res.status(response.status).json({
-    reply: data?.error?.message || "OpenAI se response nahi mila."
-  });
-  }
+    if (!response.ok) {
+      console.error("OpenRouter Error:", data);
+
+      return res.status(response.status).json({
+        reply: data?.error?.message || "OpenRouter से जवाब नहीं मिला।"
+      });
+    }
 
     const reply =
-      data.output_text ||
-      "Mujhe AI se koi jawab nahi mila.";
+      data?.choices?.[0]?.message?.content ||
+      "मुझे जवाब नहीं मिला।";
 
     return res.status(200).json({ reply });
 
@@ -45,7 +54,7 @@ export default async function handler(req, res) {
     console.error(error);
 
     return res.status(500).json({
-      reply: "Server se connection nahi ho paya."
+      reply: "Server से connection नहीं हो पाया।"
     });
   }
       }
