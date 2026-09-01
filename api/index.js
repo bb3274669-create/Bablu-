@@ -28,12 +28,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      console.error(data);
-      return res.status(500).json({
-        reply: "AI server se response nahi mila."
-      });
-    }
+  if (!response.ok) {
+  console.error("OpenAI Error:", data);
+  return res.status(response.status).json({
+    reply: data?.error?.message || "OpenAI se response nahi mila."
+  });
+  }
 
     const reply =
       data.output_text ||
