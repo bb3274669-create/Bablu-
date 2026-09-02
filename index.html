@@ -174,19 +174,25 @@ header p{
   border-color:#555566;
 }
 
-.voice-btn{
+.voice-btn,
+.speak-btn{
   width:46px;
   border:1px solid #30303a;
   background:#19191f;
   color:white;
   border-radius:9px;
-  font-size:20px;
+  font-size:18px;
   cursor:pointer;
 }
 
 .voice-btn.listening{
   background:#7a2020;
   border-color:#ff5555;
+}
+
+.speak-btn.speaking{
+  background:#203b6b;
+  border-color:#5588ff;
 }
 
 .send-btn{
@@ -351,6 +357,8 @@ function addMessage(text,type,save=true){
 
     saveHistory();
   }
+
+  return div;
 }
 
 function loadHistory(){
@@ -371,6 +379,8 @@ function loadHistory(){
 
 function clearChat(){
 
+  window.speechSynthesis.cancel();
+
   localStorage.removeItem(
     "bablu_ai_history"
   );
@@ -390,7 +400,10 @@ function selectTool(tool){
   );
 }
 
-/* VOICE INPUT */
+
+/* =========================
+   VOICE INPUT
+========================= */
 
 let recognition;
 let isListening=false;
@@ -475,7 +488,86 @@ function startVoice(){
   recognition.start();
 }
 
-/* SEND MESSAGE */
+
+/* =========================
+   VOICE OUTPUT
+   AUTO VOICE = OFF
+========================= */
+
+function speakText(text, button){
+
+  if(!("speechSynthesis" in window)){
+
+    alert(
+      "Voice Output इस browser में supported नहीं है।"
+    );
+
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  if(button){
+
+    button.classList.add("speaking");
+    button.textContent="⏹️";
+  }
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  utterance.lang="hi-IN";
+  utterance.rate=1;
+  utterance.pitch=1;
+
+  utterance.onend=function(){
+
+    if(button){
+
+      button.classList.remove("speaking");
+      button.textContent="🔊";
+    }
+  };
+
+  utterance.onerror=function(){
+
+    if(button){
+
+      button.classList.remove("speaking");
+      button.textContent="🔊";
+    }
+  };
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+}
+
+function toggleSpeak(button){
+
+  if(window.speechSynthesis.speaking){
+
+    window.speechSynthesis.cancel();
+
+    button.classList.remove("speaking");
+    button.textContent="🔊";
+
+    return;
+  }
+
+  const text =
+    button.getAttribute("data-text");
+
+  if(text){
+
+    speakText(text,button);
+  }
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
 
 async function sendMessage(){
 
@@ -531,10 +623,44 @@ async function sendMessage(){
 
     typing.remove();
 
-    addMessage(
+    const reply =
       data.reply ||
-      "मुझे जवाब नहीं मिला।",
-      "ai"
+      "मुझे जवाब नहीं मिला।";
+
+    const aiMessage =
+      addMessage(
+        reply,
+        "ai"
+      );
+
+    /* SPEAK BUTTON */
+
+    const speakButton =
+      document.createElement("button");
+
+    speakButton.className="speak-btn";
+
+    speakButton.textContent="🔊";
+
+    speakButton.title="AI जवाब सुनें";
+
+    speakButton.setAttribute(
+      "data-text",
+      reply
+    );
+
+    speakButton.onclick=function(){
+
+      toggleSpeak(this);
+
+    };
+
+    aiMessage.appendChild(
+      document.createElement("br")
+    );
+
+    aiMessage.appendChild(
+      speakButton
     );
 
   }catch(error){
