@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Bablu AI</title>
 
   <style>
@@ -14,31 +15,35 @@
     }
 
     body {
-      background: #0b0b0f;
+      background: #08080c;
       color: white;
       min-height: 100vh;
     }
 
     header {
-      padding: 22px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 16px;
       text-align: center;
+      background: #0d0d12;
       border-bottom: 1px solid #292932;
     }
 
     header h1 {
-      font-size: 28px;
+      font-size: 25px;
     }
 
     header p {
-      margin-top: 7px;
-      color: #aaa;
-      font-size: 14px;
+      color: #888;
+      font-size: 12px;
+      margin-top: 4px;
     }
 
     .container {
       max-width: 700px;
       margin: auto;
-      padding: 20px 16px;
+      padding: 18px 14px 30px;
     }
 
     .welcome {
@@ -46,120 +51,176 @@
       padding: 25px 10px;
     }
 
-    .welcome .robot {
-      font-size: 55px;
+    .robot {
+      font-size: 58px;
     }
 
     .welcome h2 {
       margin-top: 10px;
-      font-size: 24px;
+      font-size: 25px;
     }
 
     .welcome p {
-      color: #aaa;
-      margin-top: 8px;
+      color: #999;
+      margin-top: 7px;
+      font-size: 14px;
     }
 
     .tools {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
     }
 
     .tool {
-      background: #17171e;
-      border: 1px solid #2c2c35;
-      border-radius: 16px;
-      padding: 20px 12px;
+      background: #15151c;
+      border: 1px solid #292932;
+      border-radius: 15px;
+      padding: 15px 7px;
       color: white;
       cursor: pointer;
       text-align: center;
+      transition: .2s;
     }
 
-    .tool:hover {
-      transform: translateY(-2px);
-      border-color: #666;
+    .tool:active {
+      transform: scale(.96);
     }
 
     .tool .icon {
-      font-size: 32px;
-      margin-bottom: 8px;
+      font-size: 27px;
     }
 
     .tool h3 {
-      font-size: 16px;
-    }
-
-    .tool p {
-      color: #999;
-      font-size: 12px;
-      margin-top: 5px;
+      font-size: 13px;
+      margin-top: 6px;
     }
 
     .chat {
-      margin-top: 22px;
-      background: #121218;
+      margin-top: 18px;
+      background: #101016;
       border: 1px solid #292932;
       border-radius: 18px;
-      padding: 15px;
+      overflow: hidden;
     }
 
-    .chat h3 {
-      margin-bottom: 12px;
+    .chat-header {
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #292932;
+    }
+
+    .chat-title {
+      font-weight: bold;
+    }
+
+    #clearBtn {
+      background: transparent;
+      color: #999;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 6px 9px;
+      cursor: pointer;
     }
 
     #messages {
-      min-height: 80px;
-      max-height: 300px;
+      height: 380px;
       overflow-y: auto;
+      padding: 14px;
+    }
+
+    .message-row {
+      display: flex;
       margin-bottom: 12px;
     }
 
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .message-row.ai {
+      justify-content: flex-start;
+    }
+
     .message {
-      background: #1d1d25;
-      padding: 10px 12px;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      line-height: 1.4;
+      max-width: 82%;
+      padding: 11px 13px;
+      border-radius: 15px;
+      line-height: 1.5;
       white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .user .message {
+      background: #ffffff;
+      color: #000000;
+      border-bottom-right-radius: 4px;
+    }
+
+    .ai .message {
+      background: #1d1d26;
+      color: white;
+      border-bottom-left-radius: 4px;
     }
 
     .input-area {
       display: flex;
       gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #292932;
+      background: #0d0d12;
     }
 
     #messageInput {
       flex: 1;
       padding: 13px;
-      border-radius: 12px;
+      border-radius: 13px;
       border: 1px solid #33333d;
-      background: #0d0d12;
+      background: #15151c;
       color: white;
       outline: none;
+      font-size: 15px;
+    }
+
+    #messageInput:focus {
+      border-color: #777;
     }
 
     #sendBtn {
-      padding: 13px 17px;
+      padding: 13px 16px;
       border: none;
-      border-radius: 12px;
+      border-radius: 13px;
       background: white;
       color: black;
       font-weight: bold;
       cursor: pointer;
     }
 
+    #sendBtn:disabled {
+      opacity: .5;
+    }
+
+    .typing {
+      color: #999;
+      font-style: italic;
+    }
+
     footer {
       text-align: center;
-      color: #777;
-      padding: 25px 10px;
+      color: #666;
+      padding: 25px;
       font-size: 12px;
     }
 
     @media (max-width: 450px) {
       .tools {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      #messages {
+        height: 350px;
       }
     }
   </style>
@@ -169,15 +230,15 @@
 
   <header>
     <h1>🤖 Bablu AI</h1>
-    <p>All-in-One AI Assistant</p>
+    <p>Your AI Assistant</p>
   </header>
 
   <main class="container">
 
     <section class="welcome">
       <div class="robot">🤖</div>
-      <h2>Hello! I'm Bablu AI</h2>
-      <p>Choose an AI tool and let's create something amazing.</p>
+      <h2>Welcome to Bablu AI</h2>
+      <p>Ask anything. Learn, create and explore.</p>
     </section>
 
     <section class="tools">
@@ -185,61 +246,57 @@
       <button class="tool" onclick="selectTool('Chat')">
         <div class="icon">💬</div>
         <h3>AI Chat</h3>
-        <p>Ask anything</p>
       </button>
 
       <button class="tool" onclick="selectTool('Image')">
         <div class="icon">🖼️</div>
         <h3>AI Image</h3>
-        <p>Create images</p>
       </button>
 
       <button class="tool" onclick="selectTool('Video')">
         <div class="icon">🎬</div>
         <h3>AI Video</h3>
-        <p>Create videos</p>
       </button>
 
       <button class="tool" onclick="selectTool('Voice')">
         <div class="icon">🎤</div>
         <h3>AI Voice</h3>
-        <p>Voice tools</p>
       </button>
 
       <button class="tool" onclick="selectTool('Study')">
         <div class="icon">📚</div>
         <h3>AI Study</h3>
-        <p>Learn smarter</p>
       </button>
 
       <button class="tool" onclick="selectTool('Writer')">
         <div class="icon">✍️</div>
         <h3>AI Writer</h3>
-        <p>Write anything</p>
       </button>
 
     </section>
 
     <section class="chat">
 
-      <h3>💬 AI Chat</h3>
-
-      <div id="messages">
-        <div class="message">
-          🤖 Hello! I'm Bablu AI. How can I help you?
-        </div>
+      <div class="chat-header">
+        <div class="chat-title">💬 Bablu AI Chat</div>
+        <button id="clearBtn" onclick="clearChat()">Clear</button>
       </div>
 
+      <div id="messages"></div>
+
       <div class="input-area">
+
         <input
           id="messageInput"
           type="text"
-          placeholder="Type your message..."
+          placeholder="Ask Bablu AI anything..."
+          autocomplete="off"
         >
 
         <button id="sendBtn" onclick="sendMessage()">
           Send
         </button>
+
       </div>
 
     </section>
@@ -247,56 +304,138 @@
   </main>
 
   <footer>
-    Bablu AI • Free Demo Version
+    Bablu AI • V2
   </footer>
 
   <script>
 
-    function selectTool(tool) {
-      const messages = document.getElementById("messages");
+    const messages = document.getElementById("messages");
+    const input = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
 
-      messages.innerHTML += `
-        <div class="message">
-          🤖 ${tool} selected. This feature is available in Demo Mode.
-        </div>
-      `;
+    let chatHistory =
+      JSON.parse(localStorage.getItem("bablu_ai_history") || "[]");
+
+    // केवल आखिरी 20 messages रखो
+    chatHistory = chatHistory.slice(-20);
+
+    function saveHistory() {
+
+      // हर बार केवल आखिरी 20 messages save होंगे
+      chatHistory = chatHistory.slice(-20);
+
+      localStorage.setItem(
+        "bablu_ai_history",
+        JSON.stringify(chatHistory)
+      );
+    }
+
+    function addMessage(text, type, save = true) {
+
+      const row = document.createElement("div");
+      row.className = "message-row " + type;
+
+      const bubble = document.createElement("div");
+      bubble.className = "message";
+
+      bubble.textContent = text;
+
+      row.appendChild(bubble);
+      messages.appendChild(row);
 
       messages.scrollTop = messages.scrollHeight;
+
+      if (save) {
+
+        chatHistory.push({
+          text: text,
+          type: type
+        });
+
+        // 20 से ज्यादा होने पर सबसे पुराने messages हटेंगे
+        chatHistory = chatHistory.slice(-20);
+
+        saveHistory();
+      }
+
+      return row;
+    }
+
+    function loadHistory() {
+
+      chatHistory = chatHistory.slice(-20);
+
+      if (chatHistory.length === 0) {
+
+        addMessage(
+          "Hello! I'm Bablu AI. 🤖\nHow can I help you today?",
+          "ai"
+        );
+
+        return;
+      }
+
+      chatHistory.forEach(item => {
+        addMessage(item.text, item.type, false);
+      });
+    }
+
+    function clearChat() {
+
+      if (!confirm("Clear your chat history?")) {
+        return;
+      }
+
+      chatHistory = [];
+
+      localStorage.removeItem("bablu_ai_history");
+
+      messages.innerHTML = "";
+
+      addMessage(
+        "Chat cleared! 🤖\nI'm ready for your next question.",
+        "ai"
+      );
+    }
+
+    function selectTool(tool) {
+
+      addMessage(
+        tool + " selected. 🚀\nThis feature will be upgraded in future versions.",
+        "ai"
+      );
     }
 
     async function sendMessage() {
-      const input = document.getElementById("messageInput");
-      const messages = document.getElementById("messages");
+
       const text = input.value.trim();
 
       if (!text) {
         return;
       }
 
-      messages.innerHTML += `
-        <div class="message">
-          👤 ${escapeHtml(text)}
-        </div>
-      `;
+      addMessage(text, "user");
 
       input.value = "";
 
-      const loadingId = "loading-" + Date.now();
+      sendBtn.disabled = true;
 
-      messages.innerHTML += `
-        <div class="message" id="${loadingId}">
-          🤖 सोच रहा हूँ...
-        </div>
-      `;
+      const loading = addMessage(
+        "🤖 सोच रहा हूँ...",
+        "ai"
+      );
 
-      messages.scrollTop = messages.scrollHeight;
+      loading.querySelector(".message").classList.add("typing");
 
       try {
+
         const response = await fetch("/api", {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json"
           },
+
           body: JSON.stringify({
             message: text
           })
@@ -304,51 +443,37 @@
 
         const data = await response.json();
 
-        const loading = document.getElementById(loadingId);
+        loading.remove();
 
-        if (loading) {
-          loading.remove();
-        }
-
-        messages.innerHTML += `
-          <div class="message">
-            🤖 ${escapeHtml(data.reply || "कोई जवाब नहीं मिला।")}
-          </div>
-        `;
+        addMessage(
+          data.reply || "कोई जवाब नहीं मिला।",
+          "ai"
+        );
 
       } catch (error) {
 
-        const loading = document.getElementById(loadingId);
+        loading.remove();
 
-        if (loading) {
-          loading.remove();
-        }
-
-        messages.innerHTML += `
-          <div class="message">
-            🤖 Server से connection नहीं हो पाया।
-          </div>
-        `;
+        addMessage(
+          "❌ Server से connection नहीं हो पाया।",
+          "ai"
+        );
       }
 
-      messages.scrollTop = messages.scrollHeight;
+      sendBtn.disabled = false;
+
+      input.focus();
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
-    }
+    input.addEventListener("keydown", function(event) {
 
-    document
-      .getElementById("messageInput")
-      .addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
 
-        if (event.key === "Enter") {
-          sendMessage();
-        }
+    });
 
-      });
+    loadHistory();
 
   </script>
 
