@@ -346,4 +346,396 @@ return div;
 
 }
 
-function addAIMessage
+function addAIMessage(text,save=true){
+
+const aiMessage =
+addMessage(text,"ai",save);
+
+const speakButton =
+document.createElement("button");
+
+speakButton.className =
+"speak-btn";
+
+speakButton.textContent =
+"🔊";
+
+speakButton.title =
+"AI जवाब सुनें";
+
+speakButton.setAttribute(
+"data-text",
+text
+);
+
+speakButton.onclick=function(){
+
+toggleSpeak(this);
+
+};
+
+aiMessage.appendChild(
+document.createElement("br")
+);
+
+aiMessage.appendChild(
+speakButton
+);
+
+return aiMessage;
+
+}
+
+function loadHistory(){
+
+chatHistory =
+chatHistory.slice(-20);
+
+chatHistory.forEach(item => {
+
+if(item.type === "ai"){
+
+addAIMessage(
+item.text,
+false
+);
+
+}else{
+
+addMessage(
+item.text,
+item.type,
+false
+);
+
+}
+
+});
+
+}
+
+function clearChat(){
+
+window.speechSynthesis.cancel();
+
+localStorage.removeItem(
+"bablu_ai_history"
+);
+
+chatHistory=[];
+
+document.getElementById(
+"messages"
+).innerHTML="";
+
+}
+
+function selectTool(tool){
+
+addAIMessage(
+tool + " feature अभी upgrade हो रहा है 🚀"
+);
+
+}
+
+
+/* VOICE INPUT */
+
+let recognition;
+let isListening=false;
+
+function startVoice(){
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+
+alert(
+"Voice Input इस browser में supported नहीं है। Chrome में try करो।"
+);
+
+return;
+
+}
+
+if(isListening){
+
+recognition.stop();
+
+return;
+
+}
+
+recognition =
+new SpeechRecognition();
+
+recognition.lang="hi-IN";
+recognition.interimResults=false;
+recognition.continuous=false;
+
+recognition.onstart=function(){
+
+isListening=true;
+
+document.getElementById(
+"voiceBtn"
+).classList.add("listening");
+
+document.getElementById(
+"voiceBtn"
+).textContent="⏹️";
+
+};
+
+recognition.onresult=function(event){
+
+const text =
+event.results[0][0].transcript;
+
+document.getElementById(
+"messageInput"
+).value=text;
+
+};
+
+recognition.onerror=function(){
+
+isListening=false;
+
+document.getElementById(
+"voiceBtn"
+).classList.remove("listening");
+
+document.getElementById(
+"voiceBtn"
+).textContent="🎤";
+
+};
+
+recognition.onend=function(){
+
+isListening=false;
+
+document.getElementById(
+"voiceBtn"
+).classList.remove("listening");
+
+document.getElementById(
+"voiceBtn"
+).textContent="🎤";
+
+};
+
+recognition.start();
+
+}
+
+
+/* VOICE OUTPUT - AUTO OFF */
+
+function speakText(text,button){
+
+if(!("speechSynthesis" in window)){
+
+alert(
+"Voice Output इस browser में supported नहीं है।"
+);
+
+return;
+
+}
+
+window.speechSynthesis.cancel();
+
+if(button){
+
+button.classList.add("speaking");
+button.textContent="⏹️";
+
+}
+
+const utterance =
+new SpeechSynthesisUtterance(text);
+
+utterance.lang="hi-IN";
+utterance.rate=1;
+utterance.pitch=1;
+
+utterance.onend=function(){
+
+if(button){
+
+button.classList.remove("speaking");
+button.textContent="🔊";
+
+}
+
+};
+
+utterance.onerror=function(){
+
+if(button){
+
+button.classList.remove("speaking");
+button.textContent="🔊";
+
+}
+
+};
+
+window.speechSynthesis.speak(
+utterance
+);
+
+}
+
+function toggleSpeak(button){
+
+if(window.speechSynthesis.speaking){
+
+window.speechSynthesis.cancel();
+
+button.classList.remove("speaking");
+button.textContent="🔊";
+
+return;
+
+}
+
+const text =
+button.getAttribute("data-text");
+
+if(text){
+
+speakText(text,button);
+
+}
+
+}
+
+
+/* SEND MESSAGE + MEMORY */
+
+async function sendMessage(){
+
+const input =
+document.getElementById(
+"messageInput"
+);
+
+const text =
+input.value.trim();
+
+if(!text) return;
+
+addMessage(
+text,
+"user"
+);
+
+input.value="";
+
+const messages =
+document.getElementById(
+"messages"
+);
+
+const typing =
+document.createElement("div");
+
+typing.className="typing";
+
+typing.textContent =
+"Bablu AI सोच रहा है...";
+
+messages.appendChild(typing);
+
+messages.scrollTop =
+messages.scrollHeight;
+
+try{
+
+const previousHistory =
+chatHistory
+.slice(0,-1)
+.slice(-19);
+
+const response =
+await fetch("/api",{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:JSON.stringify({
+
+message:text,
+
+history:
+previousHistory
+
+})
+
+});
+
+const data =
+await response.json();
+
+typing.remove();
+
+const reply =
+data.reply ||
+"मुझे जवाब नहीं मिला।";
+
+addAIMessage(
+reply
+);
+
+}catch(error){
+
+console.error(error);
+
+typing.remove();
+
+addAIMessage(
+"Server से connection नहीं हो पाया।"
+);
+
+}
+
+}
+
+
+/* ENTER TO SEND */
+
+document
+.getElementById("messageInput")
+.addEventListener(
+"keydown",
+function(event){
+
+if(
+event.key==="Enter" &&
+!event.shiftKey
+){
+
+event.preventDefault();
+
+sendMessage();
+
+}
+
+});
+
+
+loadHistory();
+
+</script>
+
+</body>
+  </html>
