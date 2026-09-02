@@ -93,11 +93,13 @@ export default async function handler(req, res) {
       reply: reply
     });
 
-  } catch (error) {
+    } catch (error) {
     console.error("Server Error:", error);
 
     return res.status(500).json({
       reply: "Server से connection नहीं हो पाया।"
     });
+  }
+}
   
   
