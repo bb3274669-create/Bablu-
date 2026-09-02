@@ -30,9 +30,7 @@ header{
   border-bottom:1px solid #292932;
 }
 
-header h1{
-  font-size:25px;
-}
+header h1{font-size:25px}
 
 header p{
   color:#888;
@@ -51,9 +49,7 @@ header p{
   padding:25px 10px;
 }
 
-.robot{
-  font-size:50px;
-}
+.robot{font-size:50px}
 
 .welcome h2{
   margin-top:10px;
@@ -81,9 +77,7 @@ header p{
   cursor:pointer;
 }
 
-.tool:hover{
-  background:#19191f;
-}
+.tool:hover{background:#19191f}
 
 .tool strong{
   display:block;
@@ -111,9 +105,7 @@ header p{
   border-bottom:1px solid #292932;
 }
 
-.chat-header strong{
-  font-size:14px;
-}
+.chat-header strong{font-size:14px}
 
 .clear{
   background:#19191f;
@@ -168,10 +160,6 @@ header p{
   border-radius:9px;
   padding:12px;
   outline:none;
-}
-
-#messageInput:focus{
-  border-color:#555566;
 }
 
 .voice-btn,
@@ -231,252 +219,131 @@ header p{
 
 <div class="container">
 
-  <div class="welcome">
-    <div class="robot">🤖</div>
-    <h2>Hello! I'm Bablu AI</h2>
-    <p>Ask me anything and let's create something amazing.</p>
-  </div>
+<div class="welcome">
+  <div class="robot">🤖</div>
+  <h2>Hello! I'm Bablu AI</h2>
+  <p>Ask me anything and let's create something amazing.</p>
+</div>
 
-  <div class="tools">
+<div class="tools">
 
-    <button class="tool" onclick="selectTool('Chat')">
-      <strong>💬 AI Chat</strong>
-      <small>Ask anything</small>
-    </button>
+<button class="tool" onclick="selectTool('Chat')">
+<strong>💬 AI Chat</strong>
+<small>Ask anything</small>
+</button>
 
-    <button class="tool" onclick="selectTool('Image')">
-      <strong>🖼️ AI Image</strong>
-      <small>Create images</small>
-    </button>
+<button class="tool" onclick="selectTool('Image')">
+<strong>🖼️ AI Image</strong>
+<small>Create images</small>
+</button>
 
-    <button class="tool" onclick="selectTool('Video')">
-      <strong>🎬 AI Video</strong>
-      <small>Create videos</small>
-    </button>
+<button class="tool" onclick="selectTool('Video')">
+<strong>🎬 AI Video</strong>
+<small>Create videos</small>
+</button>
 
-    <button class="tool" onclick="selectTool('Voice')">
-      <strong>🔊 AI Voice</strong>
-      <small>Voice tools</small>
-    </button>
+<button class="tool" onclick="selectTool('Voice')">
+<strong>🔊 AI Voice</strong>
+<small>Voice tools</small>
+</button>
 
-    <button class="tool" onclick="selectTool('Study')">
-      <strong>📚 AI Study</strong>
-      <small>Learn smarter</small>
-    </button>
+<button class="tool" onclick="selectTool('Study')">
+<strong>📚 AI Study</strong>
+<small>Learn smarter</small>
+</button>
 
-    <button class="tool" onclick="selectTool('Writer')">
-      <strong>✍️ AI Writer</strong>
-      <small>Write anything</small>
-    </button>
+<button class="tool" onclick="selectTool('Writer')">
+<strong>✍️ AI Writer</strong>
+<small>Write anything</small>
+</button>
 
-  </div>
+</div>
 
-  <div class="chat">
+<div class="chat">
 
-    <div class="chat-header">
-      <strong>💬 Chat with Bablu AI</strong>
-      <button class="clear" onclick="clearChat()">Clear</button>
-    </div>
+<div class="chat-header">
+<strong>💬 Chat with Bablu AI</strong>
+<button class="clear" onclick="clearChat()">Clear</button>
+</div>
 
-    <div class="messages" id="messages"></div>
+<div class="messages" id="messages"></div>
 
-    <div class="input-area">
+<div class="input-area">
 
-      <input
-        id="messageInput"
-        type="text"
-        placeholder="Type your message..."
-      >
+<input
+id="messageInput"
+type="text"
+placeholder="Type your message..."
+>
 
-      <button
-        class="voice-btn"
-        id="voiceBtn"
-        onclick="startVoice()"
-        title="Voice Input"
-      >
-        🎤
-      </button>
+<button
+class="voice-btn"
+id="voiceBtn"
+onclick="startVoice()"
+title="Voice Input"
+>🎤</button>
 
-      <button
-        class="send-btn"
-        onclick="sendMessage()"
-      >
-        Send
-      </button>
+<button
+class="send-btn"
+onclick="sendMessage()"
+>Send</button>
 
-    </div>
-
-  </div>
-
+</div>
+</div>
 </div>
 
 <script>
 
 let chatHistory =
-  JSON.parse(localStorage.getItem("bablu_ai_history") || "[]");
+JSON.parse(localStorage.getItem("bablu_ai_history") || "[]");
 
 chatHistory = chatHistory.slice(-20);
 
-
-/* =========================
-   SAVE CHAT HISTORY
-========================= */
-
 function saveHistory(){
 
-  chatHistory = chatHistory.slice(-20);
+chatHistory = chatHistory.slice(-20);
 
-  localStorage.setItem(
-    "bablu_ai_history",
-    JSON.stringify(chatHistory)
-  );
+localStorage.setItem(
+"bablu_ai_history",
+JSON.stringify(chatHistory)
+);
+
 }
-
-
-/* =========================
-   ADD MESSAGE
-========================= */
 
 function addMessage(text,type,save=true){
 
-  const messages =
-    document.getElementById("messages");
+const messages =
+document.getElementById("messages");
 
-  const div =
-    document.createElement("div");
+const div =
+document.createElement("div");
 
-  div.className =
-    "message " + type;
+div.className =
+"message " + type;
 
-  div.textContent = text;
+div.textContent = text;
 
-  messages.appendChild(div);
+messages.appendChild(div);
 
-  messages.scrollTop =
-    messages.scrollHeight;
+messages.scrollTop =
+messages.scrollHeight;
 
-  if(save){
+if(save){
 
-    chatHistory.push({
-      text:text,
-      type:type
-    });
+chatHistory.push({
+text:text,
+type:type
+});
 
-    chatHistory =
-      chatHistory.slice(-20);
+chatHistory =
+chatHistory.slice(-20);
 
-    saveHistory();
-  }
+saveHistory();
 
-  return div;
 }
 
+return div;
 
-/* =========================
-   ADD AI MESSAGE + SPEAK
-========================= */
-
-function addAIMessage(text,save=true){
-
-  const aiMessage =
-    addMessage(
-      text,
-      "ai",
-      save
-    );
-
-  const speakButton =
-    document.createElement("button");
-
-  speakButton.className =
-    "speak-btn";
-
-  speakButton.textContent =
-    "🔊";
-
-  speakButton.title =
-    "AI जवाब सुनें";
-
-  speakButton.setAttribute(
-    "data-text",
-    text
-  );
-
-  speakButton.onclick=function(){
-
-    toggleSpeak(this);
-
-  };
-
-  aiMessage.appendChild(
-    document.createElement("br")
-  );
-
-  aiMessage.appendChild(
-    speakButton
-  );
-
-  return aiMessage;
 }
 
-
-/* =========================
-   LOAD CHAT HISTORY
-========================= */
-
-function loadHistory(){
-
-  chatHistory =
-    chatHistory.slice(-20);
-
-  chatHistory.forEach(item => {
-
-    if(item.type === "ai"){
-
-      addAIMessage(
-        item.text,
-        false
-      );
-
-    }else{
-
-      addMessage(
-        item.text,
-        item.type,
-        false
-      );
-
-    }
-
-  });
-}
-
-
-/* =========================
-   CLEAR CHAT
-========================= */
-
-function clearChat(){
-
-  window.speechSynthesis.cancel();
-
-  localStorage.removeItem(
-    "bablu_ai_history"
-  );
-
-  chatHistory=[];
-
-  document.getElementById(
-    "messages"
-  ).innerHTML="";
-}
-
-
-/* =========================
-   TOOLS
-========================= */
-
-function selectTool(tool){
-
-  addAIMessage(
-    tool + "
+function addAIMessage
