@@ -1,27 +1,143 @@
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ reply: "Only POST requests are allowed." });
+    return res.status(405).json({
+      reply: "Only POST requests are allowed."
+    });
   }
 
-  const message = (req.body?.message || "").trim().toLowerCase();
+  const message = (req.body?.message || "").trim();
+  const mode = req.body?.mode || "chat";
+
+  if (!message) {
+    return res.status(400).json({
+      reply: "मुझे कोई message भेजो 😊"
+    });
+  }
+
+  /* =========================
+     REAL AI IMAGE GENERATION
+     ========================= */
+
+  if (mode === "image") {
+    try {
+      const apiKey = process.env.GEMINI_API_KEY;
+
+      if (!apiKey) {
+        return res.status(500).json({
+          reply: "Gemini API key server में सेट नहीं है।"
+        });
+      }
+
+      const response = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/interactions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+          },
+          body: JSON.stringify({
+            model: "gemini-3.1-flash-image",
+            input: message,
+            response_format: {
+              type: "image",
+              aspect_ratio: "1:1",
+              image_size: "1K"
+            }
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Gemini Image Error:", data);
+
+        return res.status(response.status).json({
+          reply:
+            data?.error?.message ||
+            "Image generate नहीं हो पाई।"
+        });
+      }
+
+      const image =
+        data?.output_image?.data ||
+        data?.steps
+          ?.flatMap(step => step.content || [])
+          ?.find(item => item.type === "image")
+          ?.data;
+
+      if (!image) {
+        return res.status(500).json({
+          reply: "Gemini ने image data नहीं भेजा।"
+        });
+      }
+
+      return res.status(200).json({
+        type: "image",
+        image: image,
+        mimeType:
+          data?.output_image?.mime_type || "image/png"
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      return res.status(500).json({
+        reply: "Image server से connection नहीं हो पाया।"
+      });
+    }
+  }
+
+
+  /* =========================
+     CURRENT FREE DEMO CHAT
+     ========================= */
+
+  const lowerMessage = message.toLowerCase();
 
   let reply;
 
-  if (!message) {
-    reply = "मुझे कोई message भेजो 😊";
-  } else if (message.includes("hello") || message.includes("hi")) {
-    reply = "Hello Bablu! 👋 मैं Bablu AI हूँ। अभी मेरा Free Demo Mode चल रहा है 🤖";
-  } else if (message.includes("who are you") || message.includes("tum kaun")) {
-    reply = "मैं Bablu AI हूँ — तुम्हारा बनाया हुआ AI assistant! 🚀";
-  } else if (message.includes("how are you") || message.includes("kaise ho")) {
-    reply = "मैं बिल्कुल बढ़िया हूँ! 😄 तुम कैसे हो?";
-  } else if (message.includes("ai")) {
-    reply = "AI यानी Artificial Intelligence — ऐसी technology जो computer को सीखने, समझने और जवाब देने में मदद करती है। 🤖";
-  } else if (message.includes("help") || message.includes("madad")) {
-    reply = "ज़रूर! अपना सवाल लिखो, मैं Free Demo Mode में जवाब देने की कोशिश करूँगा। 😊";
+  if (
+    lowerMessage.includes("hello") ||
+    lowerMessage.includes("hi")
+  ) {
+    reply =
+      "Hello Bablu! 👋 मैं Bablu AI हूँ। अभी मेरा Free Demo Mode चल रहा है 🤖";
+
+  } else if (
+    lowerMessage.includes("who are you") ||
+    lowerMessage.includes("tum kaun")
+  ) {
+    reply =
+      "मैं Bablu AI हूँ — तुम्हारा बनाया हुआ AI assistant! 🚀";
+
+  } else if (
+    lowerMessage.includes("how are you") ||
+    lowerMessage.includes("kaise ho")
+  ) {
+    reply =
+      "मैं बिल्कुल बढ़िया हूँ! 😄 तुम कैसे हो?";
+
+  } else if (lowerMessage.includes("ai")) {
+    reply =
+      "AI यानी Artificial Intelligence — ऐसी technology जो computer को सीखने, समझने और जवाब देने में मदद करती है। 🤖";
+
+  } else if (
+    lowerMessage.includes("help") ||
+    lowerMessage.includes("madad")
+  ) {
+    reply =
+      "ज़रूर! अपना सवाल लिखो, मैं Free Demo Mode में जवाब देने की कोशिश करूँगा। 😊";
+
   } else {
-    reply = `तुमने पूछा: "${message}"\n\nमैं अभी Free Demo Mode में हूँ। असली AI जोड़ने के बाद मैं इससे कहीं ज्यादा intelligent जवाब दे पाऊँगा! 🚀`;
+    reply =
+      `तुमने पूछा: "${message}"\n\nमैं अभी Free Demo Mode में हूँ। असली AI जोड़ने के बाद मैं इससे कहीं ज्यादा intelligent जवाब दे पाऊँगा! 🚀`;
   }
 
-  return res.status(200).json({ reply });
+  return res.status(200).json({
+    type: "text",
+    reply
+  });
 }
+
