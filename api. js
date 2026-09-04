@@ -152,4 +152,63 @@ export default async function handler(req, res) {
             {
               role: "system",
 
-             
+              content:
+                "You are Bablu AI, a helpful, friendly and intelligent AI assistant. Answer clearly and naturally. If the user speaks Hindi, reply in Hindi."
+            },
+
+            {
+              role: "user",
+
+              content:
+                message
+            }
+
+          ]
+        })
+      }
+    );
+
+    const data =
+      await response.json();
+
+    console.log(
+      "OpenRouter Chat Response:",
+      data
+    );
+
+    if (!response.ok) {
+
+      return res.status(response.status).json({
+        reply:
+          data?.error?.message ||
+          "AI से जवाब नहीं मिला।"
+      });
+    }
+
+    const reply =
+      data?.choices?.[0]?.message?.content ||
+      "मुझे जवाब नहीं मिला।";
+
+    return res.status(200).json({
+
+      type: "text",
+
+      reply:
+        reply
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "OpenRouter Chat Error:",
+      error
+    );
+
+    return res.status(500).json({
+      reply:
+        "Server से connection नहीं हो पाया।"
+    });
+  }
+
+}
