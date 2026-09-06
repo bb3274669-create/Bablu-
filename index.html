@@ -253,6 +253,18 @@ header p{
   border-color:#666677;
 }
 
+.error-box{
+  color:#ff8888;
+  font-size:12px;
+  margin-top:8px;
+  padding:8px;
+  background:#241414;
+  border:1px solid #522727;
+  border-radius:7px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
 @media(max-width:500px){
 
   .container{
@@ -766,36 +778,65 @@ async function generateImage(){
   try{
 
     /* =========================
-       PUTER IMAGE GENERATION
+       CHECK PUTER
        ========================= */
 
     if(
-      typeof puter === "undefined" ||
-      !puter.ai ||
-      !puter.ai.txt2img
+      typeof puter === "undefined"
     ){
 
       throw new Error(
-        "Puter AI load नहीं हुआ।"
+        "Puter AI load नहीं हुआ। Internet connection और Puter script check करो।"
       );
     }
+
+    if(
+      !puter.ai
+    ){
+
+      throw new Error(
+        "Puter AI service उपलब्ध नहीं है।"
+      );
+    }
+
+    if(
+      typeof puter.ai.txt2img !== "function"
+    ){
+
+      throw new Error(
+        "puter.ai.txt2img function उपलब्ध नहीं है।"
+      );
+    }
+
+
+    /* =========================
+       GENERATE IMAGE
+       ========================= */
 
     const generatedImage =
       await puter.ai.txt2img(
         userPrompt
       );
 
+
     typing.remove();
+
+
+    /* =========================
+       CHECK RESULT
+       ========================= */
 
     if(!generatedImage){
 
-      addMessage(
-        "Image generate नहीं हो पाई। 😔",
-        "ai"
+      throw new Error(
+        "Puter ने कोई image result नहीं दिया।"
       );
-
-      return;
     }
+
+
+    /* =========================
+       IMAGE RESULT
+       ========================= */
 
     const imageMessage =
       document.createElement(
@@ -804,6 +845,7 @@ async function generateImage(){
 
     imageMessage.className =
       "message ai";
+
 
     const label =
       document.createElement(
@@ -816,9 +858,11 @@ async function generateImage(){
     label.textContent =
       "🎨 Bablu AI Generated Image";
 
+
     imageMessage.appendChild(
       label
     );
+
 
     generatedImage.className =
       "generated-image";
@@ -826,9 +870,11 @@ async function generateImage(){
     generatedImage.alt =
       userPrompt;
 
+
     imageMessage.appendChild(
       generatedImage
     );
+
 
     messages.appendChild(
       imageMessage
@@ -836,6 +882,7 @@ async function generateImage(){
 
     messages.scrollTop =
       messages.scrollHeight;
+
 
   }catch(error){
 
@@ -846,10 +893,115 @@ async function generateImage(){
       error
     );
 
-    addMessage(
-      "🖼️ Image generate नहीं हो पाई। कृपया फिर कोशिश करो।",
-      "ai"
+
+    /* =========================
+       SHOW REAL ERROR
+       ========================= */
+
+    const errorMessage =
+      document.createElement(
+        "div"
+      );
+
+    errorMessage.className =
+      "message ai";
+
+
+    const emoji =
+      document.createElement(
+        "span"
+      );
+
+    emoji.className =
+      "ai-emoji";
+
+    emoji.textContent =
+      "⚠️";
+
+
+    errorMessage.appendChild(
+      emoji
     );
+
+
+    const title =
+      document.createTextNode(
+        " Image generate नहीं हो पाई।"
+      );
+
+    errorMessage.appendChild(
+      title
+    );
+
+
+    const errorBox =
+      document.createElement(
+        "div"
+      );
+
+    errorBox.className =
+      "error-box";
+
+
+    let errorText =
+      "Unknown error";
+
+
+    if(error){
+
+      if(
+        typeof error === "string"
+      ){
+
+        errorText =
+          error;
+
+      }else if(
+        error.message
+      ){
+
+        errorText =
+          error.message;
+
+      }else{
+
+        try{
+
+          errorText =
+            JSON.stringify(
+              error,
+              null,
+              2
+            );
+
+        }catch(e){
+
+          errorText =
+            String(error);
+
+        }
+
+      }
+
+    }
+
+
+    errorBox.textContent =
+      "Puter Error:\n" +
+      errorText;
+
+
+    errorMessage.appendChild(
+      errorBox
+    );
+
+
+    messages.appendChild(
+      errorMessage
+    );
+
+    messages.scrollTop =
+      messages.scrollHeight;
   }
 }
 
@@ -1233,4 +1385,4 @@ loadHistory();
 </script>
 
 </body>
-  </html>
+                            </html>
