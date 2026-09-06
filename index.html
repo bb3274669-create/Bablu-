@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Bablu AI</title>
 
 <script src="https://js.puter.com/v2/"></script>
@@ -29,10 +28,7 @@ header{
   border-bottom:1px solid #29293a;
 }
 
-header h1{
-  font-size:25px;
-}
-
+header h1{font-size:25px}
 header p{
   color:#aaa;
   margin-top:5px;
@@ -62,11 +58,7 @@ header p{
   cursor:pointer;
 }
 
-.tool strong{
-  display:block;
-  font-size:15px;
-}
-
+.tool strong{display:block;font-size:15px}
 .tool small{
   display:block;
   color:#999;
@@ -153,17 +145,13 @@ input{
   outline:none;
 }
 
-button{
-  border:0;
-  border-radius:13px;
-  cursor:pointer;
-}
-
 .send{
   width:52px;
   background:#4b4bff;
   color:white;
   font-size:20px;
+  border:0;
+  border-radius:13px;
 }
 
 .action-row{
@@ -178,6 +166,7 @@ button{
   background:#171720;
   color:white;
   border:1px solid #30303e;
+  border-radius:13px;
 }
 
 .status{
@@ -188,13 +177,8 @@ button{
 }
 
 @media(max-width:450px){
-  .tools{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .message{
-    max-width:94%;
-  }
+  .tools{grid-template-columns:1fr 1fr}
+  .message{max-width:94%}
 }
 </style>
 </head>
@@ -203,196 +187,201 @@ button{
 
 <header>
   <h1>🤖 Bablu AI</h1>
-  <p>Your Personal AI Assistant</p>
+  <p>Your Personal AI Assistant ✨</p>
 </header>
 
 <div class="container">
 
-  <div class="tools">
+<div class="tools">
 
-    <button class="tool" onclick="focusChat()">
-      <strong>💬 AI Chat</strong>
-      <small>Ask anything</small>
-    </button>
+<button class="tool" onclick="focusChat()">
+<strong>💬 AI Chat</strong>
+<small>Ask anything 🌎</small>
+</button>
 
-    <button class="tool" onclick="generateImage()">
-      <strong>🖼️ AI Image</strong>
-      <small>Create real images</small>
-    </button>
+<button class="tool" onclick="generateImage()">
+<strong>🖼️ AI Image</strong>
+<small>Create real images 🎨</small>
+</button>
 
-    <button class="tool" onclick="videoTool()">
-      <strong>🎬 AI Video</strong>
-      <small>Video tool</small>
-    </button>
+<button class="tool" onclick="videoTool()">
+<strong>🎬 AI Video</strong>
+<small>Video tool 🚀</small>
+</button>
 
-    <button class="tool" onclick="studyTool()">
-      <strong>📚 Study</strong>
-      <small>Study assistant</small>
-    </button>
+<button class="tool" onclick="studyTool()">
+<strong>📚 Study</strong>
+<small>Learn smarter 🧠</small>
+</button>
 
-    <button class="tool" onclick="writerTool()">
-      <strong>✍️ Writer</strong>
-      <small>Writing assistant</small>
-    </button>
+<button class="tool" onclick="writerTool()">
+<strong>✍️ Writer</strong>
+<small>Write anything 📝</small>
+</button>
 
-    <button class="tool" onclick="startVoice()">
-      <strong>🎤 Voice</strong>
-      <small>Speak to Bablu AI</small>
-    </button>
+<button class="tool" onclick="startVoice()">
+<strong>🎤 Voice</strong>
+<small>Speak naturally 🗣️</small>
+</button>
 
-    <button class="tool jarvis-tool" id="jarvisTool"
-            onclick="toggleJarvis()">
+<button class="tool jarvis-tool"
+id="jarvisTool"
+onclick="toggleJarvis()">
 
-      <strong>🤖 JARVIS MODE</strong>
-      <small id="jarvisSmall">
-        Activate your AI assistant
-      </small>
+<strong>🤖 JARVIS MODE</strong>
+<small id="jarvisSmall">
+Activate your AI assistant ⚡
+</small>
 
-    </button>
+</button>
 
-  </div>
+</div>
 
-  <div class="jarvis-status" id="jarvisStatus">
-    🤖 JARVIS is OFF
-  </div>
+<div class="jarvis-status" id="jarvisStatus">
+🤖 JARVIS is OFF
+</div>
 
-  <div class="chat" id="chat"></div>
+<div class="chat" id="chat"></div>
 
-  <div class="bottom">
+<div class="bottom">
 
-    <div class="status" id="status">
-      Ready
-    </div>
+<div class="status" id="status">
+Ready ✨
+</div>
 
-    <div class="input-row">
+<div class="input-row">
 
-      <input
-        id="message"
-        placeholder="Message Bablu AI..."
-        autocomplete="off"
-      >
+<input
+id="message"
+placeholder="Message Bablu AI... 💬"
+autocomplete="off">
 
-      <button class="send" onclick="sendMessage()">
-        ➤
-      </button>
+<button class="send" onclick="sendMessage()">➤</button>
 
-    </div>
+</div>
 
-    <div class="action-row">
+<div class="action-row">
 
-      <button onclick="startVoice()">
-        🎤 Voice
-      </button>
+<button onclick="startVoice()">🎤 Voice</button>
+<button onclick="stopVoice()">🔇 Stop</button>
+<button onclick="clearChat()">🗑️ Clear</button>
 
-      <button onclick="stopVoice()">
-        🔇 Stop
-      </button>
+</div>
 
-      <button onclick="clearChat()">
-        🗑️ Clear
-      </button>
-
-    </div>
-
-  </div>
-
+</div>
 </div>
 
 <script>
 
-let chatHistory =
-  JSON.parse(localStorage.getItem("bablu_ai_history") || "[]");
+/* =========================
+   VARIABLES
+========================= */
 
-let jarvisMode = false;
-let recognition = null;
-let jarvisRecognition = null;
+let chatHistory=
+JSON.parse(
+localStorage.getItem("bablu_ai_history")||"[]"
+);
+
+let jarvisMode=false;
+let recognition=null;
+let jarvisRecognition=null;
+let jarvisBusy=false;
 
 
 /* =========================
    ELEMENTS
 ========================= */
 
-const messageInput =
-  document.getElementById("message");
+const messageInput=
+document.getElementById("message");
 
-const chat =
-  document.getElementById("chat");
+const chat=
+document.getElementById("chat");
 
-const statusText =
-  document.getElementById("status");
+const statusText=
+document.getElementById("status");
 
-const jarvisStatus =
-  document.getElementById("jarvisStatus");
+const jarvisStatus=
+document.getElementById("jarvisStatus");
 
-const jarvisTool =
-  document.getElementById("jarvisTool");
+const jarvisTool=
+document.getElementById("jarvisTool");
 
-const jarvisSmall =
-  document.getElementById("jarvisSmall");
+const jarvisSmall=
+document.getElementById("jarvisSmall");
 
 
 /* =========================
-   CHAT HISTORY
+   HISTORY
 ========================= */
 
 function saveHistory(){
-  localStorage.setItem(
-    "bablu_ai_history",
-    JSON.stringify(chatHistory)
-  );
+localStorage.setItem(
+"bablu_ai_history",
+JSON.stringify(chatHistory)
+);
 }
 
-function addMessage(text,type="ai",isJarvis=false){
+function addMessage(
+text,
+type="ai",
+isJarvis=false
+){
 
-  const div=document.createElement("div");
+const div=document.createElement("div");
 
-  div.className=
-    "message "+
-    type+
-    (isJarvis ? " jarvis-message" : "");
+div.className=
+"message "+
+type+
+(isJarvis?" jarvis-message":"");
 
-  div.textContent=text;
+div.textContent=text;
 
-  chat.appendChild(div);
+chat.appendChild(div);
 
-  chat.scrollTop=chat.scrollHeight;
+chat.scrollTop=chat.scrollHeight;
 
-  return div;
+return div;
 }
 
 function addImage(src){
 
-  const div=document.createElement("div");
+const div=document.createElement("div");
 
-  div.className="message ai";
+div.className="message ai";
 
-  const img=document.createElement("img");
+const img=document.createElement("img");
 
-  img.src=src;
+img.src=src;
 
-  div.appendChild(img);
+div.appendChild(img);
 
-  chat.appendChild(div);
+chat.appendChild(div);
 
-  chat.scrollTop=chat.scrollHeight;
+chat.scrollTop=chat.scrollHeight;
 }
 
 function loadHistory(){
 
-  chat.innerHTML="";
+chat.innerHTML="";
 
-  chatHistory.forEach(item=>{
+chatHistory.forEach(item=>{
 
-    if(item.type==="image"){
-      addImage(item.src);
-    }else{
-      addMessage(
-        item.text,
-        item.role==="user" ? "user" : "ai"
-      );
-    }
+if(item.type==="image"){
 
-  });
+addImage(item.src);
+
+}else{
+
+addMessage(
+item.text,
+item.role==="user"?"user":"ai"
+);
+
+}
+
+});
+
 }
 
 loadHistory();
@@ -404,199 +393,232 @@ loadHistory();
 
 function clearChat(){
 
-  chatHistory=[];
+chatHistory=[];
 
-  saveHistory();
+saveHistory();
 
-  chat.innerHTML="";
+chat.innerHTML="";
 
-  addMessage(
-    "Chat clear ho gaya 😊",
-    "ai"
-  );
+addMessage(
+"Chat clear ho gaya 😊 Ab fresh conversation shuru karte hain.",
+"ai"
+);
+
 }
 
 
 /* =========================
-   NORMAL CHAT
+   CHAT
 ========================= */
 
 async function sendMessage(){
 
-  const text=messageInput.value.trim();
+const text=
+messageInput.value.trim();
 
-  if(!text)return;
+if(!text)return;
 
-  messageInput.value="";
+messageInput.value="";
 
-  await sendMessageText(text,false);
+await sendMessageText(text,false);
+
 }
 
 
-async function sendMessageText(text,fromJarvis=false){
+async function sendMessageText(
+text,
+fromJarvis=false
+){
 
-  addMessage(
-    text,
-    "user",
-    fromJarvis
-  );
+addMessage(
+text,
+"user",
+fromJarvis
+);
 
-  chatHistory.push({
-    role:"user",
-    text:text
-  });
+chatHistory.push({
+role:"user",
+text:text
+});
 
-  saveHistory();
+saveHistory();
 
-  statusText.textContent="Thinking...";
+statusText.textContent=
+fromJarvis?
+"🤖 JARVIS thinking...":
+"🧠 Thinking...";
 
-  try{
+try{
 
-    const response=await fetch("/api",{
+const response=
+await fetch("/api",{
 
-      method:"POST",
+method:"POST",
 
-      headers:{
-        "Content-Type":"application/json"
-      },
+headers:{
+"Content-Type":"application/json"
+},
 
-      body:JSON.stringify({
-        message:text,
-        mode:"chat"
-      })
+body:JSON.stringify({
+message:text,
+mode:"chat"
+})
 
-    });
+});
 
-    const data=await response.json();
+const data=
+await response.json();
 
-    const reply=
-      data.reply ||
-      "Mujhe jawab nahi mila.";
+const reply=
+data.reply||
+"Mujhe jawab nahi mila. 😕";
 
-    addMessage(
-      reply,
-      "ai",
-      fromJarvis
-    );
+addMessage(
+reply,
+"ai",
+fromJarvis
+);
 
-    chatHistory.push({
-      role:"ai",
-      text:reply
-    });
+chatHistory.push({
+role:"ai",
+text:reply
+});
 
-    saveHistory();
+saveHistory();
 
-    if(fromJarvis){
-      speakJarvis(reply);
-    }else{
-      speak(reply);
-    }
+if(fromJarvis){
 
-  }catch(error){
+await speakJarvis(reply);
 
-    addMessage(
-      "Server se connection nahi ho paya.",
-      "ai"
-    );
+}else{
 
-  }
+speak(reply);
 
-  statusText.textContent="Ready";
+}
+
+}catch(error){
+
+console.error(error);
+
+addMessage(
+"Server se connection nahi ho paya. 😕",
+"ai",
+fromJarvis
+);
+
+}
+
+statusText.textContent=
+jarvisMode?
+"🤖 JARVIS ready":
+"Ready ✨";
+
 }
 
 
 /* =========================
-   ENTER KEY
+   ENTER
 ========================= */
 
 messageInput.addEventListener(
-  "keydown",
-  function(e){
+"keydown",
+function(e){
 
-    if(e.key==="Enter"){
-      sendMessage();
-    }
+if(e.key==="Enter"){
+sendMessage();
+}
 
-  }
-);
+});
 
 
 /* =========================
-   VOICE INPUT
+   NORMAL VOICE INPUT
 ========================= */
 
 function startVoice(){
 
-  if(!("webkitSpeechRecognition" in window) &&
-     !("SpeechRecognition" in window)){
+const SR=
+window.SpeechRecognition||
+window.webkitSpeechRecognition;
 
-    alert("Is browser me Voice Input supported nahi hai.");
+if(!SR){
 
-    return;
-  }
+alert(
+"Is browser me Voice Input supported nahi hai."
+);
 
-  const SpeechRecognition=
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+return;
+}
 
-  recognition=new SpeechRecognition();
+recognition=new SR();
 
-  recognition.lang="hi-IN";
+recognition.lang="hi-IN";
+recognition.continuous=false;
+recognition.interimResults=false;
 
-  recognition.continuous=false;
+statusText.textContent=
+"🎤 Sun raha hoon...";
 
-  recognition.interimResults=false;
+try{
+recognition.start();
+}catch(e){
+return;
+}
 
-  statusText.textContent="🎤 Sun raha hoon...";
+recognition.onresult=
+function(event){
 
-  recognition.start();
+const text=
+event.results[0][0].transcript;
 
-  recognition.onresult=function(event){
+messageInput.value=text;
 
-    const text=
-      event.results[0][0].transcript;
+sendMessage();
 
-    messageInput.value=text;
+};
 
-    statusText.textContent="Voice received";
+recognition.onerror=
+function(){
 
-    sendMessage();
+statusText.textContent=
+"Voice error 😕";
 
-  };
+};
 
-  recognition.onerror=function(){
+recognition.onend=
+function(){
 
-    statusText.textContent="Voice error";
+if(!jarvisMode)
+statusText.textContent="Ready ✨";
 
-  };
+};
 
-  recognition.onend=function(){
-
-    if(statusText.textContent!=="Voice received"){
-      statusText.textContent="Ready";
-    }
-
-  };
 }
 
 
 function stopVoice(){
 
-  if(recognition){
+if(recognition){
 
-    recognition.stop();
+try{
+recognition.stop();
+}catch(e){}
 
-  }
+}
 
-  if(jarvisRecognition){
+if(jarvisRecognition){
 
-    jarvisRecognition.stop();
+try{
+jarvisRecognition.stop();
+}catch(e){}
 
-  }
+}
 
-  window.speechSynthesis.cancel();
+speechSynthesis.cancel();
 
-  statusText.textContent="Voice stopped";
+statusText.textContent=
+"Voice stopped 🔇";
+
 }
 
 
@@ -606,312 +628,329 @@ function stopVoice(){
 
 function speak(text){
 
-  if(!("speechSynthesis" in window))return;
+if(!("speechSynthesis" in window))
+return;
 
-  window.speechSynthesis.cancel();
+speechSynthesis.cancel();
 
-  const utterance=
-    new SpeechSynthesisUtterance(text);
+const u=
+new SpeechSynthesisUtterance(text);
 
-  utterance.lang="hi-IN";
+u.lang="hi-IN";
+u.rate=0.95;
+u.volume=1;
+u.pitch=1;
 
-  utterance.rate=1;
+speechSynthesis.speak(u);
 
-  utterance.pitch=1;
-
-  window.speechSynthesis.speak(
-    utterance
-  );
 }
 
 
 /* =========================
-   IMAGE GENERATION
+   IMAGE
 ========================= */
 
 async function generateImage(){
 
-  let prompt=
-    messageInput.value.trim();
+let prompt=
+messageInput.value.trim();
 
-  if(!prompt){
+if(!prompt){
 
-    prompt=
-      window.prompt(
-        "Kaisi image banani hai?"
-      );
+prompt=
+window.prompt(
+"Kaisi image banani hai? 🎨"
+);
 
-  }
+}
 
-  if(!prompt)return;
+if(!prompt)return;
 
-  messageInput.value="";
+messageInput.value="";
 
-  addMessage(
-    "🖼️ Image generate kar raha hoon...",
-    "ai"
-  );
+addMessage(
+"🖼️ Image generate kar raha hoon... 🎨",
+"ai"
+);
 
-  statusText.textContent=
-    "Creating image...";
+statusText.textContent=
+"🎨 Creating image...";
 
-  try{
+try{
 
-    const generatedImage=
-      await puter.ai.txt2img(
-        prompt,
-        {
-          model:"gpt-image-2"
-        }
-      );
+const generatedImage=
+await puter.ai.txt2img(
+prompt,
+{
+model:"gpt-image-2"
+}
+);
 
-    let src="";
+let src="";
 
-    if(typeof generatedImage==="string"){
+if(typeof generatedImage==="string"){
 
-      src=generatedImage;
+src=generatedImage;
 
-    }else if(
-      generatedImage &&
-      generatedImage.src
-    ){
+}else if(
+generatedImage&&
+generatedImage.src
+){
 
-      src=generatedImage.src;
+src=generatedImage.src;
 
-    }else if(
-      generatedImage &&
-      generatedImage.url
-    ){
+}else if(
+generatedImage&&
+generatedImage.url
+){
 
-      src=generatedImage.url;
+src=generatedImage.url;
 
-    }else{
+}else{
 
-      src=generatedImage;
+src=generatedImage;
 
-    }
+}
 
-    addImage(src);
+addImage(src);
 
-    chatHistory.push({
-      type:"image",
-      src:src
-    });
+chatHistory.push({
+type:"image",
+src:src
+});
 
-    saveHistory();
+saveHistory();
 
-    statusText.textContent=
-      "Image ready ✅";
+statusText.textContent=
+"Image ready ✅";
 
-  }catch(error){
+}catch(error){
 
-    console.error(error);
+console.error(error);
 
-    addMessage(
-      "Image generate nahi ho payi. Please dobara try karo.",
-      "ai"
-    );
+addMessage(
+"Image generate nahi ho payi. 😕 Dobara try karo.",
+"ai"
+);
 
-    statusText.textContent=
-      "Image error";
+statusText.textContent=
+"Image error";
 
-  }
+}
 
 }
 
 
 /* =========================
-   VIDEO TOOL
+   OTHER TOOLS
 ========================= */
 
 function videoTool(){
 
-  addMessage(
-    "🎬 AI Video feature V2 me connect kiya jayega. Video tool ready hai.",
-    "ai"
-  );
+addMessage(
+"🎬 AI Video feature V2 me connect kiya jayega. Video tool ready hai 🚀",
+"ai"
+);
 
 }
-
-
-/* =========================
-   STUDY TOOL
-========================= */
 
 function studyTool(){
 
-  messageInput.value=
-    "Mujhe study me help karo: ";
+messageInput.value=
+"Mujhe study me help karo 📚: ";
 
-  messageInput.focus();
+messageInput.focus();
 
 }
-
-
-/* =========================
-   WRITER TOOL
-========================= */
 
 function writerTool(){
 
-  messageInput.value=
-    "Mujhe writing me help karo: ";
+messageInput.value=
+"Mujhe writing me help karo ✍️: ";
 
-  messageInput.focus();
+messageInput.focus();
+
+}
+
+function focusChat(){
+
+messageInput.focus();
 
 }
 
 
 /* =========================
-   JARVIS
+   JARVIS ON/OFF
 ========================= */
 
-function toggleJarvis(){
+async function toggleJarvis(){
 
-  jarvisMode=!jarvisMode;
+if(jarvisMode){
 
-  if(jarvisMode){
+stopJarvis();
 
-    jarvisStatus.style.display="block";
-
-    jarvisStatus.textContent=
-      "🤖 JARVIS is ON — Listening...";
-
-    jarvisTool.classList.add(
-      "jarvis-on"
-    );
-
-    jarvisSmall.textContent=
-      "JARVIS is active";
-
-    speakJarvis(
-      "JARVIS mode activated."
-    );
-
-    setTimeout(
-      startJarvisListening,
-      1200
-    );
-
-  }else{
-
-    stopJarvis();
-
-  }
+return;
 
 }
 
+jarvisMode=true;
+
+jarvisTool.classList.add("jarvis-on");
+
+jarvisSmall.textContent=
+"JARVIS is active ⚡";
+
+jarvisStatus.style.display="block";
+
+jarvisStatus.textContent=
+"🤖 JARVIS activating...";
+
+await speakJarvis(
+"JARVIS activated."
+);
+
+if(jarvisMode){
+
+jarvisStatus.textContent=
+"🤖 JARVIS is listening... 🎤";
+
+setTimeout(
+startJarvisListening,
+500
+);
+
+}
+
+}
+
+
+/* =========================
+   STOP JARVIS
+========================= */
 
 function stopJarvis(){
 
-  jarvisMode=false;
+jarvisMode=false;
+jarvisBusy=false;
 
-  if(jarvisRecognition){
+if(jarvisRecognition){
 
-    jarvisRecognition.stop();
+try{
+jarvisRecognition.stop();
+}catch(e){}
 
-    jarvisRecognition=null;
+jarvisRecognition=null;
 
-  }
+}
 
-  jarvisStatus.style.display="block";
+speechSynthesis.cancel();
 
-  jarvisStatus.textContent=
-    "🤖 JARVIS is OFF";
+jarvisTool.classList.remove(
+"jarvis-on"
+);
 
-  jarvisTool.classList.remove(
-    "jarvis-on"
-  );
+jarvisSmall.textContent=
+"Activate your AI assistant ⚡";
 
-  jarvisSmall.textContent=
-    "Activate your AI assistant";
+jarvisStatus.style.display="block";
 
-  window.speechSynthesis.cancel();
+jarvisStatus.textContent=
+"🤖 JARVIS is OFF";
 
 }
 
 
+/* =========================
+   JARVIS LISTENING
+========================= */
+
 function startJarvisListening(){
 
-  if(!jarvisMode)return;
+if(!jarvisMode||
+jarvisBusy)return;
 
-  if(
-    !("webkitSpeechRecognition" in window) &&
-    !("SpeechRecognition" in window)
-  ){
+const SR=
+window.SpeechRecognition||
+window.webkitSpeechRecognition;
 
-    jarvisStatus.textContent=
-      "🎤 Voice recognition supported nahi hai.";
+if(!SR){
 
-    return;
+jarvisStatus.textContent=
+"🎤 Voice recognition supported nahi hai.";
 
-  }
+return;
 
-  const SpeechRecognition=
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+}
 
-  jarvisRecognition=
-    new SpeechRecognition();
+jarvisRecognition=
+new SR();
 
-  jarvisRecognition.lang="hi-IN";
+jarvisRecognition.lang="hi-IN";
 
-  jarvisRecognition.continuous=false;
+jarvisRecognition.continuous=false;
 
-  jarvisRecognition.interimResults=false;
+jarvisRecognition.interimResults=false;
 
-  jarvisStatus.textContent=
-    "🤖 JARVIS is listening...";
+jarvisStatus.textContent=
+"🤖 Listening... 🎤";
 
-  try{
+try{
 
-    jarvisRecognition.start();
+jarvisRecognition.start();
 
-  }catch(e){
+}catch(e){
 
-    return;
+setTimeout(
+startJarvisListening,
+1000
+);
 
-  }
+return;
 
-  jarvisRecognition.onresult=
-    function(event){
+}
 
-      const command=
-        event.results[0][0]
-        .transcript
-        .trim();
+jarvisRecognition.onresult=
+async function(event){
 
-      handleJarvisCommand(command);
+const command=
+event.results[0][0]
+.transcript
+.trim();
 
-    };
+if(!command)return;
 
-  jarvisRecognition.onerror=
-    function(){
+jarvisBusy=true;
 
-      if(jarvisMode){
+await handleJarvisCommand(command);
 
-        setTimeout(
-          startJarvisListening,
-          1000
-        );
+jarvisBusy=false;
 
-      }
+if(jarvisMode){
 
-    };
+setTimeout(
+startJarvisListening,
+1000
+);
 
-  jarvisRecognition.onend=
-    function(){
+}
 
-      if(jarvisMode){
+};
 
-        setTimeout(
-          startJarvisListening,
-          700
-        );
+jarvisRecognition.onerror=
+function(){
 
-      }
+jarvisBusy=false;
 
-    };
+if(jarvisMode){
+
+setTimeout(
+startJarvisListening,
+1200
+);
+
+}
+
+};
 
 }
 
@@ -922,229 +961,203 @@ function startJarvisListening(){
 
 async function handleJarvisCommand(command){
 
-  const text=
-    command.toLowerCase();
+const t=
+command.toLowerCase();
 
-  console.log(
-    "JARVIS COMMAND:",
-    command
-  );
-
-
-  /* OFF */
-
-  if(
-    text.includes("jarvis off") ||
-    text.includes("stop jarvis") ||
-    text.includes("जार्विस बंद") ||
-    text.includes("जर्विस बंद") ||
-    text.includes("जार्विस ऑफ")
-  ){
-
-    speakJarvis(
-      "JARVIS mode deactivated."
-    );
-
-    setTimeout(
-      stopJarvis,
-      1000
-    );
-
-    return;
-
-  }
+console.log(
+"JARVIS:",
+command
+);
 
 
-  /* GOOGLE */
+/* OFF */
 
-  if(
-    text.includes("google kholo") ||
-    text.includes("google खोलो") ||
-    text.includes("google open") ||
-    text.includes("गूगल खोलो")
-  ){
+if(
+t.includes("jarvis off")||
+t.includes("stop jarvis")||
+t.includes("जार्विस बंद")||
+t.includes("जार्विस ऑफ")
+){
 
-    speakJarvis(
-      "Google opening."
-    );
+await speakJarvis(
+"JARVIS deactivated."
+);
 
-    setTimeout(
-      function(){
+stopJarvis();
 
-        window.open(
-          "https://www.google.com",
-          "_blank"
-        );
+return;
 
-      },
-      700
-    );
-
-    return;
-
-  }
+}
 
 
-  /* YOUTUBE */
+/* GOOGLE */
 
-  if(
-    text.includes("youtube kholo") ||
-    text.includes("youtube खोलो") ||
-    text.includes("youtube open") ||
-    text.includes("यूट्यूब खोलो")
-  ){
+if(
+t.includes("google kholo")||
+t.includes("google खोलो")||
+t.includes("गूगल खोलो")
+){
 
-    speakJarvis(
-      "YouTube opening."
-    );
+await speakJarvis(
+"Opening Google."
+);
 
-    setTimeout(
-      function(){
+window.open(
+"https://www.google.com",
+"_blank"
+);
 
-        window.open(
-          "https://www.youtube.com",
-          "_blank"
-        );
+return;
 
-      },
-      700
-    );
-
-    return;
-
-  }
+}
 
 
-  /* CLEAR CHAT */
+/* YOUTUBE */
 
-  if(
-    text.includes("chat clear") ||
-    text.includes("chat साफ") ||
-    text.includes("chat saaf") ||
-    text.includes("chat delete")
-  ){
+if(
+t.includes("youtube kholo")||
+t.includes("youtube खोलो")||
+t.includes("यूट्यूब खोलो")
+){
 
-    clearChat();
+await speakJarvis(
+"Opening YouTube."
+);
 
-    speakJarvis(
-      "Chat clear kar diya."
-    );
+window.open(
+"https://www.youtube.com",
+"_blank"
+);
 
-    return;
+return;
 
-  }
-
-
-  /* IMAGE */
-
-  if(
-    text.includes("image banao") ||
-    text.includes("image बनाओ") ||
-    text.includes("image banana") ||
-    text.includes("तस्वीर बनाओ") ||
-    text.includes("photo banao") ||
-    text.includes("generate image")
-  ){
-
-    let prompt=
-      command
-      .replace(/image banao/gi,"")
-      .replace(/image बनाओ/gi,"")
-      .replace(/image banana/gi,"")
-      .replace(/तस्वीर बनाओ/gi,"")
-      .replace(/photo banao/gi,"")
-      .replace(/generate image/gi,"")
-      .trim();
-
-    if(!prompt){
-
-      speakJarvis(
-        "Kaisi image banani hai?"
-      );
-
-      return;
-
-    }
-
-    messageInput.value=prompt;
-
-    speakJarvis(
-      "Image generation started."
-    );
-
-    await generateImage();
-
-    return;
-
-  }
+}
 
 
-  /* NORMAL AI */
+/* CLEAR */
 
-  speakJarvis(
-    "Samajh gaya."
-  );
+if(
+t.includes("chat clear")||
+t.includes("chat saaf")||
+t.includes("chat साफ")
+){
 
-  await sendMessageText(
-    command,
-    true
-  );
+clearChat();
+
+await speakJarvis(
+"Chat cleared."
+);
+
+return;
+
+}
+
+
+/* IMAGE */
+
+if(
+t.includes("image banao")||
+t.includes("image बनाओ")||
+t.includes("तस्वीर बनाओ")||
+t.includes("photo banao")
+){
+
+let prompt=command
+.replace(/image banao/gi,"")
+.replace(/image बनाओ/gi,"")
+.replace(/तस्वीर बनाओ/gi,"")
+.replace(/photo banao/gi,"")
+.trim();
+
+if(!prompt){
+
+await speakJarvis(
+"Kaisi image banani hai?"
+);
+
+return;
+
+}
+
+messageInput.value=prompt;
+
+await generateImage();
+
+return;
+
+}
+
+
+/* NORMAL AI QUESTION */
+
+await sendMessageText(
+command,
+true
+);
 
 }
 
 
 /* =========================
-   JARVIS VOICE
+   JARVIS SPEAK
 ========================= */
 
 function speakJarvis(text){
 
-  if(!("speechSynthesis" in window))
-    return;
+return new Promise(resolve=>{
 
-  window.speechSynthesis.cancel();
+if(!("speechSynthesis" in window)){
 
-  const utterance=
-    new SpeechSynthesisUtterance(text);
+resolve();
+return;
 
-  utterance.lang="hi-IN";
+}
 
-  utterance.rate=1;
+speechSynthesis.cancel();
 
-  utterance.pitch=1;
+const u=
+new SpeechSynthesisUtterance(text);
 
-  window.speechSynthesis.speak(
-    utterance
-  );
+u.lang="hi-IN";
+
+u.rate=0.9;
+
+u.volume=1;
+
+u.pitch=1;
+
+u.onend=resolve;
+
+u.onerror=resolve;
+
+speechSynthesis.speak(u);
+
+});
 
 }
 
 
 /* =========================
-   FOCUS
-========================= */
-
-function focusChat(){
-
-  messageInput.focus();
-
-}
-
-
-/* =========================
-   STOP SPEECH WHEN NEEDED
+   CLEANUP
 ========================= */
 
 window.addEventListener(
-  "beforeunload",
-  function(){
+"beforeunload",
+function(){
 
-    window.speechSynthesis.cancel();
+speechSynthesis.cancel();
 
-  }
-);
+if(jarvisRecognition){
+
+try{
+jarvisRecognition.stop();
+}catch(e){}
+
+}
+
+});
 
 </script>
 
 </body>
-      </html>
+  </html>
