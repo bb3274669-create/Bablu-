@@ -786,7 +786,7 @@ async function generateImage(){
     ){
 
       throw new Error(
-        "Puter AI load नहीं हुआ। Internet connection और Puter script check करो।"
+        "Puter AI load नहीं हुआ। Internet connection या Puter script check करो।"
       );
     }
 
@@ -811,11 +811,15 @@ async function generateImage(){
 
     /* =========================
        GENERATE IMAGE
+       MODEL EXPLICITLY SET
        ========================= */
 
     const generatedImage =
       await puter.ai.txt2img(
-        userPrompt
+        userPrompt,
+        {
+          model:"gpt-image-2"
+        }
       );
 
 
@@ -1385,4 +1389,4 @@ loadHistory();
 </script>
 
 </body>
-                            </html>
+  </html>
