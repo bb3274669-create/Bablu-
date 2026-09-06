@@ -6,6 +6,9 @@
 
 <title>Bablu AI</title>
 
+<!-- Puter AI -->
+<script src="https://js.puter.com/v2/"></script>
+
 <style>
 *{
   box-sizing:border-box;
@@ -277,6 +280,7 @@ header p{
 <div class="container">
 
   <div class="welcome">
+
     <div class="robot">🤖</div>
 
     <h2>Hello! I'm Bablu AI</h2>
@@ -284,6 +288,7 @@ header p{
     <p>
       Ask me anything and let's create something amazing.
     </p>
+
   </div>
 
   <div class="tools">
@@ -707,6 +712,7 @@ function selectTool(tool){
 
 /* =========================
    AI IMAGE GENERATION
+   PUTER AI
    ========================= */
 
 async function generateImage(){
@@ -759,125 +765,89 @@ async function generateImage(){
 
   try{
 
-    /*
-      IMPORTANT:
-      Image API का सही endpoint
-      /api/image है।
-    */
+    /* =========================
+       PUTER IMAGE GENERATION
+       ========================= */
 
-    const response =
-      await fetch(
-        "/api/image",
-        {
-          method:"POST",
+    if(
+      typeof puter === "undefined" ||
+      !puter.ai ||
+      !puter.ai.txt2img
+    ){
 
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-              prompt:userPrompt
-            })
-        }
+      throw new Error(
+        "Puter AI load नहीं हुआ।"
       );
+    }
 
-    const data =
-      await response.json();
+    const generatedImage =
+      await puter.ai.txt2img(
+        userPrompt
+      );
 
     typing.remove();
 
-    if(!response.ok){
+    if(!generatedImage){
 
       addMessage(
-        data.reply ||
-        "Image generate नहीं हो पाई।",
+        "Image generate नहीं हो पाई। 😔",
         "ai"
       );
 
       return;
     }
 
-    if(
-      data.type === "image" &&
-      data.image
-    ){
-
-      const imageMessage =
-        document.createElement(
-          "div"
-        );
-
-      imageMessage.className =
-        "message ai";
-
-      const label =
-        document.createElement(
-          "div"
-        );
-
-      label.className =
-        "image-label";
-
-      label.textContent =
-        "🎨 Bablu AI Generated Image";
-
-      const img =
-        document.createElement(
-          "img"
-        );
-
-      img.className =
-        "generated-image";
-
-      img.src =
-        "data:" +
-        (
-          data.mimeType ||
-          "image/png"
-        ) +
-        ";base64," +
-        data.image;
-
-      img.alt =
-        userPrompt;
-
-      imageMessage.appendChild(
-        label
+    const imageMessage =
+      document.createElement(
+        "div"
       );
 
-      imageMessage.appendChild(
-        img
+    imageMessage.className =
+      "message ai";
+
+    const label =
+      document.createElement(
+        "div"
       );
 
-      messages.appendChild(
-        imageMessage
-      );
+    label.className =
+      "image-label";
 
-      messages.scrollTop =
-        messages.scrollHeight;
+    label.textContent =
+      "🎨 Bablu AI Generated Image";
 
-    }else{
+    imageMessage.appendChild(
+      label
+    );
 
-      addMessage(
-        data.reply ||
-        "Image data नहीं मिला।",
-        "ai"
-      );
-    }
+    generatedImage.className =
+      "generated-image";
+
+    generatedImage.alt =
+      userPrompt;
+
+    imageMessage.appendChild(
+      generatedImage
+    );
+
+    messages.appendChild(
+      imageMessage
+    );
+
+    messages.scrollTop =
+      messages.scrollHeight;
 
   }catch(error){
 
     typing.remove();
 
     console.error(
-      "Image Error:",
+      "Puter Image Error:",
       error
     );
 
     addMessage(
-      "Image server से connection नहीं हो पाया।",
+      "🖼️ Image generate नहीं हो पाई। कृपया फिर कोशिश करो।",
       "ai"
     );
   }
