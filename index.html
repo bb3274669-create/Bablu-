@@ -85,6 +85,10 @@ header p{
   background:#19191f;
 }
 
+.tool:active{
+  transform:scale(.98);
+}
+
 .tool strong{
   display:block;
   font-size:13px;
@@ -150,6 +154,11 @@ header p{
   margin-right:auto;
   background:#15151c;
   border:1px solid #292932;
+}
+
+.ai-emoji{
+  font-size:18px;
+  margin-right:5px;
 }
 
 .generated-image{
@@ -227,6 +236,10 @@ header p{
   cursor:pointer;
 }
 
+.send-btn:active{
+  transform:scale(.97);
+}
+
 .typing{
   color:#888;
   font-size:12px;
@@ -265,48 +278,80 @@ header p{
 
   <div class="welcome">
     <div class="robot">🤖</div>
+
     <h2>Hello! I'm Bablu AI</h2>
-    <p>Ask me anything and let's create something amazing.</p>
+
+    <p>
+      Ask me anything and let's create something amazing.
+    </p>
   </div>
+
 
   <div class="tools">
 
-    <button class="tool" onclick="selectTool('Chat')">
+    <button
+      class="tool"
+      onclick="selectTool('Chat')"
+    >
       <strong>💬 AI Chat</strong>
       <small>Ask anything</small>
     </button>
 
-    <button class="tool" onclick="selectTool('Image')">
+
+    <button
+      class="tool"
+      onclick="selectTool('Image')"
+    >
       <strong>🖼️ AI Image</strong>
       <small>Create images</small>
     </button>
 
-    <button class="tool" onclick="selectTool('Video')">
+
+    <button
+      class="tool"
+      onclick="selectTool('Video')"
+    >
       <strong>🎬 AI Video</strong>
       <small>Create videos</small>
     </button>
 
-    <button class="tool" onclick="selectTool('Voice')">
+
+    <button
+      class="tool"
+      onclick="selectTool('Voice')"
+    >
       <strong>🔊 AI Voice</strong>
       <small>Voice tools</small>
     </button>
 
-    <button class="tool" onclick="selectTool('Study')">
+
+    <button
+      class="tool"
+      onclick="selectTool('Study')"
+    >
       <strong>📚 AI Study</strong>
       <small>Learn smarter</small>
     </button>
 
-    <button class="tool" onclick="selectTool('Writer')">
+
+    <button
+      class="tool"
+      onclick="selectTool('Writer')"
+    >
       <strong>✍️ AI Writer</strong>
       <small>Write anything</small>
     </button>
 
   </div>
 
+
   <div class="chat">
 
     <div class="chat-header">
-      <strong>💬 Chat with Bablu AI</strong>
+
+      <strong>
+        💬 Chat with Bablu AI
+      </strong>
 
       <button
         class="clear"
@@ -314,12 +359,15 @@ header p{
       >
         Clear
       </button>
+
     </div>
+
 
     <div
       class="messages"
       id="messages"
     ></div>
+
 
     <div class="input-area">
 
@@ -329,6 +377,7 @@ header p{
         placeholder="Type your message..."
       >
 
+
       <button
         class="voice-btn"
         id="voiceBtn"
@@ -337,6 +386,7 @@ header p{
       >
         🎤
       </button>
+
 
       <button
         class="send-btn"
@@ -351,6 +401,7 @@ header p{
 
 </div>
 
+
 <script>
 
 /* =========================
@@ -359,7 +410,9 @@ header p{
 
 let chatHistory =
   JSON.parse(
-    localStorage.getItem("bablu_ai_history") || "[]"
+    localStorage.getItem(
+      "bablu_ai_history"
+    ) || "[]"
   );
 
 chatHistory =
@@ -379,6 +432,158 @@ function saveHistory(){
 
 
 /* =========================
+   RESPONSE EMOJI
+   ========================= */
+
+function getResponseEmoji(text){
+
+  const lower =
+    text.toLowerCase();
+
+
+  if(
+    lower.includes("hello") ||
+    lower.includes("hi ") ||
+    lower.includes("hey") ||
+    lower.includes("नमस्ते") ||
+    lower.includes("हेलो")
+  ){
+    return "😊";
+  }
+
+
+  if(
+    lower.includes("happy") ||
+    lower.includes("खुश") ||
+    lower.includes("great") ||
+    lower.includes("awesome") ||
+    lower.includes("amazing") ||
+    lower.includes("बहुत अच्छा")
+  ){
+    return "😄";
+  }
+
+
+  if(
+    lower.includes("sorry") ||
+    lower.includes("sad") ||
+    lower.includes("दुख") ||
+    lower.includes("उदास") ||
+    lower.includes("रोना")
+  ){
+    return "😔";
+  }
+
+
+  if(
+    lower.includes("love") ||
+    lower.includes("प्यार") ||
+    lower.includes("heart") ||
+    lower.includes("दिल")
+  ){
+    return "❤️";
+  }
+
+
+  if(
+    lower.includes("study") ||
+    lower.includes("math") ||
+    lower.includes("science") ||
+    lower.includes("exam") ||
+    lower.includes("पढ़ाई") ||
+    lower.includes("गणित") ||
+    lower.includes("विज्ञान")
+  ){
+    return "📚";
+  }
+
+
+  if(
+    lower.includes("idea") ||
+    lower.includes("solution") ||
+    lower.includes("solve") ||
+    lower.includes("समाधान") ||
+    lower.includes("विचार")
+  ){
+    return "💡";
+  }
+
+
+  if(
+    lower.includes("warning") ||
+    lower.includes("danger") ||
+    lower.includes("careful") ||
+    lower.includes("सावधान") ||
+    lower.includes("खतरा")
+  ){
+    return "⚠️";
+  }
+
+
+  if(
+    lower.includes("code") ||
+    lower.includes("coding") ||
+    lower.includes("javascript") ||
+    lower.includes("html") ||
+    lower.includes("api")
+  ){
+    return "💻";
+  }
+
+
+  if(
+    lower.includes("image") ||
+    lower.includes("photo") ||
+    lower.includes("picture") ||
+    lower.includes("image")
+  ){
+    return "🖼️";
+  }
+
+
+  if(
+    lower.includes("video") ||
+    lower.includes("movie") ||
+    lower.includes("animation")
+  ){
+    return "🎬";
+  }
+
+
+  if(
+    lower.includes("haha") ||
+    lower.includes("funny") ||
+    lower.includes("joke") ||
+    lower.includes("😂")
+  ){
+    return "😂";
+  }
+
+
+  if(
+    lower.includes("congrat") ||
+    lower.includes("success") ||
+    lower.includes("won") ||
+    lower.includes("जीत")
+  ){
+    return "🎉";
+  }
+
+
+  if(
+    lower.includes("important") ||
+    lower.includes("remember") ||
+    lower.includes("जरूरी")
+  ){
+    return "📌";
+  }
+
+
+  return "🤖";
+}
+
+
+/* =========================
    ADD MESSAGE
    ========================= */
 
@@ -389,18 +594,59 @@ function addMessage(
 ){
 
   const messages =
-    document.getElementById("messages");
+    document.getElementById(
+      "messages"
+    );
+
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.className =
     "message " + type;
 
-  div.textContent =
-    text;
 
-  messages.appendChild(div);
+  if(type === "ai"){
+
+    const emoji =
+      document.createElement(
+        "span"
+      );
+
+    emoji.className =
+      "ai-emoji";
+
+    emoji.textContent =
+      getResponseEmoji(text);
+
+
+    div.appendChild(
+      emoji
+    );
+
+    const textNode =
+      document.createTextNode(
+        " " + text
+      );
+
+    div.appendChild(
+      textNode
+    );
+
+  }else{
+
+    div.textContent =
+      text;
+  }
+
+
+  messages.appendChild(
+    div
+  );
+
 
   messages.scrollTop =
     messages.scrollHeight;
@@ -413,11 +659,14 @@ function addMessage(
       type:type
     });
 
+
     chatHistory =
       chatHistory.slice(-20);
 
+
     saveHistory();
   }
+
 
   return div;
 }
@@ -431,6 +680,7 @@ function loadHistory(){
 
   chatHistory =
     chatHistory.slice(-20);
+
 
   chatHistory.forEach(
     item => {
@@ -456,7 +706,9 @@ function clearChat(){
     "bablu_ai_history"
   );
 
+
   chatHistory=[];
+
 
   if(
     "speechSynthesis" in window
@@ -465,6 +717,7 @@ function clearChat(){
     window.speechSynthesis.cancel();
 
   }
+
 
   document.getElementById(
     "messages"
@@ -484,6 +737,7 @@ function selectTool(tool){
 
     return;
   }
+
 
   addMessage(
     tool +
@@ -505,6 +759,7 @@ async function generateImage(){
       "बताओ कैसी image बनानी है?"
     );
 
+
   if(
     !prompt ||
     !prompt.trim()
@@ -513,8 +768,10 @@ async function generateImage(){
     return;
   }
 
+
   const userPrompt =
     prompt.trim();
+
 
   addMessage(
     "🖼️ Image Prompt: " +
@@ -528,18 +785,25 @@ async function generateImage(){
       "messages"
     );
 
+
   const typing =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   typing.className =
     "typing";
 
+
   typing.textContent =
     "🎨 Bablu AI image बना रहा है...";
+
 
   messages.appendChild(
     typing
   );
+
 
   messages.scrollTop =
     messages.scrollHeight;
@@ -555,17 +819,14 @@ async function generateImage(){
 
           headers:{
             "Content-Type":
-            "application/json"
+              "application/json"
           },
 
           body:
-          JSON.stringify({
-
-            message:userPrompt,
-
-            mode:"image"
-
-          })
+            JSON.stringify({
+              message:userPrompt,
+              mode:"image"
+            })
         }
       );
 
@@ -599,6 +860,7 @@ async function generateImage(){
           "div"
         );
 
+
       imageMessage.className =
         "message ai";
 
@@ -608,8 +870,10 @@ async function generateImage(){
           "div"
         );
 
+
       label.className =
         "image-label";
+
 
       label.textContent =
         "🎨 Bablu AI Generated Image";
@@ -620,8 +884,10 @@ async function generateImage(){
           "img"
         );
 
+
       img.className =
         "generated-image";
+
 
       img.src =
         "data:" +
@@ -632,6 +898,7 @@ async function generateImage(){
         ";base64," +
         data.image;
 
+
       img.alt =
         userPrompt;
 
@@ -640,13 +907,16 @@ async function generateImage(){
         label
       );
 
+
       imageMessage.appendChild(
         img
       );
 
+
       messages.appendChild(
         imageMessage
       );
+
 
       messages.scrollTop =
         messages.scrollHeight;
@@ -665,10 +935,12 @@ async function generateImage(){
 
     typing.remove();
 
+
     console.error(
       "Image Error:",
       error
     );
+
 
     addMessage(
       "Image server से connection नहीं हो पाया।",
@@ -719,8 +991,10 @@ function startVoice(){
   recognition.lang =
     "hi-IN";
 
+
   recognition.interimResults =
     false;
+
 
   recognition.continuous =
     false;
@@ -731,11 +1005,13 @@ function startVoice(){
 
       isListening=true;
 
+
       document
         .getElementById("voiceBtn")
         .classList.add(
           "listening"
         );
+
 
       document
         .getElementById("voiceBtn")
@@ -752,6 +1028,7 @@ function startVoice(){
           .results[0][0]
           .transcript;
 
+
       document
         .getElementById(
           "messageInput"
@@ -766,11 +1043,13 @@ function startVoice(){
 
       isListening=false;
 
+
       document
         .getElementById("voiceBtn")
         .classList.remove(
           "listening"
         );
+
 
       document
         .getElementById("voiceBtn")
@@ -784,11 +1063,13 @@ function startVoice(){
 
       isListening=false;
 
+
       document
         .getElementById("voiceBtn")
         .classList.remove(
           "listening"
         );
+
 
       document
         .getElementById("voiceBtn")
@@ -834,8 +1115,10 @@ function speakText(
   utterance.lang =
     "hi-IN";
 
+
   utterance.rate =
     1;
+
 
   utterance.pitch =
     1;
@@ -846,6 +1129,7 @@ function speakText(
 
       button.textContent =
         "⏹️ Stop";
+
 
       button.classList.add(
         "speaking"
@@ -858,6 +1142,7 @@ function speakText(
 
       button.textContent =
         "🔊 Voice";
+
 
       button.classList.remove(
         "speaking"
@@ -887,12 +1172,15 @@ function toggleSpeak(
 
     window.speechSynthesis.cancel();
 
+
     button.textContent =
       "🔊 Voice";
+
 
     button.classList.remove(
       "speaking"
     );
+
 
     return;
   }
@@ -947,16 +1235,19 @@ async function sendMessage(){
       "div"
     );
 
+
   typing.className =
     "typing";
 
+
   typing.textContent =
-    "Bablu AI सोच रहा है...";
+    "🤔 Bablu AI सोच रहा है...";
 
 
   messages.appendChild(
     typing
   );
+
 
   messages.scrollTop =
     messages.scrollHeight;
@@ -973,17 +1264,17 @@ async function sendMessage(){
 
           headers:{
             "Content-Type":
-            "application/json"
+              "application/json"
           },
 
           body:
-          JSON.stringify({
+            JSON.stringify({
 
-            message:text,
+              message:text,
 
-            mode:"chat"
+              mode:"chat"
 
-          })
+            })
         }
       );
 
@@ -1045,10 +1336,12 @@ async function sendMessage(){
 
     typing.remove();
 
+
     console.error(
       "Chat Error:",
       error
     );
+
 
     addMessage(
       "Server से connection नहीं हो पाया।",
@@ -1093,4 +1386,4 @@ loadHistory();
 </script>
 
 </body>
-  </html>
+      </html>
