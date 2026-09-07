@@ -4,96 +4,108 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bablu AI</title><script src="https://js.puter.com/v2/"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#08080c;color:#fff;font-family:Arial}header{text-align:center;padding:15px;background:#11111a}.c{max-width:800px;margin:auto;padding:14px}.s{display:none}.on{display:block}.tools,.row{display:flex;gap:8px;flex-wrap:wrap}.tools button{flex:1;min-width:45%}button,input{border:0;border-radius:12px;padding:12px}button{background:#202040;color:white}input{flex:1;background:#15151e;color:white}.chat{height:52vh;overflow:auto;margin:12px 0}.msg{padding:12px;margin:8px 0;border-radius:12px;white-space:pre-wrap}.user{background:#3030a0;margin-left:15%}.ai{background:#191922;margin-right:15%}.speak{font-size:12px;padding:7px;margin-top:5px}.st{text-align:center;color:#aaa;padding:8px}.jar{display:block;margin:20px auto 3px;border:1px solid #6666ff;border-radius:25px;box-shadow:0 0 15px #4444aa}.orb{width:70px;height:70px;margin:25px auto;border-radius:50%;background:radial-gradient(circle,#99f,#22225c);box-shadow:0 0 30px #55f;animation:p 2s infinite}@keyframes p{50%{transform:scale(1.07)}}img{max-width:100%;border-radius:12px}
+*{box-sizing:border-box}body{margin:0;background:#08080c;color:#fff;font-family:Arial}header{text-align:center;padding:15px;background:#11111a}.c{max-width:800px;margin:auto;padding:14px}.screen{display:none}.active{display:block}.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}button,input{border:0;border-radius:14px;padding:12px}button{background:#202040;color:#fff}.chat{height:52vh;overflow:auto;margin:12px 0}.msg{padding:12px;margin:8px 0;border-radius:12px;white-space:pre-wrap}.user{background:#3030a0;margin-left:15%}.ai{background:#191922;margin-right:15%}.row{display:flex;gap:7px}.row input{flex:1;background:#15151e;color:#fff}.st{text-align:center;color:#aaa;padding:8px}.mini{padding:9px 11px}.jar{display:block;margin:18px auto;padding:10px 22px;border:1px solid #6666ff;box-shadow:0 0 15px #4444aa;background:#171735}img{max-width:100%;border-radius:12px}.speak{font-size:12px;padding:7px;margin-top:5px}
 </style></head>
 <body>
 <header><h1>🤖 Bablu AI</h1><small>Personal AI Assistant ✨</small></header>
 <div class="c">
 
-<section id="home" class="s on">
+<section id="home" class="screen active">
 <div class="tools">
-<button onclick="focusChat()">💬 Chat</button><button onclick="show('img')">🖼️ Image</button>
+<button onclick="focusChat()">💬 Chat</button><button onclick="show('image')">🖼️ Image</button>
 <button onclick="video()">🎬 Video</button><button onclick="study()">📚 Study</button>
 <button onclick="writer()">✍️ Writer</button><button onclick="voiceStudio()">🗣️ Voice Studio</button>
 </div>
-<div class="st" id="st">Ready ✨</div><div class="chat" id="chat"></div>
-<div class="row"><input id="msg" placeholder="Message Bablu AI..."><button onclick="send()">➤</button></div>
-<div class="row"><button onclick="voice()">🎤 Voice</button><button onclick="stop()">🔇 Stop</button><button onclick="clearChat()">🗑️ Clear</button></div>
-<button class="jar" onclick="show('jarvis')">🤖 JARVIS</button>
+<div class="st" id="st">Ready ✨</div>
+<div class="chat" id="chat"></div>
+<div class="row">
+<input id="msg" placeholder="Message Bablu AI...">
+<button class="mini" onclick="voice()">🎤</button><button class="mini" onclick="send()">➤</button>
+</div>
+<div class="row" style="margin-top:7px">
+<button class="mini" onclick="stop()">🔇 Stop</button><button class="mini" onclick="back()">↩️ Back</button><button class="mini" onclick="clearChat()">🗑️ Clear</button>
+</div>
+<button class="jar" onclick="jarvis()">🤖 JARVIS</button>
 </section>
 
-<section id="jarvis" class="s">
-<button onclick="home()">↩️ Home</button><div class="orb"></div>
-<h2 style="text-align:center">JARVIS</h2><div class="st" id="js">Ready — bolo command 🎤</div>
-<div class="row" style="justify-content:center"><button onclick="listen()">🎤 Listen</button><button onclick="stop()">🔇 Stop</button><button onclick="home()">🏠 Home</button></div>
-</section>
-
-<section id="img" class="s">
-<button onclick="home()">↩️ Back</button><h2>🖼️ AI Image</h2>
-<div class="st" id="is">Prompt लिखो 🎨</div>
-<div class="row"><input id="ip" placeholder="Describe image..."><button onclick="image()">➤</button></div>
+<section id="image" class="screen">
+<button onclick="back()">↩️ Back</button><h2>🖼️ AI Image</h2>
+<div class="st" id="ist">Prompt लिखो 🎨</div>
+<div class="row"><input id="ip" placeholder="Describe image..."><button onclick="makeImage()">➤</button></div>
 <div id="out"></div>
 </section>
 
 </div>
+
 <script>
-let H=JSON.parse(localStorage.getItem("bablu_ai_history")||"[]"),r=null,busy=0,speaking=0;
-const $=id=>document.getElementById(id),msg=$("msg"),chat=$("chat"),st=$("st");
-const save=()=>localStorage.setItem("bablu_ai_history",JSON.stringify(H));
+let H=JSON.parse(localStorage.getItem("bablu_ai_history")||"[]"),r=null,speaking=0,jar=0;
+const $=x=>document.getElementById(x),msg=$("msg"),chat=$("chat"),st=$("st"),save=()=>localStorage.setItem("bablu_ai_history",JSON.stringify(H));
 
-function show(id){document.querySelectorAll(".s").forEach(x=>x.classList.remove("on"));$(id).classList.add("on")}
-function home(){show("home");stopListen();st.textContent="Ready ✨"}
+function show(x){document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));$(x).classList.add("active")}
+function back(){show("home");stopListen();st.textContent="Ready ✨"}
+function focusChat(){show("home");msg.focus()}
 function add(t,type="ai"){let d=document.createElement("div");d.className="msg "+type;d.textContent=t;if(type=="ai"){let b=document.createElement("button");b.className="speak";b.textContent="🔊 Speak";b.onclick=()=>speak(t);d.append("\n");d.append(b)}chat.append(d);chat.scrollTop=chat.scrollHeight}
-H.forEach(x=>x.type=="image"?(chat.innerHTML+=`<div class="msg ai"><img src="${x.src}"></div>`):add(x.text,x.role=="user"?"user":"ai"));
+H.forEach(x=>x.type=="image"?chat.insertAdjacentHTML("beforeend",`<div class="msg ai"><img src="${x.src}"></div>`):add(x.text,x.role=="user"?"user":"ai"));
 
-function clean(t){return t.replace(/[*_~#>`]/g,"").replace(/\s+/g," ").trim()}
-function speak(t){speechSynthesis.cancel();speaking=1;let u=new SpeechSynthesisUtterance(clean(t));u.lang="hi-IN";u.rate=.9;u.onend=()=>speaking=0;speechSynthesis.speak(u)}
-function stopListen(){if(r)try{r.abort()}catch(e){}r=null;busy=0}
-function stop(){speechSynthesis.cancel();speaking=0;stopListen();st.textContent="🔇 Stopped";$("js").textContent="🔇 Stopped"}
+function speak(t){speechSynthesis.cancel();speaking=1;let u=new SpeechSynthesisUtterance(t.replace(/[*_~#>`]/g,""));u.lang="hi-IN";u.rate=.9;u.onend=()=>speaking=0;speechSynthesis.speak(u)}
+function stopListen(){if(r)try{r.abort()}catch(e){}r=null}
+function stop(){speechSynthesis.cancel();speaking=0;stopListen();st.textContent="🔇 Stopped"}
 
-async function sendText(t){if(!t)return;add(t,"user");H.push({role:"user",text:t});save();st.textContent="🧠 Thinking...";try{let x=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:t,mode:"chat"})});let d=await x.json(),a=d.reply||"Jawab nahi mila 😕";add(a);H.push({role:"ai",text:a});save();st.textContent="Ready ✨"}catch(e){add("Server se connection nahi ho paya 😕")}}
+async function sendText(t){if(!t)return;add(t,"user");H.push({role:"user",text:t});save();st.textContent="🧠 Thinking...";try{let x=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:t,mode:"chat"})}),d=await x.json(),a=d.reply||"Jawab nahi mila 😕";add(a);H.push({role:"ai",text:a});save();st.textContent="Ready ✨"}catch(e){add("Server connection nahi hua 😕")}}
 async function send(){let t=msg.value.trim();msg.value="";await sendText(t)}
-msg.onkeydown=e=>e.key=="Enter"&&send();function focusChat(){msg.focus()}
-function voice(){let S=SpeechRecognition||webkitSpeechRecognition;if(!S)return;stopListen();r=new S;r.lang="hi-IN";r.onresult=e=>{msg.value=e.results[0][0].transcript;send()};r.onend=()=>r=null;r.start();st.textContent="🎤 Sun raha hoon..."}
+msg.onkeydown=e=>e.key=="Enter"&&send();
 
-async function image(){let p=$("ip").value.trim();if(!p)return;$("is").textContent="🎨 Bana raha hoon...";try{let x=await puter.ai.txt2img(p,{model:"gpt-image-2"}),src=typeof x=="string"?x:x.src||x.url;$("out").innerHTML=`<img src="${src}">`;H.push({type:"image",src});save();$("is").textContent="Image ready ✅"}catch(e){$("is").textContent="Image failed 😕"}}
+function voice(){let S=SpeechRecognition||webkitSpeechRecognition;if(!S)return;stopListen();r=new S;r.lang="hi-IN";r.interimResults=false;r.onresult=e=>{msg.value=e.results[0][0].transcript;send()};r.onend=()=>r=null;r.start();st.textContent="🎤 Sun raha hoon..."}
 
-function clearChat(){H=[];save();chat.innerHTML="";add("Chat clear ho gaya 😊")}
-function video(){add("🎬 AI Video Generator V2 — coming soon 🚀")}
-function study(){msg.value="Study me help karo: ";focusChat()}
-function writer(){msg.value="Writing me help karo: ";focusChat()}
+async function makeImage(){let p=$("ip").value.trim();if(!p)return;$("ist").textContent="🎨 Bana raha hoon...";try{let x=await puter.ai.txt2img(p,{model:"gpt-image-2"}),src=typeof x=="string"?x:x.src||x.url;$("out").innerHTML=`<img src="${src}">`;H.push({type:"image",src});save();$("ist").textContent="Image ready ✅"}catch(e){$("ist").textContent="Image failed 😕"}}
+
+function video(){add("🎬 AI Video Generator — coming soon 🚀")}
+function study(){focusChat();msg.value="Study me help karo: "}
+function writer(){focusChat();msg.value="Writing me help karo: "}
 function voiceStudio(){add("🗣️ AI Voice Studio — coming soon 🚀")}
+function clearChat(){H=[];save();chat.innerHTML="";add("Chat clear ho gaya 😊")}
 
-function search(u,n){window.open(u,"_blank");st.textContent="🔎 "+n+" search"}
+function search(u){window.open(u,"_blank")}
 
 async function command(c){
- let t=c.toLowerCase();
- if(/stop|रुको|चुप|बंद करो/.test(t))return stop();
- if(/home|होम|वापस|back/.test(t))return home();
- if(/clear|साफ|क्लियर|मिटा/.test(t))return clearChat();
- if(/time|टाइम|समय|कितने बजे/.test(t))return speak("अभी "+new Date().toLocaleTimeString("hi-IN"));
- if(/date|तारीख|दिनांक/.test(t))return speak("आज "+new Date().toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}));
+let t=c.toLowerCase().trim();
 
- let m=t.match(/(?:chat|चैट).{0,15}(?:mein|में|me)\s+(.+?)\s+(likho|लिखो|type|टाइप|bhejo|भेजो|send|सेंड)/);
- if(m){show("home");msg.value=m[1];if(/bhejo|भेजो|send|सेंड/.test(m[2]))await send();else msg.focus();return}
+if(/stop|रुको|चुप|बंद करो/.test(t))return stop();
+if(/home|होम|मुख्य स्क्रीन/.test(t))return back();
+if(/clear|साफ|क्लियर|मिटा/.test(t))return clearChat();
 
- if(/chat kholo|chat open|चैट खोलो/.test(t)){home();return}
- if(/study|स्टडी|पढ़ाई/.test(t)){study();return}
- if(/writer|writing|राइटर/.test(t)){writer();return}
- if(/image|इमेज|तस्वीर|फोटो/.test(t)){show("img");let p=t.replace(/image|इमेज|तस्वीर|फोटो|banao|बनाओ|generate/gi,"").trim();if(p){$("ip").value=p;await image()}return}
+let m=t.match(/(?:chat|चैट).{0,20}(?:mein|में|me)\s+(.+?)\s+(likho|लिखो|type|टाइप|bhejo|भेजो|send|सेंड)/);
+if(m){focusChat();msg.value=m[1];if(/bhejo|भेजो|send|सेंड/.test(m[2]))await send();return}
 
- let sites=[[/youtube|यूट्यूब/,"YouTube","https://www.youtube.com/results?search_query="],[/google|गूगल/,"Google","https://www.google.com/search?q="],[/instagram|इंस्टाग्राम/,"Instagram","https://www.instagram.com/explore/search/keyword/?q="],[/facebook|फेसबुक/,"Facebook","https://www.facebook.com/search/top?q="]];
- for(let s of sites)if(s[0].test(t)){let q=t.replace(s[0],"").replace(/pe|par|mein|me|search|karo|करो|में|पर|सर्च/g,"").trim();if(q)return search(s[2]+encodeURIComponent(q),s[1])}
- await sendText(c)
+if(/chat kholo|chat open|चैट खोलो/.test(t))return focusChat();
+
+if(/image|इमेज|तस्वीर|फोटो/.test(t)){
+show("image");let p=t.replace(/image|इमेज|तस्वीर|फोटो|banao|बनाओ|generate/gi,"").trim();if(p){$("ip").value=p;await makeImage()}return}
+
+if(/study|स्टडी|पढ़ाई/.test(t))return study();
+if(/writer|writing|राइटर/.test(t))return writer();
+
+if(/time|टाइम|समय|कितने बजे/.test(t))return speak("अभी "+new Date().toLocaleTimeString("hi-IN"));
+if(/date|तारीख|दिनांक/.test(t))return speak("आज "+new Date().toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}));
+
+let sites=[[/youtube|यूट्यूब/,"https://www.youtube.com/results?search_query="],[/google|गूगल/,"https://www.google.com/search?q="],[/instagram|इंस्टाग्राम/,"https://www.instagram.com/explore/search/keyword/?q="],[/facebook|फेसबुक/,"https://www.facebook.com/search/top?q="]];
+for(let s of sites)if(s[0].test(t)){let q=t.replace(s[0],"").replace(/pe|par|mein|me|search|karo|करो|में|पर|सर्च/g,"").trim();if(q)return search(s[1]+encodeURIComponent(q))}
+await sendText(c)
+}
+
+function jarvis(){
+jar=!jar;
+if(jar){st.textContent="🤖 JARVIS ON — Listen दबाओ";listen()}
+else stop()
 }
 
 function listen(){
- let S=SpeechRecognition||webkitSpeechRecognition;if(!S)return;
- stopListen();r=new S;r.lang="hi-IN";r.continuous=false;r.interimResults=false;r.maxAlternatives=3;
- $("js").textContent="🎤 Sun raha hoon...";
- r.onresult=async e=>{busy=1;await command(e.results[0][0].transcript.trim());busy=0};
- r.onerror=()=>{$("js").textContent="🎤 Dobara bolo"};
- r.onend=()=>r=null;r.start()
+if(!jar)return;let S=SpeechRecognition||webkitSpeechRecognition;if(!S)return;
+stopListen();r=new S;r.lang="hi-IN";r.continuous=false;r.interimResults=false;r.maxAlternatives=3;
+st.textContent="🤖 JARVIS सुन रहा है...";
+r.onresult=async e=>{await command(e.results[0][0].transcript.trim())};
+r.onerror=()=>{if(jar)st.textContent="🎤 Dobara bolo"};
+r.onend=()=>{r=null;if(jar&&!speaking)setTimeout(listen,500)};r.start()
 }
 </script>
 </body></html>
