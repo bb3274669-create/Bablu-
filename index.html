@@ -7,383 +7,186 @@
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#08080c;color:#fff;font-family:Arial}
-header{text-align:center;padding:18px;background:#11111a}.container{max-width:800px;margin:auto;padding:15px}
-button,input{border:0;border-radius:12px;padding:13px}button{background:#202040;color:white}
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}.jarvis{grid-column:1/3;background:#303080}
-.chat{height:55vh;overflow:auto;margin:12px 0}.msg{padding:12px;margin:8px 0;border-radius:12px;white-space:pre-wrap}
+header{text-align:center;padding:16px;background:#11111a}.container{max-width:800px;margin:auto;padding:12px}
+button,input{border:0;border-radius:12px;padding:12px}button{background:#202040;color:white}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.jarvis{grid-column:1/3;background:#303080}
+.chat{height:54vh;overflow:auto;margin:10px 0}.msg{padding:11px;margin:7px 0;border-radius:12px;white-space:pre-wrap}
 .user{background:#3030a0;margin-left:15%}.ai{background:#191922;margin-right:15%}
-img{max-width:100%;border-radius:12px}.row{display:flex;gap:8px}
-input{flex:1;background:#15151e;color:#fff}.status{text-align:center;color:#aaa;padding:8px}
+img{max-width:100%;border-radius:12px}.row{display:flex;gap:7px}
+input{flex:1;background:#15151e;color:#fff}.status{text-align:center;color:#aaa;padding:7px}
+.think{font-size:12px;text-align:center;color:#aaa}.orb{display:inline-block;width:9px;height:9px;border-radius:50%;background:#8d8dff;box-shadow:0 0 14px #7777ff;animation:p 1s infinite}
+@keyframes p{50%{transform:scale(1.7);opacity:.5}}
 </style>
 </head>
 <body>
-
 <header><h1>🤖 Bablu AI</h1><p>Personal AI Assistant ✨</p></header>
 
 <div class="container">
 <div class="tools">
-<button onclick="focusChat()">💬 AI Chat</button><button onclick="image()">🖼️ AI Image</button>
-<button onclick="video()">🎬 AI Video</button><button onclick="study()">📚 Study</button>
-<button onclick="writer()">✍️ Writer</button><button onclick="voice()">🎤 Voice</button>
-<button class="jarvis" onclick="jarvis()">🤖 JARVIS: <span id="js">OFF</span></button>
+<button onclick="focusChat()">💬 AI Chat</button>
+<button onclick="image()">🖼️ AI Image</button>
+<button onclick="video()">🎬 AI Video</button>
+<button onclick="study()">📚 Study</button>
+<button onclick="writer()">✍️ Writer</button>
+<button onclick="voiceStudio()">🗣️ AI Voice Studio</button>
 </div>
 
 <div class="status" id="status">Ready ✨</div>
+<div id="think" class="think" style="display:none"><span class="orb"></span> Bablu AI thinking...</div>
 <div class="chat" id="chat"></div>
 
 <div class="row">
 <input id="msg" placeholder="Message Bablu AI...">
+<button onclick="voice()">🎤</button>
 <button onclick="send()">➤</button>
 </div>
 
-<div class="row" style="margin-top:8px">
-<button onclick="voice()">🎤 Voice</button>
-<button onclick="stop()">🔇 Stop</button>
+<div class="row" style="margin-top:7px">
+<button onclick="stop()">🛑</button>
 <button onclick="clearChat()">🗑️ Clear</button>
+<button onclick="jarvis()">🤖 JARVIS <span id="js">OFF</span></button>
 </div>
 </div>
 
 <script>
 let history=JSON.parse(localStorage.getItem("bablu_ai_history")||"[]");
-let on=false,rec=null,busy=false,speaking=false,voiceID=0;
+let on=false,rec=null,busy=false,speaking=false,voiceID=0,ctrl=null;
+const msg=document.getElementById("msg"),chat=document.getElementById("chat"),
+status=document.getElementById("status"),think=document.getElementById("think");
 
-const msg=document.getElementById("msg");
-const chat=document.getElementById("chat");
-const status=document.getElementById("status");
-
-const save=()=>localStorage.setItem("bablu_ai_history",JSON.stringify(history));
-
+function clean(t){
+ return t.replace(/```[\s\S]*?```/g,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1")
+ .replace(/[*_~#>`]/g,"").replace(/^\s*[-•]\s*/gm,"").replace(/\s+/g," ").trim();
+}
+function save(){localStorage.setItem("bablu_ai_history",JSON.stringify(history))}
 function add(t,type="ai"){
- let d=document.createElement("div");
- d.className="msg "+type;
- d.textContent=t;
- chat.appendChild(d);
- chat.scrollTop=chat.scrollHeight;
+ let d=document.createElement("div");d.className="msg "+type;
+ d.textContent=clean(t);chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+ if(type=="ai"){
+  let b=document.createElement("button");b.textContent="🔊 सुनो";
+  b.style.marginTop="7px";b.onclick=()=>speak(t);d.appendChild(b);
+ }
 }
-
-function load(){
- history.forEach(x=>{
-  if(x.type=="image"){
-   let d=document.createElement("div"),i=document.createElement("img");
-   d.className="msg ai";i.src=x.src;d.appendChild(i);chat.appendChild(d);
-  }else add(x.text,x.role=="user"?"user":"ai");
- });
-}
-load();
-
-/* SPEECH CLEANER */
-
-function cleanSpeech(t){
- return t
- .replace(/```[\s\S]*?```/g,"")
- .replace(/[*_~#>`]/g,"")
- .replace(/^\s*[-•]\s*/gm,"")
- .replace(/\[([^\]]+)\]\([^)]+\)/g,"$1")
- .replace(/\s+/g," ")
- .trim();
-}
+function load(){history.forEach(x=>x.type=="image"?
+ (()=>{let d=document.createElement("div"),i=document.createElement("img");d.className="msg ai";i.src=x.src;d.appendChild(i);chat.appendChild(d)})():
+ add(x.text,x.role=="user"?"user":"ai"))}load();
 
 function speak(t){
- if(!("speechSynthesis" in window))return;
- speechSynthesis.cancel();
- speaking=true;
- let id=++voiceID;
- let u=new SpeechSynthesisUtterance(cleanSpeech(t));
- u.lang="hi-IN";
- u.rate=.88;
- u.pitch=1;
- u.onend=()=>{
-  if(id==voiceID)speaking=false;
-  if(on&&!busy&&id==voiceID)setTimeout(listen,500);
- };
+ speechSynthesis.cancel();speaking=true;let id=++voiceID;
+ let u=new SpeechSynthesisUtterance(clean(t));u.lang="hi-IN";u.rate=.9;
+ u.onend=()=>{if(id==voiceID){speaking=false;if(on&&!busy)setTimeout(listen,250)}};
  speechSynthesis.speak(u);
 }
 
-/* STOP */
-
 function stop(){
- voiceID++;
- speechSynthesis.cancel();
- speaking=false;
- busy=false;
- if(rec)try{rec.abort()}catch(e){}
- rec=null;
+ voiceID++;if(ctrl)ctrl.abort();ctrl=null;
+ if(rec)try{rec.abort()}catch(e){}rec=null;
+ speechSynthesis.cancel();speaking=false;busy=false;think.style.display="none";
  status.textContent=on?"🤖 Ruk gaya — bolo":"🔇 Stopped";
+ if(on)setTimeout(listen,300);
 }
 
-/* CHAT */
-
-async function sendText(t,jar=false){
- if(!t)return;
-
- add(t,"user");
- history.push({role:"user",text:t});
- save();
-
- status.textContent=jar?"🤖 JARVIS thinking...":"🧠 Thinking...";
-
+async function sendText(t){
+ if(!t||busy)return;busy=true;add(t,"user");history.push({role:"user",text:t});save();
+ status.textContent="🧠 Thinking...";think.style.display="block";
+ ctrl=new AbortController();
  try{
-  let r=await fetch("/api",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({message:t,mode:"chat"})
-  });
-
-  let d=await r.json();
-  let reply=d.reply||"Jawab nahi mila 😕";
-
-  add(reply);
-  history.push({role:"ai",text:reply});
-  save();
-
-  if(on)busy=true;
-  speak(reply);
-
- }catch(e){
-  add("Server se connection nahi ho paya. 😕");
- }
-
+  let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({message:t,mode:"chat"}),signal:ctrl.signal});
+  let d=await r.json(),reply=d.reply||"Jawab nahi mila 😕";
+  if(!on||busy){add(reply);history.push({role:"ai",text:reply});save();speak(reply)}
+ }catch(e){if(e.name!="AbortError")add("Server se connection nahi ho paya 😕")}
+ ctrl=null;think.style.display="none";busy=false;
  if(!on)status.textContent="Ready ✨";
 }
-
-async function send(){
- let t=msg.value.trim();
- msg.value="";
- await sendText(t);
-}
-
+function send(){let t=msg.value.trim();msg.value="";sendText(t)}
 msg.onkeydown=e=>{if(e.key=="Enter")send()};
-
-/* NORMAL VOICE */
 
 function voice(){
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR)return alert("Voice supported nahi hai.");
-
- stop();
-
- rec=new SR();
- rec.lang="hi-IN";
- rec.continuous=false;
- rec.interimResults=false;
-
- status.textContent="🎤 Sun raha hoon...";
-
- rec.onresult=e=>{
-  let t=e.results[0][0].transcript.trim();
-  msg.value=t;
-  send();
- };
-
- rec.onerror=()=>status.textContent="🎤 Voice dobara try karo";
- rec.onend=()=>rec=null;
- rec.start();
+ stop();rec=new SR();rec.lang="hi-IN";rec.continuous=false;
+ rec.interimResults=false;status.textContent="🎤 Sun raha hoon...";
+ rec.onresult=e=>{let t=e.results[0][0].transcript.trim();msg.value=t;send()};
+ rec.onerror=()=>status.textContent="🎤 Dobara bolo";
+ rec.onend=()=>rec=null;rec.start();
 }
-
-/* IMAGE */
 
 async function image(){
- let p=msg.value.trim()||prompt("Kaisi image banani hai? 🎨");
- if(!p)return;
-
- msg.value="";
- status.textContent="🎨 Image bana raha hoon...";
-
+ let p=msg.value.trim()||prompt("Kaisi image banani hai? 🎨");if(!p)return;
+ msg.value="";status.textContent="🎨 Image bana raha hoon...";
  try{
-  let x=await puter.ai.txt2img(p,{model:"gpt-image-2"});
-  let src=typeof x=="string"?x:x.src||x.url;
-
-  let d=document.createElement("div"),i=document.createElement("img");
-  d.className="msg ai";i.src=src;d.appendChild(i);chat.appendChild(d);
-
-  history.push({type:"image",src});
-  save();
-  status.textContent="Image ready ✅";
+  let x=await puter.ai.txt2img(p,{model:"gpt-image-2"}),src=typeof x=="string"?x:x.src||x.url;
+  let d=document.createElement("div"),i=document.createElement("img");d.className="msg ai";i.src=src;d.appendChild(i);chat.appendChild(d);
+  history.push({type:"image",src});save();status.textContent="Image ready ✅";
  }catch(e){add("Image generate nahi ho payi 😕")}
 }
-
-/* OTHER */
-
-function video(){
- add("🎬 AI Video Generator V2 integration ke liye ready hai 🚀");
-}
-
-function study(){
- msg.value="Mujhe Study me help karo 📚: ";
- msg.focus();
-}
-
-function writer(){
- msg.value="Mujhe Writing me help karo ✍️: ";
- msg.focus();
-}
-
+function video(){add("🎬 AI Video Generator V2 integration ke liye ready hai 🚀")}
+function study(){msg.value="Mujhe Study me help karo 📚: ";msg.focus()}
+function writer(){msg.value="Mujhe Writing me help karo ✍️: ";msg.focus()}
 function focusChat(){msg.focus()}
+function voiceStudio(){add("🗣️ AI Voice Studio V2 — text se AI voice pack feature yahan add hoga 🚀")}
 
 function clearChat(){
- history=[];
- save();
- chat.innerHTML="";
- add("Chat clear ho gaya 😊");
- if(on)speak("Chat साफ कर दिया");
+ history=[];save();chat.innerHTML="";add("Chat clear ho gaya 😊");
+ if(on)speak("Chat clear kar diya");
 }
-
-/* SEARCH */
 
 function search(url,name){
  let w=window.open(url,"_blank");
- status.textContent=w?"🔎 "+name+" search opened":"⚠️ Browser ne popup block kiya";
+ status.textContent=w?"🔎 "+name+" search opened":"⚠️ Popup blocked";
 }
-
-/* JARVIS COMMANDS */
 
 async function command(c){
-
  let t=c.toLowerCase().trim();
 
- /* STOP */
- if(/stop|रुको|रुक जाओ|बंद करो आवाज|चुप/.test(t)){
-  stop();
-  if(on)listen();
-  return;
- }
-
- /* OFF */
+ if(/stop|रुको|रुक जाओ|चुप|बंद करो आवाज/.test(t)){stop();return}
  if(/jarvis off|जार्विस बंद|jarvis बंद/.test(t)){
-  on=false;
-  stop();
-  document.getElementById("js").textContent="OFF";
-  speak("ठीक है, JARVIS बंद कर रहा हूँ");
-  return;
+  on=false;stop();document.getElementById("js").textContent="OFF";return
  }
+ if(/clear.*chat|chat.*clear|chat साफ|चैट साफ|चैट क्लियर/.test(t)){clearChat();return}
 
- /* CLEAR */
- if(/clear.*chat|chat.*clear|chat saaf|chat साफ|चैट साफ|चैट क्लियर|सारी चैट मिटा/.test(t)){
-  clearChat();
-  return;
- }
-
- /* TIME */
  if(/time|टाइम|समय|कितने बजे|बजे हैं/.test(t)){
-  let x=new Date().toLocaleTimeString("hi-IN",{
-   hour:"numeric",minute:"2-digit",hour12:true
-  });
-  speak("अभी "+x+" बज रहे हैं");
-  return;
+  speak("अभी "+new Date().toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit",hour12:true})+" बज रहे हैं");return
  }
-
- /* DATE */
  if(/date|तारीख|दिनांक|आज की डेट|आज की तारीख/.test(t)){
-  let x=new Date().toLocaleDateString("hi-IN",{
-   weekday:"long",day:"numeric",month:"long",year:"numeric"
-  });
-  speak("आज "+x+" है");
-  return;
+  speak("आज "+new Date().toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" है");return
  }
 
- /* IMAGE */
- if(/image|इमेज|तस्वीर|फोटो/.test(t)&&/banao|बनाओ|बना|generate|बनानी/.test(t)){
-  let p=c
-   .replace(/image|इमेज|तस्वीर|फोटो|banao|बनाओ|बना|generate|बनानी/gi,"")
-   .trim();
-
-  if(!p)return speak("Kaisi image banani hai?");
-  msg.value=p;
-  await image();
-  return;
+ if(/image|इमेज|तस्वीर|फोटो/.test(t)&&/banao|बनाओ|बना|generate/.test(t)){
+  msg.value=t.replace(/image|इमेज|तस्वीर|फोटो|banao|बनाओ|बना|generate/gi,"").trim();
+  await image();return
  }
 
- /* SEARCH */
  let sites=[
-  [/youtube|यूट्यूब/,"YouTube",
-   "https://www.youtube.com/results?search_query="],
-  [/google|गूगल/,"Google",
-   "https://www.google.com/search?q="],
-  [/instagram|इंस्टाग्राम/,"Instagram",
-   "https://www.instagram.com/explore/search/keyword/?q="],
-  [/facebook|फेसबुक/,"Facebook",
-   "https://www.facebook.com/search/top?q="]
+ [/youtube|यूट्यूब/,"YouTube","https://www.youtube.com/results?search_query="],
+ [/google|गूगल/,"Google","https://www.google.com/search?q="],
+ [/instagram|इंस्टाग्राम/,"Instagram","https://www.instagram.com/explore/search/keyword/?q="],
+ [/facebook|फेसबुक/,"Facebook","https://www.facebook.com/search/top?q="]
  ];
-
- for(let s of sites){
-  if(s[0].test(t)){
-   let q=t
-    .replace(s[0],"")
-    .replace(/pe|par|mein|me|par|search|karo|kar do|karo na|करो|कर दो|में|पर|सर्च/g,"")
-    .trim();
-
-   if(q){
-    speak(s[1]+" par search kar raha hoon");
-    search(s[2]+encodeURIComponent(q),s[1]);
-    return;
-   }
-  }
+ for(let s of sites)if(s[0].test(t)){
+  let q=t.replace(s[0],"").replace(/pe|par|mein|me|search|karo|kar do|करो|कर दो|में|पर|सर्च/g,"").trim();
+  if(q){speak(s[1]+" par search kar raha hoon");search(s[2]+encodeURIComponent(q),s[1]);return}
  }
-
- /* NORMAL AI */
- await sendText(c,true);
+ await sendText(c)
 }
 
-/* LISTENER */
-
 function listen(){
-
  if(!on||busy||speaking)return;
-
- let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR)return;
-
- rec=new SR();
- rec.lang="hi-IN";
- rec.continuous=false;
- rec.interimResults=false;
-
+ let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+ rec=new SR();rec.lang="hi-IN";rec.continuous=false;rec.interimResults=false;
  status.textContent="🤖 Listening... 🎤";
-
- rec.onresult=async e=>{
-  let c=e.results[0][0].transcript.trim();
-  if(!c)return;
-
-  busy=true;
-  await command(c);
-  busy=false;
-
-  if(on&&!speaking)setTimeout(listen,700);
- };
-
- rec.onerror=()=>{
-  busy=false;
-  if(on)setTimeout(listen,1000);
- };
-
- rec.onend=()=>{
-  rec=null;
-  if(on&&!busy&&!speaking)setTimeout(listen,700);
- };
-
+ rec.onresult=async e=>{let c=e.results[0][0].transcript.trim();if(c)await command(c)};
+ rec.onerror=()=>{busy=false;if(on)setTimeout(listen,500)};
+ rec.onend=()=>{rec=null;if(on&&!busy&&!speaking)setTimeout(listen,300)};
  rec.start();
 }
 
-/* JARVIS */
-
 function jarvis(){
-
- if(on){
-  on=false;
-  stop();
-  document.getElementById("js").textContent="OFF";
-  return;
- }
-
- on=true;
- busy=false;
- document.getElementById("js").textContent="ON";
-
+ if(on){on=false;stop();document.getElementById("js").textContent="OFF";return}
+ on=true;busy=false;document.getElementById("js").textContent="ON";
  speak("JARVIS activated. Main sun raha hoon.");
- setTimeout(()=>{
-  if(on&&!speaking)listen();
- },1200);
 }
 </script>
 </body>
-  </html>
+</html>
