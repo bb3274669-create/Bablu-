@@ -7,157 +7,239 @@
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#08080c;color:#fff;font-family:Arial}
-header{text-align:center;padding:16px;background:#11111a}.container{max-width:800px;margin:auto;padding:12px}
-button,input{border:0;border-radius:12px;padding:12px}button{background:#202040;color:white}
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.jarvis{grid-column:1/3;background:#303080}
-.chat{height:54vh;overflow:auto;margin:10px 0}.msg{padding:11px;margin:7px 0;border-radius:12px;white-space:pre-wrap}
+header{padding:16px;text-align:center;background:#11111a}
+.container{max-width:800px;margin:auto;padding:12px}
+.screen{display:none}.active{display:block}
+button,input{border:0;border-radius:12px;padding:12px}
+button{background:#202040;color:#fff;font-weight:bold}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.tools button{min-height:58px}
+.jarvis{grid-column:1/3;background:#303080}
+.back{margin-bottom:10px}
+.chat{height:62vh;overflow:auto}
+.msg{padding:12px;margin:8px 0;border-radius:12px;white-space:pre-wrap}
 .user{background:#3030a0;margin-left:15%}.ai{background:#191922;margin-right:15%}
-img{max-width:100%;border-radius:12px}.row{display:flex;gap:7px}
-input{flex:1;background:#15151e;color:#fff}.status{text-align:center;color:#aaa;padding:7px}
-.think{font-size:12px;text-align:center;color:#aaa}.orb{display:inline-block;width:9px;height:9px;border-radius:50%;background:#8d8dff;box-shadow:0 0 14px #7777ff;animation:p 1s infinite}
-@keyframes p{50%{transform:scale(1.7);opacity:.5}}
+.row{display:flex;gap:7px;margin-top:8px}
+input{flex:1;background:#15151e;color:#fff}
+.status{text-align:center;color:#aaa;padding:7px}
+img{max-width:100%;border-radius:12px}
+.think{display:none;text-align:center;padding:10px;color:#aaa}
+.orb{width:28px;height:28px;border-radius:50%;margin:auto;
+background:#7777ff;box-shadow:0 0 18px #7777ff;animation:p 1s infinite}
+@keyframes p{50%{transform:scale(1.25);opacity:.5}}
+.voiceOn{background:#5050a0;box-shadow:0 0 16px #7777ff;animation:p 1s infinite}
+.speak{font-size:12px;padding:7px;margin-top:5px}
 </style>
 </head>
 <body>
-<header><h1>🤖 Bablu AI</h1><p>Personal AI Assistant ✨</p></header>
+
+<header>
+<h1>🤖 Bablu AI</h1>
+<p>Personal AI Assistant ✨</p>
+</header>
 
 <div class="container">
+
+<!-- HOME -->
+<section id="home" class="screen active">
 <div class="tools">
-<button onclick="focusChat()">💬 AI Chat</button>
-<button onclick="image()">🖼️ AI Image</button>
-<button onclick="video()">🎬 AI Video</button>
-<button onclick="study()">📚 Study</button>
-<button onclick="writer()">✍️ Writer</button>
-<button onclick="voiceStudio()">🗣️ AI Voice Studio</button>
+<button onclick="openPage('chatPage')">💬 AI Chat</button>
+<button onclick="openPage('imagePage')">🖼️ AI Image</button>
+<button onclick="openPage('videoPage')">🎬 AI Video</button>
+<button onclick="openPage('studyPage')">📚 Study</button>
+<button onclick="openPage('writerPage')">✍️ Writer</button>
+<button onclick="openPage('voicePage')">🗣️ AI Voice Studio</button>
+<button class="jarvis" onclick="jarvis()">🤖 JARVIS: <span id="js">OFF</span></button>
 </div>
-
 <div class="status" id="status">Ready ✨</div>
-<div id="think" class="think" style="display:none"><span class="orb"></span> Bablu AI thinking...</div>
-<div class="chat" id="chat"></div>
+</section>
 
+<!-- CHAT -->
+<section id="chatPage" class="screen">
+<button class="back" onclick="openPage('home')">← Back</button>
+<div class="chat" id="chat"></div>
+<div class="think" id="think"><div class="orb"></div>Bablu AI Thinking...</div>
 <div class="row">
 <input id="msg" placeholder="Message Bablu AI...">
-<button onclick="voice()">🎤</button>
+<button id="vbtn" onclick="voice()">🎤</button>
 <button onclick="send()">➤</button>
 </div>
-
-<div class="row" style="margin-top:7px">
-<button onclick="stop()">🛑</button>
+<div class="row">
+<button onclick="stop()">⏹️ Stop</button>
 <button onclick="clearChat()">🗑️ Clear</button>
-<button onclick="jarvis()">🤖 JARVIS <span id="js">OFF</span></button>
 </div>
+</section>
+
+<!-- IMAGE -->
+<section id="imagePage" class="screen">
+<button class="back" onclick="openPage('home')">← Back</button>
+<div id="images"></div>
+<div class="row">
+<input id="ip" placeholder="Image prompt...">
+<button onclick="image()">🎨</button>
+</div>
+</section>
+
+<!-- VIDEO -->
+<section id="videoPage" class="screen">
+<button class="back" onclick="openPage('home')">← Back</button>
+<h2>🎬 AI Video Generator</h2>
+<p>Video Generator V2 ke liye ready 🚀</p>
+<input placeholder="Video prompt...">
+</section>
+
+<!-- STUDY -->
+<section id="studyPage" class="screen">
+<button class="back" onclick="openPage('home')">← Back</button>
+<h2>📚 Study</h2>
+<div class="row"><input id="studyInput" placeholder="Kya padhna hai?"><button onclick="studySend()">➤</button></div>
+</section>
+
+<!-- WRITER -->
+<section id="writerPage" class="screen">
+<button class="back" onclick="openPage('home')">← Back</button>
+<h2>✍️ Writer</h2>
+<div class="row"><input id="writerInput" placeholder="Kya likhna hai?"><button onclick="writerSend()">➤</button></div>
+</section>
+
+<!-- VOICE STUDIO -->
+<section id="voicePage" class="screen">
+<button class="back" onclick="openPage('home')">← Back</button>
+<h2>🗣️ AI Voice Studio</h2>
+<p>Text → AI Voice 🎙️</p>
+<textarea id="voiceText" style="width:100%;height:120px;background:#15151e;color:white;border:0;border-radius:12px;padding:12px" placeholder="Apna text likho..."></textarea>
+<br><br><button onclick="voiceStudio()">▶️ Preview Voice</button>
+</section>
+
 </div>
 
 <script>
 let history=JSON.parse(localStorage.getItem("bablu_ai_history")||"[]");
-let on=false,rec=null,busy=false,speaking=false,voiceID=0,ctrl=null;
-const msg=document.getElementById("msg"),chat=document.getElementById("chat"),
-status=document.getElementById("status"),think=document.getElementById("think");
+let on=false,rec=null,busy=false,speaking=false;
 
-function clean(t){
- return t.replace(/```[\s\S]*?```/g,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1")
- .replace(/[*_~#>`]/g,"").replace(/^\s*[-•]\s*/gm,"").replace(/\s+/g," ").trim();
-}
+const chat=document.getElementById("chat"),msg=document.getElementById("msg");
+const status=document.getElementById("status"),think=document.getElementById("think");
+
 function save(){localStorage.setItem("bablu_ai_history",JSON.stringify(history))}
-function add(t,type="ai"){
- let d=document.createElement("div");d.className="msg "+type;
- d.textContent=clean(t);chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
- if(type=="ai"){
-  let b=document.createElement("button");b.textContent="🔊 सुनो";
-  b.style.marginTop="7px";b.onclick=()=>speak(t);d.appendChild(b);
- }
+function openPage(id){
+ document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(id=="chatPage")load();
 }
-function load(){history.forEach(x=>x.type=="image"?
- (()=>{let d=document.createElement("div"),i=document.createElement("img");d.className="msg ai";i.src=x.src;d.appendChild(i);chat.appendChild(d)})():
- add(x.text,x.role=="user"?"user":"ai"))}load();
+function clean(t){
+ return t.replace(/```[\s\S]*?```/g,"").replace(/[*_~#>`]/g,"")
+ .replace(/^\s*[-•]\s*/gm,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1")
+ .replace(/\s+/g," ").trim();
+}
+function add(t,type="ai"){
+ let d=document.createElement("div");
+ d.className="msg "+type;d.textContent=clean(t);
+ if(type=="ai"){
+  let b=document.createElement("button");
+  b.className="speak";b.textContent="🔊 Speak";
+  b.onclick=()=>speak(t);d.appendChild(document.createElement("br"));d.appendChild(b);
+ }
+ chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function load(){
+ chat.innerHTML="";
+ history.forEach(x=>{
+  if(x.type=="image"){
+   let d=document.createElement("div"),i=document.createElement("img");
+   d.className="msg ai";i.src=x.src;d.appendChild(i);chat.appendChild(d);
+  }else add(x.text,x.role=="user"?"user":"ai");
+ });
+}
 
 function speak(t){
- speechSynthesis.cancel();speaking=true;let id=++voiceID;
+ speechSynthesis.cancel();speaking=true;
  let u=new SpeechSynthesisUtterance(clean(t));u.lang="hi-IN";u.rate=.9;
- u.onend=()=>{if(id==voiceID){speaking=false;if(on&&!busy)setTimeout(listen,250)}};
+ u.onend=()=>{speaking=false;if(on&&!busy)listen()};
  speechSynthesis.speak(u);
 }
-
 function stop(){
- voiceID++;if(ctrl)ctrl.abort();ctrl=null;
- if(rec)try{rec.abort()}catch(e){}rec=null;
- speechSynthesis.cancel();speaking=false;busy=false;think.style.display="none";
- status.textContent=on?"🤖 Ruk gaya — bolo":"🔇 Stopped";
- if(on)setTimeout(listen,300);
+ speechSynthesis.cancel();speaking=false;busy=false;
+ if(rec)try{rec.abort()}catch(e){}
+ rec=null;status.textContent=on?"🤖 Ruk gaya":"🔇 Stopped";
 }
 
 async function sendText(t){
- if(!t||busy)return;busy=true;add(t,"user");history.push({role:"user",text:t});save();
- status.textContent="🧠 Thinking...";think.style.display="block";
- ctrl=new AbortController();
+ if(!t)return;
+ openPage("chatPage");add(t,"user");
+ history.push({role:"user",text:t});save();
+ think.style.display="block";status.textContent="";
+
  try{
   let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({message:t,mode:"chat"}),signal:ctrl.signal});
+  body:JSON.stringify({message:t,mode:"chat"})});
   let d=await r.json(),reply=d.reply||"Jawab nahi mila 😕";
-  if(!on||busy){add(reply);history.push({role:"ai",text:reply});save();speak(reply)}
- }catch(e){if(e.name!="AbortError")add("Server se connection nahi ho paya 😕")}
- ctrl=null;think.style.display="none";busy=false;
- if(!on)status.textContent="Ready ✨";
+  think.style.display="none";add(reply);
+  history.push({role:"ai",text:reply});save();
+  speak(reply);
+ }catch(e){
+  think.style.display="none";add("Server se connection nahi ho paya 😕");
+ }
 }
 function send(){let t=msg.value.trim();msg.value="";sendText(t)}
-msg.onkeydown=e=>{if(e.key=="Enter")send()};
 
 function voice(){
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR)return alert("Voice supported nahi hai.");
- stop();rec=new SR();rec.lang="hi-IN";rec.continuous=false;
- rec.interimResults=false;status.textContent="🎤 Sun raha hoon...";
- rec.onresult=e=>{let t=e.results[0][0].transcript.trim();msg.value=t;send()};
- rec.onerror=()=>status.textContent="🎤 Dobara bolo";
- rec.onend=()=>rec=null;rec.start();
+ if(!SR)return alert("Voice supported nahi hai");
+ if(rec){stop();return}
+ rec=new SR();rec.lang="hi-IN";rec.continuous=false;rec.interimResults=false;
+ document.getElementById("vbtn").classList.add("voiceOn");
+ rec.onresult=e=>{msg.value=e.results[0][0].transcript;send()};
+ rec.onend=()=>{rec=null;document.getElementById("vbtn").classList.remove("voiceOn")};
+ rec.onerror=()=>{rec=null;document.getElementById("vbtn").classList.remove("voiceOn")};
+ rec.start();
 }
 
 async function image(){
- let p=msg.value.trim()||prompt("Kaisi image banani hai? 🎨");if(!p)return;
- msg.value="";status.textContent="🎨 Image bana raha hoon...";
+ let p=document.getElementById("ip").value.trim();if(!p)return;
+ document.getElementById("ip").value="";
+ status.textContent="🎨 Image bana raha hoon...";
  try{
-  let x=await puter.ai.txt2img(p,{model:"gpt-image-2"}),src=typeof x=="string"?x:x.src||x.url;
-  let d=document.createElement("div"),i=document.createElement("img");d.className="msg ai";i.src=src;d.appendChild(i);chat.appendChild(d);
-  history.push({type:"image",src});save();status.textContent="Image ready ✅";
- }catch(e){add("Image generate nahi ho payi 😕")}
+  let x=await puter.ai.txt2img(p,{model:"gpt-image-2"});
+  let src=typeof x=="string"?x:x.src||x.url;
+  let d=document.createElement("div"),i=document.createElement("img");
+  d.className="msg ai";i.src=src;d.appendChild(i);
+  document.getElementById("images").prepend(d);
+  history.push({type:"image",src});save();
+  status.textContent="Image ready ✅";
+ }catch(e){status.textContent="Image generate nahi hui 😕"}
 }
-function video(){add("🎬 AI Video Generator V2 integration ke liye ready hai 🚀")}
-function study(){msg.value="Mujhe Study me help karo 📚: ";msg.focus()}
-function writer(){msg.value="Mujhe Writing me help karo ✍️: ";msg.focus()}
-function focusChat(){msg.focus()}
-function voiceStudio(){add("🗣️ AI Voice Studio V2 — text se AI voice pack feature yahan add hoga 🚀")}
 
 function clearChat(){
- history=[];save();chat.innerHTML="";add("Chat clear ho gaya 😊");
- if(on)speak("Chat clear kar diya");
+ history=history.filter(x=>x.type=="image");save();
+ chat.innerHTML="";add("Chat clear ho gaya 😊");
 }
-
-function search(url,name){
- let w=window.open(url,"_blank");
- status.textContent=w?"🔎 "+name+" search opened":"⚠️ Popup blocked";
+function jarvis(){
+ if(on){on=false;stop();document.getElementById("js").textContent="OFF";return}
+ on=true;document.getElementById("js").textContent="ON";
+ speak("JARVIS activated");
+ setTimeout(()=>{if(on&&!speaking)listen()},900);
 }
-
+function listen(){
+ if(!on||busy||speaking||rec)return;
+ let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+ rec=new SR();rec.lang="hi-IN";rec.continuous=false;rec.interimResults=false;
+ rec.onresult=async e=>{
+  busy=true;let c=e.results[0][0].transcript.trim();await command(c);busy=false;
+ };
+ rec.onend=()=>{rec=null;if(on&&!busy&&!speaking)setTimeout(listen,300)};
+ rec.onerror=()=>{rec=null;if(on)setTimeout(listen,500)};
+ rec.start();
+}
 async function command(c){
- let t=c.toLowerCase().trim();
-
- if(/stop|रुको|रुक जाओ|चुप|बंद करो आवाज/.test(t)){stop();return}
- if(/jarvis off|जार्विस बंद|jarvis बंद/.test(t)){
-  on=false;stop();document.getElementById("js").textContent="OFF";return
+ let t=c.toLowerCase();
+ if(/stop|रुको|रुक जाओ|चुप/.test(t)){stop();return}
+ if(/clear.*chat|chat.*clear|चैट साफ|चैट क्लियर/.test(t)){clearChat();return}
+ if(/time|टाइम|समय|कितने बजे/.test(t)){
+  speak("अभी "+new Date().toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit",hour12:true})+" बज रहे हैं");return;
  }
- if(/clear.*chat|chat.*clear|chat साफ|चैट साफ|चैट क्लियर/.test(t)){clearChat();return}
-
- if(/time|टाइम|समय|कितने बजे|बजे हैं/.test(t)){
-  speak("अभी "+new Date().toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit",hour12:true})+" बज रहे हैं");return
+ if(/date|तारीख|दिनांक|आज की डेट/.test(t)){
+  speak("आज "+new Date().toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}));return;
  }
- if(/date|तारीख|दिनांक|आज की डेट|आज की तारीख/.test(t)){
-  speak("आज "+new Date().toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" है");return
- }
-
- if(/image|इमेज|तस्वीर|फोटो/.test(t)&&/banao|बनाओ|बना|generate/.test(t)){
-  msg.value=t.replace(/image|इमेज|तस्वीर|फोटो|banao|बनाओ|बना|generate/gi,"").trim();
-  await image();return
- }
-
  let sites=[
  [/youtube|यूट्यूब/,"YouTube","https://www.youtube.com/results?search_query="],
  [/google|गूगल/,"Google","https://www.google.com/search?q="],
@@ -166,27 +248,18 @@ async function command(c){
  ];
  for(let s of sites)if(s[0].test(t)){
   let q=t.replace(s[0],"").replace(/pe|par|mein|me|search|karo|kar do|करो|कर दो|में|पर|सर्च/g,"").trim();
-  if(q){speak(s[1]+" par search kar raha hoon");search(s[2]+encodeURIComponent(q),s[1]);return}
+  if(q){window.open(s[2]+encodeURIComponent(q),"_blank");speak(s[1]+" par search kar raha hoon");return}
  }
- await sendText(c)
+ await sendText(c);
 }
-
-function listen(){
- if(!on||busy||speaking)return;
- let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
- rec=new SR();rec.lang="hi-IN";rec.continuous=false;rec.interimResults=false;
- status.textContent="🤖 Listening... 🎤";
- rec.onresult=async e=>{let c=e.results[0][0].transcript.trim();if(c)await command(c)};
- rec.onerror=()=>{busy=false;if(on)setTimeout(listen,500)};
- rec.onend=()=>{rec=null;if(on&&!busy&&!speaking)setTimeout(listen,300)};
- rec.start();
+function studySend(){sendText("Study help: "+document.getElementById("studyInput").value)}
+function writerSend(){sendText("Writing help: "+document.getElementById("writerInput").value)}
+function voiceStudio(){
+ let t=document.getElementById("voiceText").value.trim();
+ if(t)speak(t);
 }
-
-function jarvis(){
- if(on){on=false;stop();document.getElementById("js").textContent="OFF";return}
- on=true;busy=false;document.getElementById("js").textContent="ON";
- speak("JARVIS activated. Main sun raha hoon.");
-}
+msg.onkeydown=e=>{if(e.key=="Enter")send()};
+load();
 </script>
 </body>
-</html>
+                                </html>
