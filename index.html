@@ -6,33 +6,55 @@
 <title>Bablu AI</title>
 <script src="https://js.puter.com/v2/"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#08080c;color:#fff;font-family:Arial}
-header{padding:14px;background:#11111a;text-align:center;position:relative}
-header h1{margin:0}.top{position:absolute;right:10px;top:12px;display:flex;gap:6px}
-.top button,.jar,.ctrl{border:1px solid #5555ff;background:#15152d;color:#fff;border-radius:20px;box-shadow:0 0 12px #33338a}
-.c{max-width:800px;margin:auto;padding:14px}.screen{display:none}.active{display:block}
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
-button,input{border:0;padding:12px;border-radius:14px}button{color:#fff;background:#202040}
-.tools button{min-height:55px;font-size:15px}.row{display:flex;gap:7px}
-.row input{flex:1;background:#15151e;color:#fff;outline:0}
-.chat{height:55vh;overflow:auto;margin:10px 0}.msg{padding:12px;margin:8px 0;border-radius:14px;white-space:pre-wrap}
-.user{background:#3030a0;margin-left:15%}.ai{background:#191922;margin-right:15%}
-.st{text-align:center;color:#aaa;padding:8px;min-height:30px}
-.ctrl{padding:9px 13px;font-size:12px}.speak{font-size:12px;padding:7px 11px;margin-top:7px}
-.jar{display:block;margin:28px auto 5px;padding:10px 22px;font-weight:bold}
-.back{margin-bottom:10px}.box{margin-top:20px}.box input{width:100%;background:#15151e;color:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:#08080c;color:#fff;font-family:Arial}
+header{padding:14px 70px;background:#11111a;text-align:center;position:relative}
+header h1{margin:0}
+.top{position:absolute;right:12px;top:12px}
+.top button,.ctrl,.jar,.action{
+border:1px solid #5555ff;background:#15152d;color:#fff;
+border-radius:18px;box-shadow:0 0 12px #33338a
+}
+.c{max-width:800px;margin:auto;padding:14px}
+.screen{display:none}.active{display:block}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.tools button{min-height:58px;font-size:15px}
+button,input{border:0;padding:12px;border-radius:14px}
+button{color:#fff;background:#202040}
+.row{display:flex;gap:7px}.row input{flex:1;background:#15151e;color:#fff}
+.chat{height:55vh;overflow:auto;margin:10px 0}
+.msg{padding:12px;margin:8px 0;border-radius:14px;white-space:pre-wrap}
+.user{background:#3030a0;margin-left:15%}
+.ai{background:#191922;margin-right:15%}
+.st{text-align:center;color:#aaa;padding:10px;min-height:35px}
+.ctrl{padding:9px 13px;font-size:12px}
+.back{margin-bottom:10px}
+.jar{display:block;margin:28px auto;padding:11px 24px;font-weight:bold}
+.jar.on{border-color:#00eaff;box-shadow:0 0 20px #00aaff}
+.speak{font-size:12px;padding:7px 11px;margin-top:7px}
+.box{margin-top:18px}.box input{width:100%;margin-bottom:8px}
 img{max-width:100%;border-radius:14px;margin-top:10px}
-.think{display:inline-block;animation:p 1s infinite}@keyframes p{50%{opacity:.25}}
+.action{margin-top:8px}
+.think,.listenAnim{display:inline-block}
+.think span,.listenAnim span{
+display:inline-block;width:6px;height:6px;margin:0 2px;
+background:#6d6dff;border-radius:50%;animation:b .7s infinite alternate
+}
+.think span:nth-child(2),.listenAnim span:nth-child(2){animation-delay:.2s}
+.think span:nth-child(3),.listenAnim span:nth-child(3){animation-delay:.4s}
+@keyframes b{from{opacity:.2;transform:translateY(0)}to{opacity:1;transform:translateY(-4px)}}
+.speaking{animation:glow 1s infinite alternate}
+@keyframes glow{from{box-shadow:0 0 5px #ff3366}to{box-shadow:0 0 20px #ff3366}}
+.mode{display:flex;gap:8px;margin:10px 0}.mode button{flex:1}
+.onmode{border-color:#00eaff!important;box-shadow:0 0 15px #00aaff!important}
 </style>
 </head>
-<body>
 
+<body>
 <header>
-<h1>🤖 Bablu AI</h1><small>Personal AI Assistant ✨</small>
-<div class="top">
-<button onclick="settings()">⚙️</button>
-<button onclick="jarvis()">🤖</button>
-</div>
+<h1>🤖 Bablu AI</h1>
+<small>Personal AI Assistant ✨</small>
+<div class="top"><button onclick="settings()">⚙️</button></div>
 </header>
 
 <div class="c">
@@ -46,18 +68,23 @@ img{max-width:100%;border-radius:14px;margin-top:10px}
 <button onclick="openScreen('writer')">✍️ Writer</button>
 <button onclick="openScreen('voiceStudio')">🗣️ Voice Studio</button>
 </div>
+
 <div id="st" class="st">Ready ✨</div>
-<button class="jar" onclick="jarvis()">🤖 JARVIS</button>
+
+<button id="jarBtn" class="jar" onclick="jarvis()">🤖 JARVIS</button>
 </section>
 
 <section id="chat" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
-<h2>💬 Chat</h2><div id="chatbox" class="chat"></div>
+<h2>💬 Chat</h2>
+<div id="chatbox" class="chat"></div>
+
 <div class="row">
 <input id="msg" placeholder="Message Bablu AI...">
 <button class="ctrl" onclick="voice()">🎤</button>
 <button class="ctrl" onclick="send()">➤</button>
 </div>
+
 <div class="row" style="margin-top:7px">
 <button class="ctrl" onclick="stop()">🔇 Stop</button>
 <button class="ctrl" onclick="clearChat()">🗑️ Clear</button>
@@ -66,113 +93,276 @@ img{max-width:100%;border-radius:14px;margin-top:10px}
 
 <section id="image" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
-<h2>🖼️ AI Image</h2><div id="ist" class="st">Prompt लिखो 🎨</div>
-<div class="row"><input id="ip" placeholder="Describe image..."><button class="ctrl" onclick="makeImage()">➤</button></div>
+<h2>🖼️ AI Image</h2>
+<div id="ist" class="st">Prompt लिखो 🎨</div>
+<div class="row">
+<input id="ip" placeholder="Describe image...">
+<button class="ctrl" onclick="makeImage()">➤</button>
+</div>
 <div id="out"></div>
 </section>
 
 <section id="video" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
-<h2>🎬 AI Video</h2><div class="box">
+<h2>🎬 AI Video</h2>
+<div class="box">
 <input id="vp" placeholder="Video prompt...">
-<button class="ctrl" onclick="video()">🎬 Generate</button>
-</div><div id="vout" class="st">AI Video Generator 🚀</div>
+<button class="action" onclick="video()">🎬 Generate</button>
+</div>
+<div id="vout" class="st">AI Video Generator 🚀</div>
 </section>
 
 <section id="study" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
 <h2>📚 Study</h2>
-<div class="box"><input id="sp" placeholder="What do you want to study?">
-<button class="ctrl" onclick="studySend()">➤ Ask</button></div>
+<div class="box">
+<input id="sp" placeholder="What do you want to study?">
+<button class="action" onclick="studySend()">📚 Ask</button>
+</div>
 </section>
 
 <section id="writer" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
 <h2>✍️ Writer</h2>
-<div class="box"><input id="wp" placeholder="What should I write?">
-<button class="ctrl" onclick="writerSend()">➤ Create</button></div>
+<div class="box">
+<input id="wp" placeholder="What should I write?">
+<button class="action" onclick="writerSend()">✍️ Create</button>
+</div>
 </section>
 
 <section id="voiceStudio" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
 <h2>🗣️ AI Voice Studio</h2>
-<div class="st">Voice Studio 🚀<br>Voice packs and advanced voice features coming soon.</div>
+<div class="box">
+<input id="voicePrompt" placeholder="Voice idea...">
+<button class="action" onclick="voiceCreate()">🎙️ Create</button>
+</div>
+<div id="voiceOut" class="st">Voice Studio 🚀</div>
 </section>
 
 <section id="settings" class="screen">
 <button class="ctrl back" onclick="back()">↩️ Back</button>
 <h2>⚙️ Settings</h2>
-<div class="st">Bablu AI Settings ⚙️<br>More settings coming soon.</div>
+
+<h3>🚀 Project Mode</h3>
+<div class="mode">
+<button id="normalMode" onclick="setMode('normal')">Normal</button>
+<button id="projectMode" onclick="setMode('project')">Project</button>
+</div>
+
+<h3>🛠️ Editing Mode</h3>
+<div class="mode">
+<button id="editOff" onclick="setEdit(false)">OFF</button>
+<button id="editOn" onclick="setEdit(true)">ON</button>
+</div>
+
+<div id="setStatus" class="st">Settings ready ⚙️</div>
 </section>
 
 </div>
 
 <script>
 let H=JSON.parse(localStorage.getItem("bablu_ai_history")||"[]"),
-r=null,speaking=0,jar=0,token=0;
-const $=x=>document.getElementById(x),chat=$("chatbox"),msg=$("msg"),
-st=$("st"),save=()=>localStorage.setItem("bablu_ai_history",JSON.stringify(H));
+r=null,speaking=0,jar=0,token=0,
+projectMode=localStorage.getItem("projectMode")=="1",
+editMode=localStorage.getItem("editMode")=="1";
 
-function openScreen(x){document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));$(x).classList.add("active")}
-function back(){stopListen();openScreen("home");st.textContent="Ready ✨"}
-function settings(){openScreen("settings")}
+const $=x=>document.getElementById(x),
+chat=$("chatbox"),msg=$("msg"),st=$("st"),
+save=()=>localStorage.setItem("bablu_ai_history",JSON.stringify(H));
+
+function openScreen(x){
+document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));
+$(x).classList.add("active")
+}
+
+function back(){
+stopListen();openScreen("home");
+st.textContent="Ready ✨"
+}
+
+function settings(){
+openScreen("settings");
+updateModes()
+}
+
+function updateModes(){
+$("projectMode").classList.toggle("onmode",projectMode);
+$("normalMode").classList.toggle("onmode",!projectMode);
+$("editOn").classList.toggle("onmode",editMode);
+$("editOff").classList.toggle("onmode",!editMode)
+}
+
+function setMode(x){
+projectMode=x=="project";
+localStorage.setItem("projectMode",projectMode?"1":"0");
+$("setStatus").textContent=projectMode?"🚀 Project Mode ON":"✨ Normal Mode ON";
+updateModes()
+}
+
+function setEdit(x){
+editMode=x;localStorage.setItem("editMode",x?"1":"0");
+$("setStatus").textContent=x?"🛠️ Editing Mode ON":"🛠️ Editing Mode OFF";
+updateModes()
+}
 
 function add(t,type="ai"){
-let d=document.createElement("div");d.className="msg "+type;d.textContent=t;
-if(type=="ai"){let b=document.createElement("button");b.className="speak";b.textContent="🔊 Speak";b.onclick=()=>speak(t);d.append("\n");d.append(b)}
+let d=document.createElement("div");
+d.className="msg "+type;d.textContent=t;
+if(type=="ai"){
+let b=document.createElement("button");
+b.className="speak";b.textContent="🔊 Speak";
+b.onclick=()=>speak(t);
+d.append("\n");d.append(b)
+}
 chat.append(d);chat.scrollTop=chat.scrollHeight
 }
-H.forEach(x=>x.type=="image"?null:add(x.text,x.role=="user"?"user":"ai"));
+
+H.forEach(x=>x.type!="image"&&add(x.text,x.role=="user"?"user":"ai"));
 
 function speak(t){
 speechSynthesis.cancel();speaking=1;
-let u=new SpeechSynthesisUtterance(t.replace(/[*_~#>`]/g," "));
-u.lang=/[a-z]/i.test(t)?"en-IN":"hi-IN";u.rate=.95;
-u.onend=()=>speaking=0;speechSynthesis.speak(u)
+let u=new SpeechSynthesisUtterance(
+t.replace(/[*_~#>`]/g," ")
+);
+u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";
+u.rate=.95;
+
+showSpeaking(true);
+
+u.onend=()=>{speaking=0;showSpeaking(false)};
+u.onerror=()=>{speaking=0;showSpeaking(false)};
+speechSynthesis.speak(u)
 }
 
-function stopListen(){token++;if(r)try{r.abort()}catch(e){}r=null}
-function stop(){speechSynthesis.cancel();speaking=0;stopListen();jar=0;st.textContent="🔇 Stopped — JARVIS ready"}
-function focusInput(){openScreen("chat");msg.focus()}
+function showSpeaking(on){
+let old=$("speakStop");
+if(on){
+if(!old){
+let b=document.createElement("button");
+b.id="speakStop";b.className="ctrl speaking";
+b.textContent="🔇 Stop Speaking";
+b.onclick=()=>{speechSynthesis.cancel();speaking=0;showSpeaking(false)};
+document.body.appendChild(b);
+b.style.cssText="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:99"
+}
+}else if(old)old.remove()
+}
+
+function stopListen(){
+token++;
+if(r)try{r.abort()}catch(e){}
+r=null
+}
+
+function stop(){
+speechSynthesis.cancel();speaking=0;
+showSpeaking(false);stopListen();jar=0;
+$("jarBtn").classList.remove("on");
+st.textContent="🔇 Stopped — JARVIS ready"
+}
 
 async function sendText(t){
-if(!t)return;add(t,"user");H.push({role:"user",text:t});save();
-st.innerHTML='<span class="think">🧠 Thinking...</span>';
+if(!t)return;
+add(t,"user");H.push({role:"user",text:t});save();
+
+st.innerHTML='🧠 Thinking <span class="think"><span></span><span></span><span></span></span>';
+
 try{
-let x=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
-body:JSON.stringify({message:t,mode:"chat"})}),d=await x.json(),a=d.reply||"Jawab nahi mila 😕";
-add(a);H.push({role:"ai",text:a});save();st.textContent="Ready ✨"
-}catch(e){add("Server connection nahi hua 😕");st.textContent="Ready ✨"}
+let x=await fetch("/api",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:t,mode:"chat"})
+});
+let d=await x.json(),a=d.reply||"Jawab nahi mila 😕";
+add(a);H.push({role:"ai",text:a});save();
+st.textContent="Ready ✨"
+}catch(e){
+add("Server connection nahi hua 😕");
+st.textContent="Ready ✨"
 }
-async function send(){let t=msg.value.trim();msg.value="";await sendText(t)}
+}
+
+async function send(){
+let t=msg.value.trim();msg.value="";
+await sendText(t)
+}
+
 msg.onkeydown=e=>{if(e.key=="Enter")send()};
 
 function getSpeech(){
 return window.SpeechRecognition||window.webkitSpeechRecognition
 }
+
 function voice(){
 let S=getSpeech();if(!S)return;
-stopListen();let id=++token;r=new S;r.lang="hi-IN";r.interimResults=false;r.maxAlternatives=3;
-r.onresult=e=>{if(id!=token)return;let a=[...e.results[0]].map(x=>x.transcript),
-t=a.find(x=>/(chat|चैट|image|इमेज|youtube|यूट्यूब|google|गूगल|home|होम|stop|रुको|time|टाइम)/i.test(x))||a[0];
-msg.value=t;send()};r.onend=()=>r=null;r.start();st.textContent="🎤 Sun raha hoon..."
+stopListen();let id=++token;
+r=new S;r.lang="hi-IN";r.interimResults=false;r.maxAlternatives=5;
+
+r.onresult=e=>{
+if(id!=token)return;
+let a=[...e.results[0]].map(x=>x.transcript),
+t=pick(a);
+msg.value=t;send()
+};
+
+r.onend=()=>r=null;
+r.start();st.innerHTML='🎤 Sun raha hoon <span class="listenAnim"><span></span><span></span><span></span></span>'
+}
+
+function pick(a){
+return a.find(x=>/(chat|चैट|image|इमेज|फोटो|video|वीडियो|study|स्टडी|writer|राइटर|voice|वॉइस|youtube|यूट्यूब|google|गूगल|home|होम|stop|रुको|time|टाइम|date|तारीख|settings|सेटिंग)/i.test(x))||a[0]
 }
 
 async function makeImage(){
 let p=$("ip").value.trim();if(!p)return;
-$("ist").textContent="🎨 Bana raha hoon...";
-try{let x=await puter.ai.txt2img(p,{model:"gpt-image-2"}),
-src=typeof x=="string"?x:x.src||x.url;$("out").innerHTML=`<img src="${src}">`;
-H.push({type:"image",src});save();$("ist").textContent="Image ready ✅"
+$("ist").innerHTML='🎨 Creating <span class="think"><span></span><span></span><span></span></span>';
+
+try{
+let x=await puter.ai.txt2img(p,{model:"gpt-image-2"}),
+src=typeof x=="string"?x:x.src||x.url;
+$("out").innerHTML=`<img src="${src}">`;
+H.push({type:"image",src});save();
+$("ist").textContent="Image ready ✅"
 }catch(e){$("ist").textContent="Image failed 😕"}
 }
 
-function video(){$("vout").textContent="🎬 AI Video Generator — coming soon 🚀"}
-async function studySend(){let t=$("sp").value.trim();if(t){openScreen("chat");await sendText("Study help: "+t)}}
-async function writerSend(){let t=$("wp").value.trim();if(t){openScreen("chat");await sendText("Writing help: "+t)}}
-function clearChat(){H=[];save();chat.innerHTML="";add("Chat clear ho gaya 😊")}
+function video(){
+$("vout").innerHTML='🎬 Generating <span class="think"><span></span><span></span><span></span></span>';
+setTimeout(()=>$("vout").textContent="🎬 AI Video Generator — coming soon 🚀",700)
+}
 
-function webSearch(u){window.open(u,"_blank")}
+async function studySend(){
+let t=$("sp").value.trim();if(!t)return;
+openScreen("chat");await sendText("Study help: "+t)
+}
+
+async function writerSend(){
+let t=$("wp").value.trim();if(!t)return;
+openScreen("chat");await sendText("Writing help: "+t)
+}
+
+function voiceCreate(){
+$("voiceOut").textContent="🎙️ Voice Studio feature coming soon 🚀"
+}
+
+function clearChat(){
+H=[];save();chat.innerHTML="";
+add("Chat clear ho gaya 😊")
+}
+
+function webSearch(url){
+window.open(url,"_blank")
+}
+
+function youtubeSearch(t){
+let q=t
+.replace(/youtube|यूट्यूब/gi,"")
+.replace(/pe|पर|में|mein|me|par|search|सर्च|खोजो|ढूंढो|karo|करो|search karo/gi," ")
+.replace(/\s+/g," ").trim();
+
+if(q)webSearch("https://www.youtube.com/results?search_query="+encodeURIComponent(q))
+}
 
 async function command(c){
 let t=c.toLowerCase().trim();
@@ -182,63 +372,105 @@ if(/home|होम|मुख्य स्क्रीन/.test(t)){back();return
 if(/clear|साफ|क्लियर|मिटा/.test(t)){clearChat();return}
 
 let m=t.match(/(?:chat|चैट).{0,20}(?:mein|में|me)\s+(.+?)\s+(likho|लिखो|type|टाइप|bhejo|भेजो|send|सेंड)/i);
+
 if(m){
 openScreen("chat");msg.value=m[1];
 if(/bhejo|भेजो|send|सेंड/i.test(m[2]))await send();
 return
 }
 
-if(/chat kholo|chat open|चैट खोलो/.test(t)){openScreen("chat");return}
+if(/chat kholo|chat open|चैट खोलो/.test(t)){
+openScreen("chat");return
+}
 
 if(/image|इमेज|तस्वीर|फोटो/.test(t)){
 openScreen("image");
 let p=t.replace(/image|इमेज|तस्वीर|फोटो|banao|बनाओ|generate|बना दो/gi,"").trim();
-if(p){$("ip").value=p;await makeImage()}return
+if(p){$("ip").value=p;await makeImage()}
+return
 }
 
 if(/video|वीडियो/.test(t)){openScreen("video");return}
 if(/study|स्टडी|पढ़ाई/.test(t)){openScreen("study");return}
 if(/writer|writing|राइटर|लेखन/.test(t)){openScreen("writer");return}
-if(/voice studio|वॉइस स्टूडियो/.test(t)){openScreen("voiceStudio");return}
+if(/voice studio|वॉइस स्टूडियो|voice/.test(t)){openScreen("voiceStudio");return}
 if(/setting|settings|सेटिंग/.test(t)){openScreen("settings");return}
 
 if(/time|टाइम|समय|कितने बजे/.test(t)){
 speak("अभी "+new Date().toLocaleTimeString("hi-IN"));return
 }
+
 if(/date|तारीख|दिनांक|आज कौन सा दिन/.test(t)){
-speak("आज "+new Date().toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}));return
+speak("आज "+new Date().toLocaleDateString("hi-IN",{
+weekday:"long",day:"numeric",month:"long",year:"numeric"
+}));return
 }
 
-let sites=[
-[/youtube|यूट्यूब/,"https://www.youtube.com/results?search_query="],
-[/google|गूगल/,"https://www.google.com/search?q="],
-[/instagram|इंस्टाग्राम/,"https://www.instagram.com/explore/search/keyword/?q="],
-[/facebook|फेसबुक/,"https://www.facebook.com/search/top?q="]
-];
-for(let s of sites)if(s[0].test(t)){
-let q=t.replace(s[0],"").replace(/pe|par|mein|me|search|karo|करो|में|पर|सर्च|खोजो/g,"").trim();
-if(q){webSearch(s[1]+encodeURIComponent(q));return}
+if(/youtube|यूट्यूब/.test(t)){
+youtubeSearch(t);return
 }
+
+if(/google|गूगल/.test(t)){
+let q=t.replace(/google|गूगल/gi,"")
+.replace(/pe|पर|में|mein|me|par|search|सर्च|खोजो|ढूंढो|karo|करो/gi," ")
+.trim();
+if(q)webSearch("https://www.google.com/search?q="+encodeURIComponent(q));
+return
+}
+
+if(/instagram|इंस्टाग्राम/.test(t)){
+webSearch("https://www.instagram.com/");
+return
+}
+
+if(/facebook|फेसबुक/.test(t)){
+webSearch("https://www.facebook.com/");
+return
+}
+
 openScreen("chat");await sendText(c)
 }
 
 function jarvis(){
-if(jar){jar=0;stopListen();st.textContent="🤖 JARVIS OFF";return}
-jar=1;listen()
+if(jar){
+jar=0;stopListen();
+$("jarBtn").classList.remove("on");
+st.textContent="🤖 JARVIS ready"
+return
+}
+
+jar=1;
+$("jarBtn").classList.add("on");
+listen()
 }
 
 function listen(){
-if(!jar)return;let S=getSpeech();if(!S)return;
-stopListen();let id=++token;r=new S;r.lang="hi-IN";r.continuous=false;
-r.interimResults=false;r.maxAlternatives=3;st.textContent="🤖 JARVIS सुन रहा है...";
+if(!jar)return;
+let S=getSpeech();if(!S)return;
+
+stopListen();let id=++token;
+r=new S;r.lang="hi-IN";r.continuous=false;
+r.interimResults=false;r.maxAlternatives=5;
+
+st.innerHTML='🤖 JARVIS सुन रहा है <span class="listenAnim"><span></span><span></span><span></span></span>';
+
 r.onresult=async e=>{
 if(id!=token)return;
 let a=[...e.results[0]].map(x=>x.transcript),
-t=a.find(x=>/(chat|चैट|image|इमेज|video|वीडियो|study|स्टडी|writer|राइटर|youtube|यूट्यूब|google|गूगल|home|होम|stop|रुको|time|टाइम)/i.test(x))||a[0];
+t=pick(a);
 await command(t)
 };
-r.onerror=()=>{if(jar)st.textContent="🎤 Dobara bolo"};
-r.onend=()=>{r=null;if(jar&&id==token&&!speaking)setTimeout(()=>listen(),350)};
+
+r.onerror=()=>{
+if(jar)st.textContent="🎤 Dobara bolo"
+};
+
+r.onend=()=>{
+r=null;
+if(jar&&id==token&&!speaking)
+setTimeout(()=>listen(),350)
+};
+
 r.start()
 }
 </script>
