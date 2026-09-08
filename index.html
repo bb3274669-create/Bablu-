@@ -10,24 +10,28 @@
 body{background:#08090d;color:#fff;min-height:100vh}
 header{height:60px;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #252733}
 h1{font-size:22px}h2{margin-bottom:12px}
-button{border:0;border-radius:12px;padding:11px 14px;background:#171a24;color:#fff;font-weight:bold}
+button{border:0;border-radius:12px;padding:11px 14px;background:#171a24;color:#fff;font-weight:bold;margin:3px}
 button:active{transform:scale(.96)}
 main{padding:18px;max-width:700px;margin:auto}
 .screen{display:none}.on{display:block}
 .card{background:#11131b;border:1px solid #252936;border-radius:18px;padding:16px;margin:10px 0}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input,textarea{width:100%;padding:13px;border:1px solid #303442;border-radius:12px;background:#0d0f15;color:#fff;margin:6px 0}
+input,textarea,select{width:100%;padding:13px;border:1px solid #303442;border-radius:12px;background:#0d0f15;color:#fff;margin:6px 0}
 textarea{min-height:100px;resize:vertical}
 .row{display:flex;gap:7px;align-items:center}.row>*{flex:1}
 .user{background:#182337;padding:10px;border-radius:12px;margin:7px 0}
 .ai{background:#151820;padding:10px;border-radius:12px;margin:7px 0;white-space:pre-wrap}
 .small{font-size:12px;opacity:.7}.hide{display:none!important}
-.menu{position:absolute;right:12px;top:58px;background:#11131b;border:1px solid #303442;border-radius:15px;padding:8px;z-index:5}
-.menu button{display:block;width:170px;text-align:left;margin:3px 0}
-.jar{display:block;margin:28px auto 5px;border:1px solid #5968ff;background:#12152a}
+.menu{position:absolute;right:12px;top:58px;background:#11131b;border:1px solid #303442;border-radius:15px;padding:8px;z-index:9}
+.menu button{display:block;width:170px;text-align:left}
+.jar{display:block;margin:28px auto;border:1px solid #5968ff;background:#12152a}
 .status{text-align:center;margin:10px;min-height:22px}
+.back{margin-bottom:12px}.toggleOn{border:1px solid #35d07f}.toggleOff{opacity:.45}
 img,video{max-width:100%;width:100%;border-radius:15px;margin-top:10px}
-.recent{position:fixed;bottom:82px;right:18px;border-radius:50%;padding:13px;background:#292d3b;color:#bbb;display:none;z-index:8}
+.think{display:inline-block;animation:p 1s infinite}
+@keyframes p{50%{opacity:.25;transform:scale(1.08)}}
+.jarActive{border-color:#35d07f;box-shadow:0 0 18px #5968ff}
+.recent{position:fixed;bottom:82px;right:18px;border-radius:50%;padding:13px;background:#292d3b;display:none}
 </style>
 </head>
 <body>
@@ -58,174 +62,184 @@ img,video{max-width:100%;width:100%;border-radius:15px;margin-top:10px}
 <button onclick="go('project')">🚀 Project</button>
 <button onclick="go('editing')">🎨 Editing</button>
 </div>
-<button class="jar" onclick="jarToggle()">🤖 JARVIS</button>
+<button id="jarBtn" class="jar" onclick="jarToggle()">🤖 JARVIS</button>
 <div id="jarStatus" class="status"></div>
 </section>
 
 <section id="chat" class="screen">
-<h2>💬 Chat</h2><div id="chatbox"></div>
-<div id="chatStatus" class="status"></div>
+<button class="back" onclick="go('home')">← Back</button>
+<h2>💬 Chat</h2><div id="chatbox"></div><div id="chatStatus" class="status"></div>
 <div class="row">
 <input id="ci" placeholder="Message Bablu AI...">
-<button onclick="voice('ci')">🎙️</button>
-<button onclick="send()">➤</button>
+<button onclick="voice('ci')">🎙️</button><button onclick="send()">➤</button>
 </div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearChat()">🗑️ Clear</button></div>
 </section>
 
 <section id="image" class="screen">
-<h2>🖼️ AI Image</h2>
+<button class="back" onclick="go('home')">← Back</button><h2>🖼️ AI Image</h2>
 <textarea id="ip" placeholder="Describe your image..."></textarea>
-<button onclick="image()">✨ Generate</button>
-<div id="is" class="status"></div><div id="ir"></div>
+<button onclick="image()">✨ Generate</button><div id="is" class="status"></div><div id="ir"></div>
 <button onclick="clearImage()">🗑️ Clear</button>
 </section>
 
 <section id="video" class="screen">
-<h2>🎬 AI Video</h2>
+<button class="back" onclick="go('home')">← Back</button><h2>🎬 AI Video</h2>
 <textarea id="vp" placeholder="Describe your video..."></textarea>
-<button onclick="video()">✨ Generate</button>
-<div id="vs" class="status"></div><div id="vr"></div>
+<button onclick="video()">✨ Generate</button><div id="vs" class="status"></div><div id="vr"></div>
 <button onclick="clearVideo()">🗑️ Clear</button>
 </section>
 
 <section id="study" class="screen">
-<h2>📚 Study</h2>
-<textarea id="sp" placeholder="Ask your study question..."></textarea>
-<button onclick="study()">➤ Ask</button>
-<div id="ss" class="status"></div><div id="sr"></div>
+<button class="back" onclick="go('home')">← Back</button><h2>📚 Study</h2><div id="sr"></div><div id="ss" class="status"></div>
+<div class="row"><input id="sp" placeholder="Ask your study question..."><button onclick="voice('sp')">🎙️</button><button onclick="study()">➤</button></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearStudy()">🗑️ Clear</button></div>
 </section>
 
 <section id="writer" class="screen">
-<h2>✍️ Writer</h2>
-<textarea id="wp" placeholder="What should I write?"></textarea>
-<button onclick="writer()">➤ Create</button>
+<button class="back" onclick="go('home')">← Back</button><h2>✍️ Writer</h2>
+<textarea id="wp" placeholder="What should I write?"></textarea><button onclick="writer()">➤ Create</button>
 <div id="ws" class="status"></div><div id="wr"></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearWriter()">🗑️ Clear</button></div>
 </section>
 
 <section id="voice" class="screen">
-<h2>🎙️ AI Voice Studio</h2>
-<div class="card">🎙️ Voice Studio — future voice-pack creation.</div>
+<button class="back" onclick="go('home')">← Back</button><h2>🎙️ AI Voice Studio</h2>
+<textarea id="script" placeholder="📝 Write your script here..."></textarea>
+<div class="card">
+<b>🎙️ My Voice Tune</b><p id="vstate" class="small">No voice sample saved</p>
+<button onclick="recordVoice()">🔴 Record My Voice</button>
+<button onclick="stopRecord()">⏹ Stop</button>
+<button onclick="playVoice()">▶️ Play Sample</button>
+<button onclick="saveVoice()">💾 Save Voice Tune</button>
+</div>
+<button onclick="speakScript()">🔊 Speak Script</button>
+<div id="vstatus" class="status"></div>
+<div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearVoice()">🗑️ Clear</button></div>
 </section>
 
 <section id="editing" class="screen">
-<h2>🎨 AI Editing</h2>
-<div class="row">
-<button onclick="$('photo').click()">📷 Select Photo</button>
-<button onclick="$('efile').click()">🎬 Select Video</button>
-</div>
+<button class="back" onclick="go('home')">← Back</button><h2>🎨 AI Editing</h2>
+<div class="row"><button onclick="$('photo').click()">📷 Select Photo</button><button onclick="$('efile').click()">🎬 Select Video</button></div>
 <input id="photo" type="file" accept="image/*" onchange="previewPhoto()" class="hide">
 <input id="efile" type="file" accept="video/*" onchange="previewVideo()" class="hide">
-<div id="preview"></div>
-<textarea id="ep" placeholder="What should AI change?"></textarea>
-<button onclick="editPhoto()">✨ Edit Photo</button>
-<div id="es" class="status"></div><div id="er"></div>
+<div id="preview"></div><textarea id="ep" placeholder="What should AI change?"></textarea>
+<button onclick="editPhoto()">✨ Edit Photo</button><div id="es" class="status"></div><div id="er"></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearEdit()">🗑️ Clear</button></div>
 </section>
 
 <section id="project" class="screen">
-<h2>🚀 Project Mode</h2>
+<button class="back" onclick="go('home')">← Back</button><h2>🚀 Project Mode</h2>
 <textarea id="pp" placeholder="Tell Bablu AI what project you want to build..."></textarea>
-<button onclick="project()">➤ Build</button>
-<div id="ps" class="status"></div><div id="pr"></div>
+<button onclick="project()">➤ Build</button><div id="ps" class="status"></div><div id="pr"></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearProject()">🗑️ Clear</button></div>
 </section>
 
 <section id="settings" class="screen">
-<h2>⚙️ Settings</h2>
-<div class="card">💾 History Save<br><br>
-<button id="histOn" onclick="setHist(1)">ON</button>
-<button id="histOff" onclick="setHist(0)">OFF</button></div>
+<button class="back" onclick="go('home')">← Back</button><h2>⚙️ Settings</h2>
 
-<div class="card">🏠 Show Project & Editing on Home<br><br>
-<button onclick="setHome(1)">ON</button>
-<button onclick="setHome(0)">OFF</button></div>
+<div class="card">💾 History Save<br>
+<button id="histOn" onclick="setHist(1)">● ON</button><button id="histOff" onclick="setHist(0)">○ OFF</button></div>
 
-<div class="card">🤖 JARVIS Separate Screen<br><br>
-<button onclick="setJarScreen(1)">ON</button>
-<button onclick="setJarScreen(0)">OFF</button></div>
+<div class="card">🏠 Show Project & Editing on Home<br>
+<button id="homeOn" onclick="setHome(1)">● ON</button><button id="homeOff" onclick="setHome(0)">○ OFF</button></div>
+
+<div class="card">🤖 JARVIS Separate Screen<br>
+<button id="jarOn" onclick="setJarScreen(1)">● ON</button><button id="jarOff" onclick="setJarScreen(0)">○ OFF</button></div>
+
+<div class="card">🎙️ Saved Voice Tune
+<br><button onclick="resetVoice()">🔄 Reset My Saved Voice Tune</button></div>
 </section>
 
 </main>
-
 <button id="recent" class="recent" onclick="recentChat()">↓</button>
 
 <script>
 const $=id=>document.getElementById(id);
 let H=JSON.parse(localStorage.h||"[]"),hist=localStorage.hist!="0";
 let jar=0,jarScreen=localStorage.js=="1",ctl=null,rec=null;
+let mediaRec=null,voiceBlob=null,voiceURL=null;
 
 function menu(){$("m").classList.toggle("hide")}
 function go(x){
  document.querySelectorAll(".screen").forEach(e=>e.classList.remove("on"));
  $(x).classList.add("on");$("m").classList.add("hide");
- if(x=="chat"){loadChat();setTimeout(()=>scrollBottom(),50)}
+ if(x=="chat"){loadChat();setTimeout(scrollBottom,50)}
 }
 function scrollBottom(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}
 function recentChat(){scrollBottom();$("recent").style.display="none"}
 window.addEventListener("scroll",()=>{
- let chat=$("chat").classList.contains("on");
- $("recent").style.display=chat&&scrollY<document.body.scrollHeight-innerHeight-120?"block":"none"
+ $("recent").style.display=$("chat").classList.contains("on")&&scrollY<document.body.scrollHeight-innerHeight-120?"block":"none"
 });
 
 function clean(t){
  return String(t).replace(/[*_#`~]/g,"").replace(/\n{3,}/g,"\n\n").trim()
 }
 function add(box,q,a){
- $(box).innerHTML+=`<div class="user">👤 ${clean(q)}</div>
-<div class="ai">🤖 ${clean(a)}<br><button onclick='speak(${JSON.stringify(clean(a))})'>🔊 Speak</button></div>`
+ $(box).innerHTML+=`<div class="user">👤 ${clean(q)}</div><div class="ai">🤖 ${clean(a)}<br><button onclick='speak(${JSON.stringify(clean(a))})'>🔊 Speak</button></div>`
 }
 function speak(t){
- speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);
- u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";speechSynthesis.speak(u)
+ speechSynthesis.cancel();
+ let u=new SpeechSynthesisUtterance(clean(t));
+ u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";
+ u.onstart=()=>jar?$("jarStatus").innerText="🔊 JARVIS speaking...":0;
+ u.onend=()=>jar?listenJar():0;
+ speechSynthesis.speak(u)
 }
+
 function stop(){
  speechSynthesis.cancel();
- if(ctl)ctl.abort();ctl=null;
+ if(ctl){ctl.abort();ctl=null}
  if(rec){try{rec.stop()}catch(e){}rec=null}
- jar=0;$("jarStatus").innerText=""
+ $("chatStatus").innerText=$("ss").innerText=$("ws").innerText=$("ps").innerText="";
+ if(jar){$("jarStatus").innerText="🤖 JARVIS • Listening...";setTimeout(listenJar,250)}
 }
+
 function clearChat(){H=[];localStorage.h="[]";$("chatbox").innerHTML=""}
 function loadChat(){
  $("chatbox").innerHTML="";
- H.filter(x=>x.role=="user").forEach((x,i)=>{
-  let a=H[i*2+1]?.content||"";
-  if(a)add("chatbox",x.content,a)
- })
+ for(let i=0;i<H.length;i+=2)
+  if(H[i]?.role=="user"&&H[i+1]?.role=="assistant")add("chatbox",H[i].content,H[i+1].content)
 }
 function clearImage(){$("ip").value="";$("ir").innerHTML="";$("is").innerText=""}
 function clearVideo(){$("vp").value="";$("vr").innerHTML="";$("vs").innerText=""}
-function clearStudy(){$("sp").value="";$("sr").innerHTML=""}
-function clearWriter(){$("wp").value="";$("wr").innerHTML=""}
-function clearProject(){$("pp").value="";$("pr").innerHTML=""}
+function clearStudy(){$("sp").value="";$("sr").innerHTML="";$("ss").innerText=""}
+function clearWriter(){$("wp").value="";$("wr").innerHTML="";$("ws").innerText=""}
+function clearProject(){$("pp").value="";$("pr").innerHTML="";$("ps").innerText=""}
 function clearEdit(){$("ep").value="";$("preview").innerHTML="";$("er").innerHTML="";$("photo").value="";$("efile").value=""}
-function setHist(v){hist=!!v;localStorage.hist=v?"1":"0";$("histOn").style.opacity=v?1:.4;$("histOff").style.opacity=v?.4:1}
-function setHome(v){localStorage.home=v?"1":"0";applyHome()}
-function setJarScreen(v){jarScreen=!!v;localStorage.js=v?"1":"0"}
+
+function setHist(v){
+ hist=!!v;localStorage.hist=v?"1":"0";
+ $("histOn").className=v?"toggleOn":"toggleOff";$("histOff").className=v?"toggleOff":"toggleOn"
+}
+function setHome(v){
+ localStorage.home=v?"1":"0";applyHome();
+ $("homeOn").className=v?"toggleOn":"toggleOff";$("homeOff").className=v?"toggleOff":"toggleOn"
+}
+function setJarScreen(v){
+ jarScreen=!!v;localStorage.js=v?"1":"0";
+ $("jarOn").className=v?"toggleOn":"toggleOff";$("jarOff").className=v?"toggleOff":"toggleOn"
+}
 function applyHome(){$("homeExtra").style.display=localStorage.home=="0"?"none":"grid"}
 
 async function ask(q,box,status){
  if(!q.trim())return;
- $(status).innerText="✨ Bablu AI is thinking...";
+ $(status).innerHTML='<span class="think">🧠 Bablu AI is thinking...</span>';
  ctl=new AbortController();
- let prompt="Answer naturally like ChatGPT. Keep the answer clean, well ordered, easy to read, and use useful natural emojis only where appropriate.\n\n"+q;
  try{
   let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({message:prompt,history:H}),signal:ctl.signal});
+   body:JSON.stringify({message:"Answer naturally like ChatGPT. Keep it clean, ordered, useful and natural. Use emojis only when suitable.\n\n"+q,history:H}),signal:ctl.signal});
   let d=await r.json(),a=d.reply||d.message||"No response";
   add(box,q,a);
   if(hist){H.push({role:"user",content:q},{role:"assistant",content:a});H=H.slice(-30);localStorage.h=JSON.stringify(H)}
  }catch(e){if(e.name!="AbortError")add(box,q,"❌ Server se response nahi mila.")}
  $(status).innerText="";ctl=null
 }
-
-function send(){let q=$("ci").value.trim();if(!q)return;$("ci").value="";ask(q,"chatbox","chatStatus")}
+function send(){let q=$("ci").value.trim();if(q){$("ci").value="";ask(q,"chatbox","chatStatus")}}
 function voice(id){
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR)return alert("Voice recognition supported nahi hai.");
- if(rec){try{rec.stop()}catch(e){}}
+ if(rec)try{rec.stop()}catch(e){}
  rec=new SR();rec.lang="hi-IN";rec.interimResults=false;rec.maxAlternatives=5;
  rec.onresult=e=>{$(id).value=e.results[0][0].transcript;rec=null};
  rec.onend=()=>rec=null;rec.start()
@@ -233,64 +247,91 @@ function voice(id){
 
 async function image(){
  let p=$("ip").value.trim();if(!p)return;
- $("is").innerText="🧠 Creating your image...";
+ $("is").innerHTML='<span class="think">🧠 Creating image...</span>';
  try{
-  let x=await puter.ai.txt2img(p,{model:"gpt-image-2",
-  puter_output_path:"/BabluAI/images/"+Date.now()+".png"});
+  let x=await puter.ai.txt2img(p,{model:"gpt-image-2",puter_output_path:"/BabluAI/images/"+Date.now()+".png"});
   $("ir").innerHTML="";$("ir").appendChild(x)
  }catch(e){$("ir").innerText="❌ Image generation failed."}
  $("is").innerText=""
 }
-
 async function video(){
  let p=$("vp").value.trim();if(!p)return;
- $("vs").innerText="🎬 Generating video... This may take some time.";
+ $("vs").innerHTML='<span class="think">🎬 Generating video...</span>';
  try{
-  let x=await puter.ai.txt2vid(p,{model:"sora-2",
-  puter_output_path:"/BabluAI/videos/"+Date.now()+".mp4"});
+  let x=await puter.ai.txt2vid(p,{model:"sora-2",puter_output_path:"/BabluAI/videos/"+Date.now()+".mp4"});
   $("vr").innerHTML=`<video controls src="${x}"></video>`
  }catch(e){$("vr").innerText="❌ Video generation failed."}
  $("vs").innerText=""
 }
+function study(){let q=$("sp").value.trim();if(q){$("sp").value="";ask("Study mode: Explain step-by-step clearly with useful emojis.\n"+q,"sr","ss")}}
+function writer(){let q=$("wp").value.trim();if(q)ask("Writer mode: Create polished natural writing.\n"+q,"wr","ws")}
+function project(){let q=$("pp").value.trim();if(q)ask("Project mode: Help build this project step-by-step without breaking existing features.\n"+q,"pr","ps")}
 
-function study(){let q=$("sp").value.trim();if(q)ask("Study mode: Give a clear step-by-step educational answer with useful emojis.\n"+q,"sr","ss")}
-function writer(){let q=$("wp").value.trim();if(q)ask("Writer mode: Create polished natural writing with useful emojis only when suitable.\n"+q,"wr","ws")}
-function project(){let q=$("pp").value.trim();if(q)ask("Project mode: Help build the project step by step and keep existing working features safe.\n"+q,"pr","ps")}
-
-function previewPhoto(){
- let f=$("photo").files[0];if(f)$("preview").innerHTML=`<img src="${URL.createObjectURL(f)}">`
-}
-function previewVideo(){
- let f=$("efile").files[0];if(f)$("preview").innerHTML=`<video controls src="${URL.createObjectURL(f)}"></video>`
-}
+function previewPhoto(){let f=$("photo").files[0];if(f)$("preview").innerHTML=`<img src="${URL.createObjectURL(f)}">`}
+function previewVideo(){let f=$("efile").files[0];if(f)$("preview").innerHTML=`<video controls src="${URL.createObjectURL(f)}"></video>`}
 async function editPhoto(){
- let f=$("photo").files[0],p=$("ep").value.trim();
- if(!f||!p)return;
- $("es").innerText="🎨 Editing photo...";
+ let f=$("photo").files[0],p=$("ep").value.trim();if(!f||!p)return;
+ $("es").innerHTML='<span class="think">🎨 Editing...</span>';
  try{
   let b=await new Promise(r=>{let x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)});
-  let x=await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:b,
-  puter_output_path:"/BabluAI/edited/"+Date.now()+".png"});
+  let x=await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:b,puter_output_path:"/BabluAI/edited/"+Date.now()+".png"});
   $("er").innerHTML="";$("er").appendChild(x)
  }catch(e){$("er").innerText="❌ Photo editing failed."}
  $("es").innerText=""
 }
 
+/* VOICE STUDIO */
+async function recordVoice(){
+ if(!navigator.mediaDevices)return alert("Microphone supported nahi hai.");
+ try{
+  let s=await navigator.mediaDevices.getUserMedia({audio:true});
+  mediaRec=new MediaRecorder(s);let chunks=[];
+  mediaRec.ondataavailable=e=>chunks.push(e.data);
+  mediaRec.onstop=()=>{voiceBlob=new Blob(chunks,{type:"audio/webm"});voiceURL=URL.createObjectURL(voiceBlob);s.getTracks().forEach(t=>t.stop());$("vstate").innerText="🎙️ New voice sample recorded."};
+  mediaRec.start();$("vstatus").innerText="🔴 Recording..."
+ }catch(e){alert("Microphone permission required.")}
+}
+function stopRecord(){if(mediaRec){mediaRec.stop();mediaRec=null;$("vstatus").innerText=""}}
+function saveVoice(){
+ if(!voiceBlob)return alert("Pehle voice record karo.");
+ let r=new FileReader();
+ r.onload=()=>{localStorage.voiceTune=r.result;$("vstate").innerText="✅ Voice Tune Saved";};
+ r.readAsDataURL(voiceBlob)
+}
+function playVoice(){
+ let u=voiceURL||(localStorage.voiceTune?localStorage.voiceTune:null);
+ if(u)new Audio(u).play();else alert("Saved voice sample nahi hai.")
+}
+function resetVoice(){
+ if(confirm("Saved voice tune delete karein?")){
+  localStorage.removeItem("voiceTune");voiceBlob=null;voiceURL=null;
+  $("vstate").innerText="No voice sample saved"
+ }
+}
+function speakScript(){
+ let t=$("script").value.trim();if(!t)return;
+ speechSynthesis.cancel();
+ let u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";
+ speechSynthesis.speak(u)
+}
+function clearVoice(){$("script").value="";$("vstatus").innerText=""}
+function voiceState(){if(localStorage.voiceTune)$("vstate").innerText="✅ Saved Voice Tune Available"}
+
 /* JARVIS */
 function jarToggle(){
- if(jar){stop();return}
- jar=1;
- $("jarStatus").innerText="🤖 JARVIS ACTIVATED • Listening...";
- if(jarScreen)go("home");
- listenJar()
+ if(jar){jar=0;speechSynthesis.cancel();if(rec)try{rec.stop()}catch(e){}rec=null;
+  $("jarStatus").innerText="";$("jarBtn").classList.remove("jarActive");return}
+ jar=1;$("jarBtn").classList.add("jarActive");$("jarStatus").innerText="🤖 JARVIS ACTIVATED";
+ speak("JARVIS activated");
 }
 function listenJar(){
- if(!jar)return;
+ if(!jar||speechSynthesis.speaking)return;
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+ if(rec)try{rec.stop()}catch(e){}
  rec=new SR();rec.lang="hi-IN";rec.interimResults=false;rec.maxAlternatives=5;
- rec.onresult=e=>{let q=e.results[0][0].transcript.toLowerCase();rec=null;jarCommand(q)}
- rec.onerror=()=>{rec=null;if(jar)setTimeout(listenJar,400)}
- rec.onend=()=>{if(jar&&!rec)setTimeout(listenJar,400)}
+ rec.onresult=e=>{let q=e.results[0][0].transcript.toLowerCase();rec=null;jarCommand(q)};
+ rec.onerror=()=>{rec=null;if(jar)setTimeout(listenJar,500)};
+ rec.onend=()=>{if(jar&&!rec)setTimeout(listenJar,300)};
  rec.start()
 }
 function jarCommand(q){
@@ -298,45 +339,41 @@ function jarCommand(q){
  if(/home|होम/.test(q)){go("home");return}
  if(/clear|क्लियर/.test(q)){clearChat();return}
 
- let m=q.match(/chat\s*(?:mein|में)\s+(.+?)\s*(?:likho|लिखो|type)/i);
+ let m=q.match(/chat\s*(?:mein|में)\s+(.+?)\s*(?:likho|लिखो|type|टाइप)/i);
  if(m){go("chat");$("ci").value=m[1].trim();return}
 
- m=q.match(/chat\s*(?:mein|में)\s+(.+?)\s*(?:bhejo|भेजो|send)/i);
+ m=q.match(/chat\s*(?:mein|में)\s+(.+?)\s*(?:bhejo|भेजो|send|भेज)/i);
  if(m){go("chat");$("ci").value=m[1].trim();send();return}
 
  if(/youtube/.test(q)){
   let x=q.replace(/youtube|pe|पर|search|खोजो|करो|में|video|videos|की|के/gi,"").trim();
-  location.href=x?"https://www.youtube.com/results?search_query="+encodeURIComponent(x):"https://youtube.com";return
+  location.href="https://www.youtube.com/results?search_query="+encodeURIComponent(x||"Bablu AI");return
  }
  if(/google/.test(q)){
   let x=q.replace(/google|par|पर|search|खोजो|करो|में/gi,"").trim();
-  location.href=x?"https://www.google.com/search?q="+encodeURIComponent(x):"https://google.com";return
+  location.href="https://www.google.com/search?q="+encodeURIComponent(x||"Bablu AI");return
  }
  if(/instagram/.test(q)){location.href="https://instagram.com";return}
  if(/facebook/.test(q)){location.href="https://facebook.com";return}
- if(/\bx\b|twitter/.test(q)){location.href="https://x.com";return}
+ if(/twitter|\bx\b/.test(q)){location.href="https://x.com";return}
  if(/spotify/.test(q)){location.href="https://spotify.com";return}
  if(/telegram/.test(q)){location.href="https://telegram.org";return}
 
  if(/image|इमेज|फोटो/.test(q)){go("image");return}
  if(/video|वीडियो/.test(q)){go("video");return}
- if(/study|पढ़ाई/.test(q)){go("study");return}
- if(/writer|लिखने/.test(q)){go("writer");return}
+ if(/study|पढ़ाई|स्टडी/.test(q)){go("study");return}
+ if(/writer|लिखने|राइटर/.test(q)){go("writer");return}
  if(/project|प्रोजेक्ट/.test(q)){go("project");return}
  if(/editing|edit|एडिट/.test(q)){go("editing");return}
+ if(/voice studio|voice|वॉइस/.test(q)){go("voice");return}
 
- if(/time|समय|टाइम/.test(q)){
-  speak("अभी समय है "+new Date().toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"}));return
- }
- if(/date|तारीख|डेट/.test(q)){
-  speak("आज "+new Date().toLocaleDateString("hi-IN",{day:"numeric",month:"long",year:"numeric"}));return
- }
+ if(/time|समय|टाइम/.test(q)){speak("अभी समय है "+new Date().toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"}));return}
+ if(/date|तारीख|डेट/.test(q)){speak("आज "+new Date().toLocaleDateString("hi-IN",{day:"numeric",month:"long",year:"numeric"}));return}
 
  go("chat");$("ci").value=q;send()
 }
 
-setHist(hist?1:0);
-applyHome();
+setHist(hist?1:0);setHome(localStorage.home!="0");setJarScreen(jarScreen);applyHome();voiceState();
 </script>
 </body>
- </html>
+                                        </html>
