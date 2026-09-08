@@ -7,47 +7,42 @@
 <script src="https://js.puter.com/v2/"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
-body{background:radial-gradient(circle at top,#151a30,#08090d 55%);color:#fff;min-height:100vh}
-header{height:60px;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #292d3d;background:#0b0d14}
-h1{font-size:22px}h2{margin-bottom:12px}
-button{border:1px solid #292e40;border-radius:13px;padding:10px 13px;background:#151925;color:#fff;font-weight:bold;margin:3px}
+body{background:radial-gradient(circle at top,#192650,#05070d 55%);color:#fff;min-height:100vh}
+header{height:60px;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;background:#090d18e8;border-bottom:1px solid #303d68;backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
+h1{text-shadow:0 0 15px #6577ff}h2{margin-bottom:12px}
+button{border:1px solid #344268;border-radius:14px;padding:10px 13px;background:#10172a;color:#fff;font-weight:bold;margin:3px;box-shadow:0 4px 15px #0006}
 button:active{transform:scale(.96)}
 main{max-width:760px;margin:auto;padding:15px}
 .screen{display:none}.on{display:block}
-.card{background:#121521;border:1px solid #292e40;border-radius:20px;padding:15px;margin:10px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input,textarea,select{width:100%;padding:13px;border:1px solid #303548;border-radius:14px;background:#0b0e15;color:#fff;margin:4px 0}
+.card{background:#0e1525dd;border:1px solid #2c3a60;border-radius:20px;padding:15px;margin:10px 0;box-shadow:0 10px 30px #0006}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+input,textarea,select{width:100%;padding:13px;border:1px solid #344268;border-radius:15px;background:#070b14;color:#fff;margin:4px 0}
 textarea{min-height:100px;resize:vertical}
 .row{display:flex;gap:6px}.row>*{flex:1}
-.user,.ai{padding:11px 13px;border-radius:15px;margin:8px 0;line-height:1.5}
-.user{background:#17243a}.ai{background:#141720;white-space:pre-wrap}
+.user,.ai{padding:12px 14px;border-radius:17px;margin:9px 0;line-height:1.55}
+.user{background:#172a49;border:1px solid #2b4c79}.ai{background:#0d1320;border:1px solid #2b3755;white-space:pre-wrap}
 .small{font-size:12px;opacity:.7}.hide{display:none!important}
-.menu{position:absolute;right:12px;top:58px;background:#11131b;border:1px solid #303442;border-radius:15px;padding:8px;z-index:20}
+.menu{position:absolute;right:12px;top:58px;background:#0b101c;border:1px solid #344268;border-radius:16px;padding:7px;z-index:10}
 .menu button{display:block;width:180px;text-align:left}
-.jar{display:block;margin:25px auto;border-color:#5968ff;box-shadow:0 0 20px #5968ff33}
-.jarActive{border-color:#35d07f;box-shadow:0 0 22px #35d07f66}
-.status{text-align:center;min-height:23px;margin:7px}
+.jar{display:block;margin:25px auto;border-color:#6677ff;box-shadow:0 0 25px #6677ff55}
+.jarActive{border-color:#35e28b;box-shadow:0 0 28px #35e28b66}
+.status{text-align:center;min-height:22px;margin:6px;color:#b9c5ff}
 .think{animation:p 1s infinite;display:inline-block}
 @keyframes p{50%{opacity:.25;transform:scale(1.06)}}
-img,video{max-width:100%;width:100%;border-radius:16px;margin-top:10px}
-.back{margin-bottom:10px}
-.toggleOn{border-color:#35d07f}.toggleOff{opacity:.45}
+img,video{max-width:100%;width:100%;border-radius:17px;margin-top:10px}
 .chatScreen,.studyScreen{height:calc(100vh - 60px);flex-direction:column}
 .chatScreen.on,.studyScreen.on{display:flex}
 .chatTop{flex:1;overflow-y:auto;padding-bottom:8px}
-.composer{padding-top:7px;background:#08090d}
-.composerBar{display:flex;gap:5px;background:#11141d;border:1px solid #303548;border-radius:18px;padding:5px}
+.composer{padding-top:7px;background:#05070d}
+.composerBar{display:flex;gap:5px;background:#0c121f;border:1px solid #344268;border-radius:20px;padding:5px}
 .composerBar input{border:0;margin:0;background:transparent}
-.composerBar button{margin:0;padding:10px}
-.composerTools{text-align:center}
-.recent{position:fixed;bottom:105px;right:18px;border-radius:50%;display:none;z-index:5}
+.composerBar button{margin:0}.composerTools{text-align:center}
 </style>
 </head>
 <body>
 
 <header>
-<h1>Bablu AI</h1>
-<button onclick="menu()">☰</button>
+<h1>Bablu AI</h1><button onclick="menu()">☰</button>
 <div id="m" class="menu hide">
 <button onclick="go('project')">🚀 Project</button>
 <button onclick="go('editing')">🎨 Editing</button>
@@ -58,13 +53,11 @@ img,video{max-width:100%;width:100%;border-radius:16px;margin-top:10px}
 <main>
 
 <section id="home" class="screen on">
-<div class="card"><h2>🤖 Bablu AI</h2><p class="small">Smart • Fast • Natural AI Assistant</p></div>
+<div class="card"><h2>🤖 Bablu AI</h2><p class="small">Smart • Fast • Natural • Futuristic AI Assistant</p></div>
 <div class="grid">
 <button onclick="go('chat')">💬 Chat</button><button onclick="go('image')">🖼️ Image</button>
 <button onclick="go('video')">🎬 Video</button><button onclick="go('study')">📚 Study</button>
 <button onclick="go('writer')">✍️ Writer</button><button onclick="go('voice')">🎙️ Voice Studio</button>
-</div>
-<div id="homeExtra" class="grid">
 <button onclick="go('project')">🚀 Project</button><button onclick="go('editing')">🎨 Editing</button>
 </div>
 <button id="jarBtn" class="jar" onclick="jarToggle()">🤖 JARVIS</button>
@@ -72,34 +65,28 @@ img,video{max-width:100%;width:100%;border-radius:16px;margin-top:10px}
 </section>
 
 <section id="chat" class="screen chatScreen">
-<div><button class="back" onclick="go('home')">← Back</button><h2>💬 Chat</h2></div>
+<div><button onclick="go('home')">← Back</button><h2>💬 Chat</h2></div>
 <div id="chatbox" class="chatTop"></div><div id="chatStatus" class="status"></div>
 <div class="composer"><div class="composerBar">
-<input id="ci" placeholder="Message Bablu AI...">
-<button onclick="voice('ci')">🎙️</button><button onclick="send()">➤</button>
-</div><div class="composerTools">
-<button onclick="stop()">⏹ Stop</button><button onclick="clearChat()">🗑️ Clear</button>
-</div></div>
+<input id="ci" placeholder="Message Bablu AI..."><button onclick="voice('ci')">🎙️</button><button onclick="send()">➤</button>
+</div><div class="composerTools"><button onclick="stop()">⏹ Stop</button><button onclick="clearChat()">🗑️ Clear</button></div></div>
 </section>
 
 <section id="image" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>🖼️ AI Image</h2>
-<textarea id="ip" placeholder="Describe your image..."></textarea>
-<button onclick="image()">✨ Generate</button><div id="is" class="status"></div><div id="ir"></div>
-<button onclick="clearImage()">🗑️ Clear</button>
+<button onclick="go('home')">← Back</button><h2>🖼️ AI Image</h2>
+<textarea id="ip" placeholder="Describe your image..."></textarea><button onclick="image()">✨ Generate</button>
+<div id="is" class="status"></div><div id="ir"></div><button onclick="clearImage()">🗑️ Clear</button>
 </section>
 
 <section id="video" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>🎬 AI Video</h2>
-<textarea id="vp" placeholder="Describe your video..."></textarea>
-<button onclick="video()">✨ Generate</button><div id="vs" class="status"></div><div id="vr"></div>
-<button onclick="clearVideo()">🗑️ Clear</button>
+<button onclick="go('home')">← Back</button><h2>🎬 AI Video</h2>
+<textarea id="vp" placeholder="Describe your video..."></textarea><button onclick="video()">✨ Generate</button>
+<div id="vs" class="status"></div><div id="vr"></div><button onclick="clearVideo()">🗑️ Clear</button>
 </section>
 
 <section id="study" class="screen studyScreen">
-<div><button class="back" onclick="go('home')">← Back</button><h2>📚 Study</h2>
-<div id="studySetup" class="card hide"><b>🎓 Select your class</b>
-<select id="studyClass"></select><button onclick="saveStudyClass()">💾 Save</button></div></div>
+<div><button onclick="go('home')">← Back</button><h2>📚 Study</h2>
+<div id="studySetup" class="card hide"><b>🎓 Select Class</b><select id="studyClass"></select><button onclick="saveStudyClass()">💾 Save</button></div></div>
 <div id="sr" class="chatTop"></div><div id="ss" class="status"></div>
 <div class="composer"><div class="composerBar">
 <input id="sp" placeholder="Ask your study question..."><button onclick="voice('sp')">🎙️</button><button onclick="study()">➤</button>
@@ -107,24 +94,23 @@ img,video{max-width:100%;width:100%;border-radius:16px;margin-top:10px}
 </section>
 
 <section id="writer" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>✍️ Writer</h2>
+<button onclick="go('home')">← Back</button><h2>✍️ Writer</h2>
 <textarea id="wp" placeholder="What should I write?"></textarea><button onclick="writer()">➤ Create</button>
 <div id="ws" class="status"></div><div id="wr"></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearWriter()">🗑️ Clear</button></div>
 </section>
 
 <section id="voice" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>🎙️ AI Voice Studio</h2>
+<button onclick="go('home')">← Back</button><h2>🎙️ AI Voice Studio</h2>
 <textarea id="script" placeholder="📝 Write your script..."></textarea>
 <div class="card"><b>🎙️ My Voice Tune</b><p id="vstate" class="small">No voice sample saved</p>
-<button onclick="recordVoice()">🔴 Record</button><button onclick="stopRecord()">⏹ Stop</button>
-<button onclick="playVoice()">▶️ Play</button><button onclick="saveVoice()">💾 Save</button></div>
+<button onclick="recordVoice()">🔴 Record</button><button onclick="stopRecord()">⏹ Stop</button><button onclick="playVoice()">▶️ Play</button><button onclick="saveVoice()">💾 Save</button></div>
 <button onclick="speakScript()">🔊 Speak Script</button><div id="vstatus" class="status"></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearVoice()">🗑️ Clear</button></div>
 </section>
 
 <section id="editing" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>🎨 AI Editing</h2>
+<button onclick="go('home')">← Back</button><h2>🎨 AI Editing</h2>
 <div class="row"><button onclick="$('photo').click()">📷 Select Photo</button><button onclick="$('efile').click()">🎬 Select Video</button></div>
 <input id="photo" type="file" accept="image/*" onchange="previewPhoto()" class="hide">
 <input id="efile" type="file" accept="video/*" onchange="previewVideo()" class="hide">
@@ -134,60 +120,35 @@ img,video{max-width:100%;width:100%;border-radius:16px;margin-top:10px}
 </section>
 
 <section id="project" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>🚀 Project Mode</h2>
+<button onclick="go('home')">← Back</button><h2>🚀 Project Mode</h2>
 <textarea id="pp" placeholder="Tell Bablu AI what project you want to build..."></textarea>
 <button onclick="project()">➤ Build</button><div id="ps" class="status"></div><div id="pr"></div>
 <div class="row"><button onclick="stop()">⏹ Stop</button><button onclick="clearProject()">🗑️ Clear</button></div>
 </section>
 
 <section id="settings" class="screen">
-<button class="back" onclick="go('home')">← Back</button><h2>⚙️ Settings</h2>
-<div class="card"><b>🎓 My Class</b><select id="setClass"></select><button onclick="saveClass()">💾 Save</button><p id="classState" class="small"></p></div>
+<button onclick="go('home')">← Back</button><h2>⚙️ Settings</h2>
+<div class="card">🎓 My Class<select id="setClass"></select><button onclick="saveClass()">💾 Save</button><p id="classState" class="small"></p></div>
 <div class="card">💾 History Save<br><button id="histOn" onclick="setHist(1)">● ON</button><button id="histOff" onclick="setHist(0)">○ OFF</button></div>
-<div class="card">🏠 Show Project & Editing<br><button id="homeOn" onclick="setHome(1)">● ON</button><button id="homeOff" onclick="setHome(0)">○ OFF</button></div>
-<div class="card">🤖 JARVIS Separate Screen<br><button id="jarOn" onclick="setJarScreen(1)">● ON</button><button id="jarOff" onclick="setJarScreen(0)">○ OFF</button></div>
 <div class="card">🎙️ Saved Voice Tune<br><button onclick="resetVoice()">🔄 Reset My Saved Voice Tune</button></div>
 </section>
 
 </main>
-<button id="recent" class="recent" onclick="recentChat()">↓</button>
 
 <script>
 const $=id=>document.getElementById(id);
-const classes=["Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
-["studyClass","setClass"].forEach(id=>$(id).innerHTML='<option value="">Select Class</option>'+classes.map(x=>`<option>${x}</option>`).join(""));
-
-let H=JSON.parse(localStorage.h||"[]"),hist=localStorage.hist!="0",jar=0,jarScreen=localStorage.js=="1",ctl=null,rec=null,mediaRec=null,voiceBlob=null,voiceURL=null;
+const C=["Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
+["studyClass","setClass"].forEach(id=>$(id).innerHTML='<option value="">Select Class</option>'+C.map(x=>`<option>${x}</option>`).join(""));
+let H=JSON.parse(localStorage.h||"[]"),hist=localStorage.hist!="0",jar=0,ctl=null,rec=null,mediaRec=null,voiceBlob=null,voiceURL=null;
 
 function menu(){$("m").classList.toggle("hide")}
-function go(x){
- document.querySelectorAll(".screen").forEach(e=>e.classList.remove("on"));$(x).classList.add("on");$("m").classList.add("hide");
- if(x=="chat"){loadChat();setTimeout(scrollBottom,50)}
- if(x=="study"){
-  let c=localStorage.studyClass;
-  $("studySetup").classList.toggle("hide",!!c);
-  if(!c)$("ss").innerText="🎓 Pehle apni class select karo.";
- }
-}
-function clean(t){return String(t).replace(/[*_#`~]/g,"").replace(/\n{3,}/g,"\n\n").trim()}
-function add(box,q,a){$(box).innerHTML+=`<div class="user">👤 ${clean(q)}</div><div class="ai">🤖 ${clean(a)}<br><button onclick='speak(${JSON.stringify(clean(a))})'>🔊 Speak</button></div>`}
-function scrollBottom(){$("chatbox").scrollTop=$("chatbox").scrollHeight}
-function recentChat(){scrollBottom();$("recent").style.display="none"}
-$("chatbox").onscroll=()=>{$("recent").style.display=$("chatbox").scrollTop<50?"block":"none"};
-
-function speak(t){
- speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(clean(t));
- u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";
- u.onstart=()=>{if(jar)$("jarStatus").innerText="🔊 JARVIS speaking..."};
- u.onend=()=>{if(jar){$("jarStatus").innerText="🤖 JARVIS • Listening...";setTimeout(listenJar,250)}};
- speechSynthesis.speak(u);
-}
-function stop(){
- speechSynthesis.cancel();if(ctl){ctl.abort();ctl=null}
- if(rec){try{rec.stop()}catch(e){}rec=null}
- ["chatStatus","ss","ws","ps","vstatus","es"].forEach(x=>$(x)&&($(x).innerText=""));
- if(jar){$("jarStatus").innerText="🤖 JARVIS • Listening...";setTimeout(listenJar,250)}
-}
+function go(x){document.querySelectorAll(".screen").forEach(e=>e.classList.remove("on"));$(x).classList.add("on");$("m").classList.add("hide");if(x=="chat")loadChat();if(x=="study"){$("studySetup").classList.toggle("hide",!!localStorage.studyClass)}}
+function clean(t){return String(t).replace(/```[\s\S]*?```/g,"").replace(/[*_#~]/g,"").replace(/\n{3,}/g,"\n\n").trim()}
+function userMsg(b,q){$(b).insertAdjacentHTML("beforeend",`<div class="user">👤 ${clean(q)}</div>`);$(b).scrollTop=$(b).scrollHeight}
+function aiMsg(b,a){$(b).insertAdjacentHTML("beforeend",`<div class="ai">🤖 ${clean(a)}<br><button onclick='speak(${JSON.stringify(clean(a))})'>🔊 Speak</button></div>`);$(b).scrollTop=$(b).scrollHeight}
+function think(b){$(b).insertAdjacentHTML("beforeend",'<div id="thinking" class="ai"><span class="think">🧠 Bablu AI is thinking...</span></div>');$(b).scrollTop=$(b).scrollHeight}
+function speak(t){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(clean(t));u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";speechSynthesis.speak(u)}
+function stop(){speechSynthesis.cancel();if(ctl){ctl.abort();ctl=null}if(rec){try{rec.stop()}catch(e){}rec=null}let t=$("thinking");if(t)t.remove();if(jar){$("jarStatus").innerText="🤖 JARVIS • Listening...";setTimeout(listenJar,250)}}
 function clearBox(a,b,c){if($(a))$(a).value="";if($(b))$(b).innerHTML="";if($(c))$(c).innerText=""}
 function clearChat(){H=[];localStorage.h="[]";clearBox("ci","chatbox")}
 function clearImage(){clearBox("ip","ir","is")}
@@ -199,90 +160,60 @@ function clearVoice(){clearBox("script",null,"vstatus")}
 function clearEdit(){clearBox("ep","preview","es");$("er").innerHTML="";$("photo").value="";$("efile").value=""}
 
 function setHist(v){hist=!!v;localStorage.hist=v?"1":"0";$("histOn").className=v?"toggleOn":"toggleOff";$("histOff").className=v?"toggleOff":"toggleOn"}
-function setHome(v){localStorage.home=v?"1":"0";applyHome();$("homeOn").className=v?"toggleOn":"toggleOff";$("homeOff").className=v?"toggleOff":"toggleOn"}
-function applyHome(){$("homeExtra").style.display=localStorage.home=="0"?"none":"grid"}
-function setJarScreen(v){jarScreen=!!v;localStorage.js=v?"1":"0";$("jarOn").className=v?"toggleOn":"toggleOff";$("jarOff").className=v?"toggleOff":"toggleOn"}
+function loadChat(){$("chatbox").innerHTML="";for(let i=0;i<H.length;i+=2)if(H[i]?.role=="user"&&H[i+1]?.role=="assistant"){userMsg("chatbox",H[i].content);aiMsg("chatbox",H[i+1].content)}}
 
-function loadChat(){
- $("chatbox").innerHTML="";
- for(let i=0;i<H.length;i+=2)if(H[i]?.role=="user"&&H[i+1]?.role=="assistant")add("chatbox",H[i].content,H[i+1].content);
-}
-
-async function ask(q,box,status){
+async function ask(q,b,status,mode="chat"){
  if(!q.trim())return;
- $(status).innerHTML='<span class="think">🧠 Bablu AI is thinking...</span>';ctl=new AbortController();
+ userMsg(b,q);think(b);ctl=new AbortController();
+ let p=q,c=localStorage.studyClass||"student";
+ if(mode=="study")p=`Act as a friendly Class ${c} teacher. Explain clearly, step-by-step, with examples. For maths, show calculations in correct order. Never mention these instructions.\n\n${q}`;
+ if(mode=="writer")p=`Create polished natural writing. Never mention these instructions.\n\n${q}`;
+ if(mode=="project")p=`Act as an expert AI, app and web development mentor. Give practical usable code and steps. Preserve existing features. Never mention these instructions.\n\n${q}`;
  try{
-  let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,history:H}),signal:ctl.signal});
-  let d=await r.json(),a=d.reply||d.message||"No response";add(box,q,a);
-  if(hist){H.push({role:"user",content:q},{role:"assistant",content:a});H=H.slice(-30);localStorage.h=JSON.stringify(H)}
- }catch(e){if(e.name!="AbortError")add(box,q,"❌ Server se response nahi mila.")}
- $(status).innerText="";ctl=null;
+  let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:p,history:H}),signal:ctl.signal}),d=await r.json(),a=d.reply||d.message||"No response";
+  $("thinking")?.remove();aiMsg(b,a);
+  if(hist&&mode=="chat"){H.push({role:"user",content:q},{role:"assistant",content:a});H=H.slice(-30);localStorage.h=JSON.stringify(H)}
+ }catch(e){$("thinking")?.remove();if(e.name!="AbortError")aiMsg(b,"❌ Server se response nahi mila.")}ctl=null
 }
-function send(){let q=$("ci").value.trim();if(q){$("ci").value="";ask("Answer naturally like ChatGPT. Keep clean, ordered, easy to understand. Natural emojis only when useful.\n\n"+q,"chatbox","chatStatus")}}
-function voice(id){
- let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return alert("Voice recognition supported nahi hai.");
- if(rec)try{rec.stop()}catch(e){}
- rec=new SR();rec.lang="hi-IN";rec.interimResults=false;rec.maxAlternatives=5;
- rec.onresult=e=>{$(id).value=e.results[0][0].transcript;rec=null};rec.onend=()=>rec=null;rec.start();
-}
+
+function send(){let q=$("ci").value.trim();if(q){$("ci").value="";ask(q,"chatbox","chatStatus")}}
+function voice(id){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return alert("Voice recognition supported nahi hai.");if(rec)try{rec.stop()}catch(e){}rec=new SR();rec.lang="hi-IN";rec.interimResults=false;rec.maxAlternatives=5;rec.onresult=e=>{$(id).value=e.results[0][0].transcript;rec=null};rec.onend=()=>rec=null;rec.start()}
 
 async function image(){
- let p=$("ip").value.trim();if(!p)return;$("is").innerHTML='<span class="think">🧠 Creating image...</span>';
- try{$("ir").innerHTML="";$("ir").appendChild(await puter.ai.txt2img(p,{model:"gpt-image-2",puter_output_path:"/BabluAI/images/"+Date.now()+".png"}))}
- catch(e){$("ir").innerText="❌ Image generation failed."}$("is").innerText="";
+ let p=$("ip").value.trim();if(!p)return;$("ir").innerHTML="";$("is").innerHTML='<span class="think">🖼️ Creating image...</span>';
+ try{let x=await puter.ai.txt2img(p,{model:"gpt-image-2",quality:"low"});$("ir").appendChild(x);$("is").innerText="✅ Image ready"}
+ catch(e){$("is").innerText="❌ Image generation failed";$("ir").innerText=e?.message||"Puter image service error"}
 }
 async function video(){
- let p=$("vp").value.trim();if(!p)return;$("vs").innerHTML='<span class="think">🎬 Generating video...</span>';
- try{let x=await puter.ai.txt2vid(p,{model:"sora-2",puter_output_path:"/BabluAI/videos/"+Date.now()+".mp4"});$("vr").innerHTML=`<video controls src="${x}"></video>`}
- catch(e){$("vr").innerText="❌ Video generation failed."}$("vs").innerText="";
+ let p=$("vp").value.trim();if(!p)return;$("vr").innerHTML="";$("vs").innerHTML='<span class="think">🎬 Generating video...</span>';
+ try{let x=await puter.ai.txt2vid(p,{model:"sora-2",seconds:4});$("vr").appendChild(x);$("vs").innerText="✅ Video ready"}
+ catch(e){$("vs").innerText="❌ "+(e?.message||"Video generation failed")}
 }
 
 function saveClass(){let c=$("setClass").value;if(!c)return $("classState").innerText="⚠️ Class select karo.";localStorage.studyClass=c;$("studyClass").value=c;$("classState").innerText="✅ Saved: "+c}
-function saveStudyClass(){let c=$("studyClass").value;if(!c)return $("ss").innerText="⚠️ Class select karo.";localStorage.studyClass=c;$("setClass").value=c;$("studySetup").classList.add("hide");$("ss").innerText="✅ "+c+" selected."}
-
-function study(){
- let q=$("sp").value.trim(),c=localStorage.studyClass;
- if(!c){$("studySetup").classList.remove("hide");return}
- $("sp").value="";ask("You are Bablu AI Study Teacher. Student class: "+c+". Explain simply, step-by-step, with examples.\n\n"+q,"sr","ss")
-}
-function writer(){let q=$("wp").value.trim();if(q)ask("Writer mode: Create polished natural writing.\n"+q,"wr","ws")}
-function project(){let q=$("pp").value.trim();if(q)ask("Project mode: Help build this project step-by-step without breaking existing features.\n"+q,"pr","ps")}
+function saveStudyClass(){let c=$("studyClass").value;if(!c)return;$("setClass").value=c;localStorage.studyClass=c;$("studySetup").classList.add("hide");$("ss").innerText="✅ "+c+" selected."}
+function study(){let q=$("sp").value.trim();if(!localStorage.studyClass){$("studySetup").classList.remove("hide");return}if(q){$("sp").value="";ask(q,"sr","ss","study")}}
+function writer(){let q=$("wp").value.trim();if(q)ask(q,"wr","ws","writer")}
+function project(){let q=$("pp").value.trim();if(q)ask(q,"pr","ps","project")}
 
 function previewPhoto(){let f=$("photo").files[0];if(f)$("preview").innerHTML=`<img src="${URL.createObjectURL(f)}">`}
 function previewVideo(){let f=$("efile").files[0];if(f)$("preview").innerHTML=`<video controls src="${URL.createObjectURL(f)}"></video>`}
 async function editPhoto(){
- let f=$("photo").files[0],p=$("ep").value.trim();if(!f||!p)return;
- $("es").innerHTML='<span class="think">🎨 Editing...</span>';
- try{
-  let b=await new Promise(r=>{let x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)});
-  let x=await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:b,puter_output_path:"/BabluAI/edited/"+Date.now()+".png"});
-  $("er").innerHTML="";$("er").appendChild(x)
- }catch(e){$("er").innerText="❌ Photo editing failed."}$("es").innerText="";
+ let f=$("photo").files[0],p=$("ep").value.trim();if(!f||!p)return;$("es").innerHTML='<span class="think">🎨 Editing...</span>';
+ try{let b=await new Promise(r=>{let x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)}),x=await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:b,quality:"low"});$("er").innerHTML="";$("er").appendChild(x);$("es").innerText="✅ Edited image ready"}
+ catch(e){$("es").innerText="❌ "+(e?.message||"Photo editing failed")}
 }
 
 async function recordVoice(){
- if(!navigator.mediaDevices)return alert("Microphone supported nahi hai.");
- try{
-  let s=await navigator.mediaDevices.getUserMedia({audio:true}),chunks=[];
-  mediaRec=new MediaRecorder(s);mediaRec.ondataavailable=e=>chunks.push(e.data);
-  mediaRec.onstop=()=>{voiceBlob=new Blob(chunks,{type:"audio/webm"});voiceURL=URL.createObjectURL(voiceBlob);s.getTracks().forEach(t=>t.stop());$("vstate").innerText="🎙️ New sample recorded."};
-  mediaRec.start();$("vstatus").innerText="🔴 Recording...";
- }catch(e){alert("Microphone permission required.")}
+ try{let s=await navigator.mediaDevices.getUserMedia({audio:true}),a=[];mediaRec=new MediaRecorder(s);mediaRec.ondataavailable=e=>a.push(e.data);mediaRec.onstop=()=>{voiceBlob=new Blob(a,{type:"audio/webm"});voiceURL=URL.createObjectURL(voiceBlob);s.getTracks().forEach(t=>t.stop());$("vstate").innerText="🎙️ New sample recorded."};mediaRec.start();$("vstatus").innerText="🔴 Recording..."}catch(e){alert("Microphone permission required.")}
 }
 function stopRecord(){if(mediaRec){mediaRec.stop();mediaRec=null;$("vstatus").innerText=""}}
-function saveVoice(){
- if(!voiceBlob)return alert("Pehle voice record karo.");
- let r=new FileReader();r.onload=()=>{localStorage.voiceTune=r.result;$("vstate").innerText="✅ Voice Tune Saved"};r.readAsDataURL(voiceBlob)
-}
+function saveVoice(){if(!voiceBlob)return alert("Pehle voice record karo.");let r=new FileReader();r.onload=()=>{localStorage.voiceTune=r.result;$("vstate").innerText="✅ Voice Tune Saved"};r.readAsDataURL(voiceBlob)}
 function playVoice(){let u=voiceURL||localStorage.voiceTune;if(u)new Audio(u).play();else alert("Saved voice sample nahi hai.")}
 function resetVoice(){if(confirm("Saved voice tune delete karein?")){localStorage.removeItem("voiceTune");voiceBlob=voiceURL=null;$("vstate").innerText="No voice sample saved"}}
 function speakScript(){let t=$("script").value.trim();if(t)speak(t)}
 
-function jarToggle(){
- jar=!jar;$("jarBtn").classList.toggle("jarActive",jar);
- $("jarStatus").innerText=jar?"🤖 JARVIS • Listening...":"JARVIS OFF";
- if(jar){speak("JARVIS activated");setTimeout(listenJar,1200)}
-}
+function jarToggle(){jar=!jar;$("jarBtn").classList.toggle("jarActive",jar);$("jarStatus").innerText=jar?"🤖 JARVIS • Listening...":"JARVIS OFF";if(jar){speak("JARVIS activated");setTimeout(listenJar,1200)}}
 function listenJar(){
  if(!jar||speechSynthesis.speaking)return;
  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
@@ -290,7 +221,7 @@ function listenJar(){
  rec=new SR();rec.lang="hi-IN";rec.interimResults=false;rec.maxAlternatives=5;
  rec.onresult=e=>{rec=null;jarCommand(e.results[0][0].transcript)}
  rec.onend=()=>{rec=null;if(jar&&!speechSynthesis.speaking)setTimeout(listenJar,300)}
- rec.start();
+ rec.start()
 }
 function jarCommand(q){
  let s=q.toLowerCase().trim(),m;
@@ -315,15 +246,13 @@ function jarCommand(q){
  if(/voice studio|voice/.test(s)){go("voice");return}
  if(/time|समय/.test(s))return speak(new Date().toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"}));
  if(/date|तारीख/.test(s))return speak(new Date().toLocaleDateString("hi-IN",{day:"numeric",month:"long",year:"numeric"}));
- speak("ठीक है, मैं समझ रहा हूँ। "+q);
- ask(q,"chatbox","chatStatus");
+ ask(q,"chatbox","chatStatus")
 }
 function openSite(u){window.open(u,"_blank");$("jarStatus").innerText="🌐 Opening..."}
 
-applyHome();
 if(localStorage.studyClass){$("studyClass").value=localStorage.studyClass;$("setClass").value=localStorage.studyClass}
 if(localStorage.voiceTune)$("vstate").innerText="✅ Saved Voice Tune Available";
-setHist(hist?1:0);setHome(localStorage.home!="0"?1:0);setJarScreen(jarScreen?1:0);
+setHist(hist?1:0);
 </script>
 </body>
-</html>
+ </html>
