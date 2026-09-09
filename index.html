@@ -9,8 +9,11 @@ button,input,textarea,select{border:1px solid #303d5c;border-radius:13px;backgro
 input,textarea,select{width:100%}textarea{min-height:90px}
 .bar{display:flex;background:#0c121e;border:1px solid #303d5c;border-radius:18px;padding:3px}.bar input{border:0;margin:0}
 .chat{height:calc(100vh - 58px);display:flex;flex-direction:column}.msgs{flex:1;overflow:auto}
-.user,.ai{padding:11px;margin:8px 0;border-radius:16px;white-space:pre-wrap;line-height:1.5}
-.user{background:#162642}.ai{background:#0c121d}.menu{position:absolute;right:10px;top:55px;background:#0a0f1a;border:1px solid #303d5c;border-radius:14px;padding:6px;z-index:9}
+.user,.ai{padding:11px;margin:8px 0;border-radius:16px;line-height:1.5}
+.user{background:#162642}.ai{background:#0c121d}
+.ai pre{background:#05070d;padding:10px;border-radius:10px;overflow:auto;white-space:pre-wrap}
+.ai h3{margin:8px 0}.ai ul,.ai ol{padding-left:25px}.speak{font-size:12px;padding:6px 10px}
+.menu{position:absolute;right:10px;top:55px;background:#0a0f1a;border:1px solid #303d5c;border-radius:14px;padding:6px;z-index:9}
 .menu button{display:block;width:210px;text-align:left}.tabs{display:flex;overflow:auto}.active{border-color:#6677ff}
 .load{position:fixed;inset:0;background:#05070d;display:flex;align-items:center;justify-content:center;z-index:99}
 .logo{text-align:center;font-size:28px}.logo small{display:block;font-size:13px;color:#9ba8c7;margin-top:8px}
@@ -51,13 +54,12 @@ img,video{max-width:100%;width:100%;border-radius:14px}
 <div id="hm" class="msgs" style="display:none"></div>
 <div class="bar"><input id="hi" placeholder="Ask anything..." onkeydown="if(event.key=='Enter')sendHome()">
 <button onclick="voice('hi')">🎙️</button><button onclick="sendHome()">➤</button></div>
-<button onclick="stop()">⏹ Stop</button>
+<button onclick="stop()">⏹ Stop</button><button onclick="clearHome()">🗑️ Clear</button>
 </section>
 
 <section id="history" class="s">
 <button onclick="go('home')">← Home</button><h2>💬 Chat History</h2>
-<div id="old" class="msgs"></div>
-<button onclick="clearHome()">🗑️ Clear History</button>
+<div id="old" class="msgs"></div><button onclick="clearHome()">🗑️ Clear History</button>
 </section>
 
 <section id="image" class="s">
@@ -82,8 +84,7 @@ img,video{max-width:100%;width:100%;border-radius:14px}
 
 <section id="voice" class="s">
 <button onclick="go('home')">← Home</button><h2>🎙️ Voice Studio</h2>
-<textarea id="sc" placeholder="Write text..."></textarea>
-<button onclick="speak($('sc').value)">🔊 Speak</button><button onclick="stop()">⏹ Stop</button>
+<textarea id="sc" placeholder="Write text..."></textarea><button onclick="speak($('sc').value)">🔊 Speak</button><button onclick="stop()">⏹ Stop</button>
 <div class="ai"><button onclick="record()">🔴 Record</button><button onclick="stopRec()">⏹ Stop Recording</button><button onclick="saveVoice()">💾 Save</button><button onclick="playVoice()">▶️ Play</button><p id="vs1">No voice saved</p></div>
 </section>
 
@@ -126,9 +127,12 @@ img,video{max-width:100%;width:100%;border-radius:14px}
 
 </main><script>
 
-const $=x=>document.getElementById(x),C=["Select Class","Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
+const $=x=>document.getElementById(x);
+const C=["Select Class","Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
 ["cl","set"].forEach(x=>$(x).innerHTML=C.map(y=>`<option>${y}</option>`).join(""));
-let H=JSON.parse(localStorage.h||"[]"),ctl,rec,MR,VB,VU,rem,bab=0,tabs=JSON.parse(localStorage.tabs||"[]"),tab=0;
+
+let H=JSON.parse(localStorage.h||"[]"),ctl,rec,MR,VB,VU,rem,bab=0;
+let tabs=JSON.parse(localStorage.tabs||"[]"),tab=0;
 if(!tabs.length)tabs=[{n:"Tab 1",p:"",o:""}];
 
 function menu(){$("mn").style.display=$("mn").style.display=="none"?"block":"none"}
@@ -137,10 +141,36 @@ function go(x){
  $(x).classList.add("on");$("mn").style.display="none";
  if(x=="project")draw();if(x=="history")loadHistory();
 }
-function add(b,t,c){let d=document.createElement("div");d.className=t;d.textContent=(t=="user"?"👤 ":"🤖 ")+c;$(b).append(d);$(b).scrollTop=$(b).scrollHeight;return d}
+
+function esc(s){return String(s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
+
+function fmt(s){
+ s=esc(s).replace(/```([\s\S]*?)```/g,"<pre>$1</pre>");
+ s=s.replace(/^### (.*)$/gm,"<h3>$1</h3>");
+ s=s.replace(/^## (.*)$/gm,"<h3>$1</h3>");
+ s=s.replace(/^# (.*)$/gm,"<h3>$1</h3>");
+ s=s.replace(/^\d+\.\s+(.*)$/gm,"<li>$1</li>");
+ s=s.replace(/^[-*]\s+(.*)$/gm,"<li>$1</li>");
+ s=s.replace(/(<li>.*<\/li>\n?)+/g,x=>"<ul>"+x+"</ul>");
+ return s.replace(/\n/g,"<br>");
+}
+
+function add(b,t,c){
+ let d=document.createElement("div");d.className=t;
+ if(t=="ai"){
+  d.innerHTML=fmt("🤖 "+c)+`<br><button class="speak" onclick='speak(${JSON.stringify(c)})'>🔊 Speak</button>`;
+ }else d.textContent="👤 "+c;
+ $(b).append(d);$(b).scrollTop=$(b).scrollHeight;return d
+}
+
 function ai(b,c){return add(b,"ai",c)}
-function think(b){return add(b,"ai think","🧠 Thinking...")}
-function speak(t){if(!t)return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";speechSynthesis.speak(u)}
+function think(b){return add(b,"ai","🧠 Thinking...")}
+function speak(t){
+ if(!t)return;speechSynthesis.cancel();
+ let u=new SpeechSynthesisUtterance(t);
+ u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";
+ speechSynthesis.speak(u)
+}
 function stop(){speechSynthesis.cancel();if(ctl)ctl.abort();document.querySelector(".think")?.remove()}
 
 async function ask(q,b,mode="chat",extra=""){
@@ -150,15 +180,16 @@ async function ask(q,b,mode="chat",extra=""){
   body:JSON.stringify({message:q+"\n"+extra,history:mode=="chat"?H:[]}),signal:ctl.signal});
   let d=await r.json();th.remove();let a=d.reply||"No response";ai(b,a);
   if(mode=="chat"&&localStorage.hist!="0"){
-   H.push({role:"user",content:q},{role:"assistant",content:a});H=H.slice(-30);localStorage.h=JSON.stringify(H);
+   H.push({role:"user",content:q},{role:"assistant",content:a});
+   H=H.slice(-30);localStorage.h=JSON.stringify(H)
   }
  }catch(e){th.remove();if(e.name!="AbortError")ai(b,"❌ Server se response nahi mila.")}
- ctl=null;
+ ctl=null
 }
 
 function sendHome(){
  let q=$("hi").value.trim();if(!q)return;
- $("hi").value="";$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm");
+ $("hi").value="";$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm")
 }
 function quick(q){$("hi").value=q;sendHome()}
 
@@ -166,79 +197,162 @@ function loadHistory(){
  let o=$("old");o.innerHTML="";
  if(!H.length){ai("old","📭 No chat history");return}
  for(let i=0;i<H.length;i+=2)if(H[i+1]){
-  add("old","user",H[i].content);ai("old",H[i+1].content);
+  add("old","user",H[i].content);ai("old",H[i+1].content)
  }
 }
-function clearHome(){H=[];localStorage.h="[]";$("hm").innerHTML="";$("old").innerHTML=""}
+function clearHome(){
+ H=[];localStorage.h="[]";$("hm").innerHTML="";$("old").innerHTML="";
+ $("welcome").style.display="block";$("hm").style.display="none"
+}
 
 function voice(id){
  let S=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!S)return alert("Voice supported nahi.");rec=new S;rec.lang="hi-IN";rec.onresult=e=>$(id).value=e.results[0][0].transcript;rec.start()
+ if(!S)return alert("Voice supported nahi.");
+ rec=new S;rec.lang="hi-IN";
+ rec.onresult=e=>$(id).value=e.results[0][0].transcript;rec.start()
 }
 
 async function image(){
- let p=$("ip").value;if(!p)return;$("is").innerText="🧠 Creating...";
- try{$("ir").innerHTML="";$("ir").append(await puter.ai.txt2img(p,{model:"gpt-image-2",quality:"low"}));$("is").innerText="✅ Ready"}catch(e){$("is").innerText="❌ Failed"}
+ let p=$("ip").value;if(!p)return;
+ $("is").innerText="🧠 Creating...";
+ try{$("ir").innerHTML="";$("ir").append(await puter.ai.txt2img(p,{model:"gpt-image-2",quality:"low"});$("is").innerText="✅ Ready"}
+ catch(e){$("is").innerText="❌ Failed"}
 }
+
 async function video(){
- let p=$("vp").value;if(!p)return;$("vs").innerText="🧠 Generating...";
- try{$("vr").innerHTML="";$("vr").append(await puter.ai.txt2vid(p,{model:"sora-2",seconds:4}));$("vs").innerText="✅ Ready"}catch(e){$("vs").innerText="❌ Failed"}
+ let p=$("vp").value;if(!p)return;
+ $("vs").innerText="🧠 Generating...";
+ try{$("vr").innerHTML="";$("vr").append(await puter.ai.txt2vid(p,{model:"sora-2",seconds:4}));$("vs").innerText="✅ Ready"}
+ catch(e){$("vs").innerText="❌ Failed"}
 }
-function study(){let q=$("sp").value,c=$("cl").value;if(q&&c!="Select Class"){ask(q,"sr","study",`Teach as a ${c} teacher.`);$("sp").value=""}}
-function writer(){let q=$("wp").value;if(q)ask(q,"wr","writer","Create polished writing.")}
-function health(){ask($("hq").value||"Give a simple healthy routine.","hr","health","Give general wellness guidance only.")}
-function prevFood(){let f=$("ff").files[0];if(f){$("fi").src=URL.createObjectURL(f);$("fi").style.display="block"}}
+
+function study(){
+ let q=$("sp").value,c=$("cl").value;
+ if(q&&c!="Select Class"){ask(q,"sr","study",`Teach as a ${c} teacher. Use headings, numbered steps and examples.`);$("sp").value=""}
+}
+function writer(){
+ let q=$("wp").value;if(q)ask(q,"wr","writer","Create polished writing with clear sections.")
+}
+function health(){
+ ask($("hq").value||"Give a simple healthy routine.","hr","health","Give general wellness guidance only.")
+}
+function prevFood(){
+ let f=$("ff").files[0];if(f){$("fi").src=URL.createObjectURL(f);$("fi").style.display="block"}
+}
 async function food(){
  let f=$("ff").files[0];if(!f)return alert("Photo select karo.");
  let x=await new Promise(r=>{let a=new FileReader;a.onload=()=>r(a.result);a.readAsDataURL(f)});
  let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:$("fq").value||"Analyze this food.",image:x})});
- let d=await r.json();ai("fr",d.reply||"Analysis nahi mila.");
+ let d=await r.json();ai("fr",d.reply||"Analysis nahi mila.")
 }
+
 function notify(){Notification.requestPermission().then(x=>$("rs").innerText=x=="granted"?"✅ Enabled":"⚠️ Denied")}
-function startRem(){stopRem();let m=+$("wm").value||60;notify();rem=setInterval(()=>Notification.permission=="granted"&&new Notification("Bablu AI",{body:"💧 Paani peene ka time hai."}),m*60000);$("rs").innerText=`💧 Every ${m} minutes`}
+function startRem(){
+ stopRem();let m=+$("wm").value||60;notify();
+ rem=setInterval(()=>Notification.permission=="granted"&&new Notification("Bablu AI",{body:"💧 Paani peene ka time hai."}),m*60000);
+ $("rs").innerText=`💧 Every ${m} minutes`
+}
 function stopRem(){if(rem)clearInterval(rem);rem=null}
+
 function newTab(){tabs.push({n:"Tab "+(tabs.length+1),p:"",o:""});tab=tabs.length-1;save();draw()}
 function closeTab(){if(tabs.length>1){tabs.splice(tab,1);tab=Math.max(0,tab-1);save();draw()}}
 function save(){localStorage.tabs=JSON.stringify(tabs)}
-function draw(){$("tabs").innerHTML=tabs.map((x,i)=>`<button class="${i==tab?"active":""}" onclick="sw(${i})">${x.n}</button>`).join("");$("pp").value=tabs[tab].p;$("pr").innerText=tabs[tab].o}
-function sw(i){tabs[tab].p=$("pp").value;save();tab=i;draw()}
-async function project(){
- let q=$("pp").value;if(!q)return;tabs[tab].p=q;$("pr").innerText="🧠 Building...";
- let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,history:[]})});
- let d=await r.json();tabs[tab].o=d.reply||"No response";save();draw()
+
+function draw(){
+ $("tabs").innerHTML=tabs.map((x,i)=>`<button class="${i==tab?"active":""}" onclick="sw(${i})">${x.n}</button>`).join("");
+ $("pp").value=tabs[tab].p;
+ let o=tabs[tab].o;
+ $("pr").innerHTML=o?fmt(o)+`<br><button class="speak" onclick='speak(${JSON.stringify(o)})'>🔊 Speak</button>`:""
 }
-function prevEdit(){let f=$("ef").files[0];if(f)$("epv").innerHTML=`<img src="${URL.createObjectURL(f)}">`}
+function sw(i){tabs[tab].p=$("pp").value;save();tab=i;draw()}
+
+async function project(){
+ let q=$("pp").value.trim();if(!q)return;
+ tabs[tab].p=q;$("pr").innerHTML="<div class='ai'>🧠 Building...</div>";
+ let extra=`You are in PROJECT MODE.
+Give the answer in a clean ChatGPT-style structure.
+Always use this order when applicable:
+### 1. Idea / Goal
+### 2. Requirements
+### 3. File Structure
+### 4. Step-by-Step
+### 5. Complete Code
+### 6. Testing
+### 7. Next Step
+Keep sections clear. Put code only inside fenced code blocks.
+Do not mix explanations with code.
+Preserve existing working features and do not remove features unless explicitly asked.
+If something is ambiguous, ask one short clarification instead of guessing.`;
+ try{
+  let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({message:q+"\n\n"+extra,history:[]})});
+  let d=await r.json();tabs[tab].o=d.reply||"No response";save();draw()
+ }catch(e){$("pr").innerHTML="<div class='ai'>❌ Project server response nahi mila.</div>"}
+}
+
+function prevEdit(){
+ let f=$("ef").files[0];if(f)$("epv").innerHTML=`<img src="${URL.createObjectURL(f)}">`
+}
 async function edit(){
  let f=$("ef").files[0],p=$("eq").value;if(!f||!p)return;
- try{let x=await new Promise(r=>{let a=new FileReader;a.onload=()=>r(a.result);a.readAsDataURL(f)});$("er").innerHTML="";$("er").append(await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:x,quality:"low"}))}catch(e){$("er").innerText="❌ Failed"}
+ try{
+  let x=await new Promise(r=>{let a=new FileReader;a.onload=()=>r(a.result);a.readAsDataURL(f)});
+  $("er").innerHTML="";$("er").append(await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:x,quality:"low"}))
+ }catch(e){$("er").innerText="❌ Failed"}
 }
+
 function saveClass(){$("cl").value=$("set").value;localStorage.studyClass=$("set").value}
 function hist(v){localStorage.hist=v}
+
 async function record(){
- let s=await navigator.mediaDevices.getUserMedia({audio:true}),a=[];MR=new MediaRecorder(s);MR.ondataavailable=e=>a.push(e.data);
- MR.onstop=()=>{VB=new Blob(a,{type:"audio/webm"});VU=URL.createObjectURL(VB);s.getTracks().forEach(t=>t.stop());$("vs1").innerText="🎙️ Recorded"};MR.start()
+ let s=await navigator.mediaDevices.getUserMedia({audio:true}),a=[];
+ MR=new MediaRecorder(s);MR.ondataavailable=e=>a.push(e.data);
+ MR.onstop=()=>{
+  VB=new Blob(a,{type:"audio/webm"});VU=URL.createObjectURL(VB);
+  s.getTracks().forEach(t=>t.stop());$("vs1").innerText="🎙️ Recorded"
+ };MR.start()
 }
 function stopRec(){if(MR)MR.stop()}
-function saveVoice(){if(!VB)return;let r=new FileReader;r.onload=()=>localStorage.voice=r.result;r.readAsDataURL(VB)}
+function saveVoice(){
+ if(!VB)return;let r=new FileReader;
+ r.onload=()=>localStorage.voice=r.result;r.readAsDataURL(VB)
+}
 function playVoice(){let u=VU||localStorage.voice;if(u)new Audio(u).play()}
-function bablu(){bab=!bab;$("bs").innerText=b?"🟢 ON":"🔴 OFF";if(b){speak("Bablu Assistant activated");listen()}else stop()}
+
+function bablu(){
+ bab=!bab;$("bs").innerText=b?"🟢 ON":"🔴 OFF";
+ if(b){speak("Bablu Assistant activated");listen()}else stop()
+}
 function listen(){
- if(!bab)return;let S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S)return;
- rec=new S;rec.lang="hi-IN";rec.onresult=e=>cmd(e.results[0][0].transcript);rec.onend=()=>bab&&setTimeout(listen,300);rec.start()
+ if(!bab)return;
+ let S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S)return;
+ rec=new S;rec.lang="hi-IN";rec.onresult=e=>cmd(e.results[0][0].transcript);
+ rec.onend=()=>bab&&setTimeout(listen,300);rec.start()
 }
 function cmd(q){
  let s=q.toLowerCase();
- if(/home|होम/.test(s))go("home");else if(/image|इमेज/.test(s))go("image");else if(/video|वीडियो/.test(s))go("video");
- else if(/study|पढ़ाई/.test(s))go("study");else if(/writer|लिखो/.test(s))go("writer");else if(/food|खाना/.test(s))go("food");
- else if(/health|सेहत/.test(s))go("health");else if(/project|प्रोजेक्ट/.test(s))go("project");else if(/edit|एडिट/.test(s))go("edit");
- else if(/voice/.test(s))go("voice");else if(/settings|सेटिंग/.test(s))go("settings");
- else if(/youtube/.test(s))open("https://www.youtube.com");else if(/google|गूगल/.test(s))open("https://www.google.com");
+ if(/home|होम/.test(s))go("home");
+ else if(/image|इमेज/.test(s))go("image");
+ else if(/video|वीडियो/.test(s))go("video");
+ else if(/study|पढ़ाई/.test(s))go("study");
+ else if(/writer|लिखो/.test(s))go("writer");
+ else if(/food|खाना/.test(s))go("food");
+ else if(/health|सेहत/.test(s))go("health");
+ else if(/project|प्रोजेक्ट/.test(s))go("project");
+ else if(/edit|एडिट/.test(s))go("edit");
+ else if(/voice/.test(s))go("voice");
+ else if(/settings|सेटिंग/.test(s))go("settings");
+ else if(/youtube/.test(s))open("https://www.youtube.com");
+ else if(/google|गूगल/.test(s))open("https://www.google.com");
  else{go("home");$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm")}
 }
 function open(u){window.open(u,"_blank")}
 
 setInterval(()=>{$("tm").innerText=new Date().toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"})},1000);
-if(localStorage.studyClass){$("cl").value=localStorage.studyClass;$("set").value=localStorage.studyClass}
+
+if(localStorage.studyClass){
+ $("cl").value=localStorage.studyClass;$("set").value=localStorage.studyClass
+}
 draw();setTimeout(()=>$("loading").style.display="none",1200);
 
 </script></body></html>
