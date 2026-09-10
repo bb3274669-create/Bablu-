@@ -1,39 +1,42 @@
-<!DOCTYPE html><html><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bablu AI</title>
 <script src="https://js.puter.com/v2/" defer></script>
-
 <style>
 *{box-sizing:border-box;font-family:Arial}
 body{margin:0;background:#05070d;color:#fff}
 header{height:58px;padding:10px 14px;background:#090d18;border-bottom:1px solid #293552;display:flex;justify-content:space-between;align-items:center}
 main{max-width:760px;margin:auto;padding:12px}
-.s{display:none}
-.s.on{display:block}
-.s.on.chat{display:flex}
+.s{display:none}.s.on{display:block}.s.on.chat{display:flex}
 button,input,textarea,select{border:1px solid #303d5c;border-radius:13px;background:#0d1422;color:#fff;padding:10px;margin:3px}
-input,textarea,select{width:100%}
-textarea{min-height:90px}
+input,textarea,select{width:100%}textarea{min-height:90px}
 .bar{display:flex;background:#0c121e;border:1px solid #303d5c;border-radius:18px;padding:3px}
 .bar input{border:0;margin:0}
 .chat{height:calc(100vh - 58px);flex-direction:column}
 .msgs{flex:1;overflow:auto}
-.user,.ai{padding:11px;margin:8px 0;border-radius:16px;white-space:pre-wrap;line-height:1.5}
+.user,.ai{padding:11px;margin:8px 0;border-radius:16px;white-space:pre-wrap;line-height:1.55}
 .user{background:#162642}.ai{background:#0c121d}
-.speak{margin-top:6px}
+.speak,.mini{font-size:12px;padding:7px 10px}
 .menu{position:absolute;right:10px;top:55px;background:#0a0f1a;border:1px solid #303d5c;border-radius:14px;padding:6px;z-index:9}
 .menu button{display:block;width:210px;text-align:left}
 .tabs{display:flex;overflow:auto}.active{border-color:#6677ff}
 .load{position:fixed;inset:0;background:#05070d;display:flex;align-items:center;justify-content:center;z-index:99}
-.logo{text-align:center;font-size:28px}
-.logo small{display:block;font-size:13px;color:#9ba8c7;margin-top:8px}
+.logo{text-align:center;font-size:28px}.logo small{display:block;font-size:13px;color:#9ba8c7;margin-top:8px}
 .spin{width:28px;height:28px;border:3px solid #303d5c;border-top-color:#fff;border-radius:50%;margin:18px auto;animation:r 1s linear infinite}
 @keyframes r{to{transform:rotate(360deg)}}
-.think{opacity:.6}
 img,video{max-width:100%;width:100%;border-radius:14px}
 pre{background:#05070d;padding:10px;border-radius:10px;overflow:auto;white-space:pre-wrap}
-code{font-family:monospace}
-</style></head><body>
+.foodpick{font-size:22px;padding:7px 11px}
+.pop{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;z-index:20}
+.popbox{background:#0c121e;border:1px solid #39486a;border-radius:18px;padding:18px;text-align:center}
+.md h3{margin:12px 0 5px}.md b{color:#fff}
+</style>
+</head>
+
+<body>
 
 <div id="loading" class="load">
 <div class="logo">🤖 Bablu AI<div class="spin"></div><small>Starting...</small></div>
@@ -41,7 +44,7 @@ code{font-family:monospace}
 
 <header>
 <b>🤖 Bablu AI</b>
-<button onclick="menu()">☰</button>
+<button class="mini" onclick="menu()">☰</button>
 
 <div id="mn" class="menu" style="display:none">
 <button onclick="go('history')">💬 Chat History</button>
@@ -65,29 +68,29 @@ code{font-family:monospace}
 <div id="welcome" class="msgs">
 <div class="ai">👋 Welcome to Bablu AI</div>
 <p>What would you like to do?</p>
-<button onclick="quick('Help me with my study')">📚 Help me study</button>
-<button onclick="quick('I want to build a project')">🚀 Build a project</button>
-<button onclick="quick('Help me write something')">✍️ Write something</button>
-<button onclick="quick('Create an image')">🖼️ Create an image</button>
+<button onclick="quick('Help me with my study')">📚 Study</button>
+<button onclick="quick('I want to build a project')">🚀 Project</button>
+<button onclick="quick('Help me write something')">✍️ Writer</button>
+<button onclick="quick('Create an image')">🖼️ Image</button>
 </div>
 
 <div id="hm" class="msgs" style="display:none"></div>
 
 <div class="bar">
 <input id="hi" placeholder="Ask anything..." onkeydown="if(event.key=='Enter')sendHome()">
-<button onclick="voice('hi')">🎙️</button>
-<button onclick="sendHome()">➤</button>
+<button class="mini" onclick="voice('hi')">🎙️</button>
+<button class="mini" onclick="sendHome()">➤</button>
 </div>
 
-<button onclick="stop()">⏹ Stop</button>
-<button onclick="clearHome()">🗑️ Clear</button>
+<button class="mini" onclick="stop()">⏹ Stop</button>
+<button class="mini" onclick="clearHome()">🗑️ Clear</button>
 </section>
 
 <section id="history" class="s">
 <button onclick="go('home')">← Home</button>
 <h2>💬 Chat History</h2>
 <div id="old" class="msgs"></div>
-<button onclick="clearHome()">🗑️ Clear History</button>
+<button class="mini" onclick="clearHome()">🗑️ Clear History</button>
 </section>
 
 <section id="image" class="s">
@@ -112,7 +115,7 @@ code{font-family:monospace}
 <select id="cl"></select>
 <input id="sp" placeholder="Ask your study question...">
 <button onclick="study()">🧠 Teach</button>
-<div id="sr"></div>
+<div id="sr" class="md"></div>
 </section>
 
 <section id="writer" class="s">
@@ -128,7 +131,7 @@ code{font-family:monospace}
 <h2>🎙️ Voice Studio</h2>
 <textarea id="sc" placeholder="Write text..."></textarea>
 <button onclick="speak($('sc').value)">🔊 Speak</button>
-<button onclick="stop()">⏹ Stop</button>
+<button class="mini" onclick="stop()">⏹ Stop</button>
 <div class="ai">
 <button onclick="record()">🔴 Record</button>
 <button onclick="stopRec()">⏹ Stop Recording</button>
@@ -141,11 +144,15 @@ code{font-family:monospace}
 <section id="food" class="s">
 <button onclick="go('home')">← Home</button>
 <h2>🍎 Food AI</h2>
-<input id="ff" type="file" accept="image/*" onchange="prevFood()">
+
+<button class="foodpick" onclick="foodOptions()">🖼️</button>
+
+<input id="fc" type="file" accept="image/*" capture="environment" hidden onchange="foodFile(this)">
+<input id="fg" type="file" accept="image/*" hidden onchange="foodFile(this)">
+
 <img id="fi" style="display:none">
-<textarea id="fq" placeholder="Ask about this food..."></textarea>
-<button onclick="food()">🧠 Analyze</button>
-<div id="fr"></div>
+<p id="fs">Image select karke Bablu automatically analysis karega 🤖</p>
+<div id="fr" class="md"></div>
 </section>
 
 <section id="health" class="s">
@@ -171,11 +178,11 @@ code{font-family:monospace}
 <button onclick="go('home')">← Home</button>
 <h2>🚀 Project</h2>
 <div id="tabs" class="tabs"></div>
-<button onclick="newTab()">＋ Tab</button>
-<button onclick="closeTab()">×</button>
+<button class="mini" onclick="newTab()">＋ Tab</button>
+<button class="mini" onclick="closeTab()">×</button>
 <textarea id="pp" placeholder="What do you want to build?"></textarea>
 <button onclick="project()">🧠 Build</button>
-<div id="pr"></div>
+<div id="pr" class="md"></div>
 </section>
 
 <section id="edit" class="s">
@@ -193,13 +200,9 @@ code{font-family:monospace}
 <h2>⚙️ Settings</h2>
 <select id="set"></select>
 <button onclick="saveClass()">💾 Save Class</button>
-<div class="ai">
-<h3>🤖 Bablu Assistant</h3>
-<button onclick="bablu()">🎙️ Start / Stop</button>
-<p id="bs">🔴 OFF</p>
-</div>
-<button onclick="hist(1)">History ON</button>
-<button onclick="hist(0)">History OFF</button>
+<div class="ai">🤖 Bablu automatically listens for <b>“Hey Bablu”</b> when the app is open.</div>
+<button class="mini" onclick="hist(1)">History ON</button>
+<button class="mini" onclick="hist(0)">History OFF</button>
 </section>
 
 </main>
@@ -239,15 +242,33 @@ function stop(){
  document.querySelectorAll(".think").forEach(x=>x.remove());
 }
 
+function clean(t){
+ let e=document.createElement("div");
+ e.textContent=t;
+ return e.innerHTML
+  .replace(/^### (.*)$/gm,"<h3>$1</h3>")
+  .replace(/^## (.*)$/gm,"<h3>$1</h3>")
+  .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
+  .replace(/```([\s\S]*?)```/g,"<pre>$1</pre>")
+  .replace(/\n/g,"<br>");
+}
+
 function add(b,t,c){
  let d=document.createElement("div");
  d.className=t;
- d.textContent=(t=="user"?"👤 ":"🤖 ")+c;
+
+ if(t=="ai"){
+  d.classList.add("md");
+  d.innerHTML="🤖 "+clean(c);
+ }else{
+  d.textContent="👤 "+c;
+ }
+
  $(b).append(d);
 
  if(t=="ai"){
   let s=document.createElement("button");
-  s.className="speak";
+  s.className="speak mini";
   s.textContent="🔊 Speak";
   s.onclick=()=>speak(c);
   $(b).append(s);
@@ -271,6 +292,7 @@ async function ask(q,b,mode="chat",extra=""){
    headers:{"Content-Type":"application/json"},
    body:JSON.stringify({
     message:q+"\n"+extra,
+    mode,
     history:mode=="chat"?H:[]
    }),
    signal:ctl.signal
@@ -278,7 +300,6 @@ async function ask(q,b,mode="chat",extra=""){
 
   let d=await r.json();
   th.remove();
-
   let a=d.reply||"No response";
   ai(b,a);
 
@@ -327,6 +348,7 @@ function clearHome(){
  $("old").innerHTML="";
  $("hm").style.display="none";
  $("welcome").style.display="block";
+ stop();
 }
 
 function voice(id){
@@ -363,7 +385,7 @@ async function video(){
 }
 
 function study(){
- let q=$("sp").value,c=$("cl").value;
+ let q=$("sp").value.trim(),c=$("cl").value;
  if(q&&c!="Select Class"){
   ask(q,"sr","study",`Teach as a ${c} teacher.`);
   $("sp").value="";
@@ -371,7 +393,7 @@ function study(){
 }
 
 function writer(){
- let q=$("wp").value;
+ let q=$("wp").value.trim();
  if(q)ask(q,"wr","writer","Create polished writing.");
 }
 
@@ -379,29 +401,61 @@ function health(){
  ask($("hq").value||"Give a simple healthy routine.","hr","health","Give general wellness guidance only.");
 }
 
-function prevFood(){
- let f=$("ff").files[0];
- if(f){
-  $("fi").src=URL.createObjectURL(f);
-  $("fi").style.display="block";
- }
+function foodOptions(){
+ let p=document.createElement("div");
+ p.className="pop";
+ p.innerHTML=`<div class="popbox">
+ <h3>🍎 Food Image</h3>
+ <button onclick="foodCamera()">📷 Click Image</button>
+ <button onclick="foodGallery()">🖼️ Choose Image</button>
+ <br><button class="mini" onclick="this.parentElement.parentElement.remove()">Cancel</button>
+ </div>`;
+ document.body.append(p);
 }
 
-async function food(){
- let f=$("ff").files[0];
- if(!f)return alert("Photo select karo.");
+function foodCamera(){
+ document.querySelector(".pop")?.remove();
+ $("fc").click();
+}
+
+function foodGallery(){
+ document.querySelector(".pop")?.remove();
+ $("fg").click();
+}
+
+function foodFile(x){
+ let f=x.files[0];
+ if(!f)return;
+ $("fi").src=URL.createObjectURL(f);
+ $("fi").style.display="block";
+ $("fs").innerText="🧠 Bablu food ko analyze kar raha hai...";
+ food(f);
+}
+
+async function food(f){
  let x=await new Promise(r=>{
   let a=new FileReader();
   a.onload=()=>r(a.result);
   a.readAsDataURL(f);
  });
- let r=await fetch("/api",{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({message:$("fq").value||"Analyze this food.",image:x})
- });
- let d=await r.json();
- ai("fr",d.reply||"Analysis nahi mila.");
+
+ try{
+  let r=await fetch("/api",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    message:"Analyze this food image and tell me everything useful about it.",
+    image:x,
+    mode:"food"
+   })
+  });
+  let d=await r.json();
+  $("fs").innerText="✅ Food analysis ready";
+  $("fr").innerHTML="";
+  ai("fr",d.reply||"Analysis nahi mila.");
+ }catch(e){
+  $("fs").innerText="❌ Analysis nahi ho paya";
+ }
 }
 
 function notify(){
@@ -429,57 +483,50 @@ function stopRem(){
 function newTab(){
  tabs.push({n:"Tab "+(tabs.length+1),p:"",o:""});
  tab=tabs.length-1;
- save();
- draw();
+ save();draw();
 }
 
 function closeTab(){
  if(tabs.length>1){
   tabs.splice(tab,1);
   tab=Math.max(0,tab-1);
-  save();
-  draw();
+  save();draw();
  }
 }
 
-function save(){
- localStorage.tabs=JSON.stringify(tabs);
-}
+function save(){localStorage.tabs=JSON.stringify(tabs)}
 
 function draw(){
  $("tabs").innerHTML=tabs.map((x,i)=>
   `<button class="${i==tab?"active":""}" onclick="sw(${i})">${x.n}</button>`
  ).join("");
  $("pp").value=tabs[tab].p;
- $("pr").innerText=tabs[tab].o;
+ $("pr").innerHTML=clean(tabs[tab].o||"");
 }
 
 function sw(i){
  tabs[tab].p=$("pp").value;
- save();
- tab=i;
- draw();
+ save();tab=i;draw();
 }
 
 async function project(){
- let q=$("pp").value;
+ let q=$("pp").value.trim();
  if(!q)return;
  tabs[tab].p=q;
- $("pr").innerText="🧠 Building...";
+ $("pr").innerHTML="🧠 Building...";
 
  try{
   let r=await fetch("/api",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({message:q,history:[]})
+   body:JSON.stringify({message:q,mode:"project",history:[]})
   });
   let d=await r.json();
   tabs[tab].o=d.reply||"No response";
  }catch(e){
   tabs[tab].o="❌ Server se response nahi mila.";
  }
- save();
- draw();
+ save();draw();
 }
 
 function prevEdit(){
@@ -513,9 +560,7 @@ function saveClass(){
  localStorage.studyClass=$("set").value;
 }
 
-function hist(v){
- localStorage.hist=v;
-}
+function hist(v){localStorage.hist=v}
 
 async function record(){
  let s=await navigator.mediaDevices.getUserMedia({audio:true}),a=[];
@@ -530,9 +575,7 @@ async function record(){
  MR.start();
 }
 
-function stopRec(){
- if(MR)MR.stop();
-}
+function stopRec(){if(MR)MR.stop()}
 
 function saveVoice(){
  if(!VB)return;
@@ -546,24 +589,41 @@ function playVoice(){
  if(u)new Audio(u).play();
 }
 
-function bablu(){
- bab=!bab;
- $("bs").innerText=b?"🟢 ON":"🔴 OFF";
- if(b){
-  speak("Bablu Assistant activated");
-  listen();
- }else stop();
-}
-
-function listen(){
- if(!bab)return;
+/* Hey Bablu */
+function startBablu(){
  let S=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!S)return;
+ bab=1;
+ listenBablu();
+}
+
+function listenBablu(){
+ if(!bab)return;
+
+ let S=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!S)return;
+
  rec=new S;
  rec.lang="hi-IN";
- rec.onresult=e=>cmd(e.results[0][0].transcript);
- rec.onend=()=>bab&&setTimeout(listen,300);
- rec.start();
+ rec.continuous=false;
+ rec.interimResults=false;
+
+ rec.onresult=e=>{
+  let q=e.results[0][0].transcript.trim();
+  if(/hey bablu|हे बाबलू|है बाबलू|hey babloo/i.test(q)){
+   speak("Yes, bataiye 😊");
+   bab=2;
+  }else if(bab==2){
+   cmd(q);
+   bab=1;
+  }
+ };
+
+ rec.onend=()=>{
+  if(bab)setTimeout(listenBablu,500);
+ };
+
+ try{rec.start()}catch(e){}
 }
 
 function cmd(q){
@@ -572,14 +632,13 @@ function cmd(q){
  if(/home|होम/.test(s))go("home");
  else if(/image|इमेज/.test(s))go("image");
  else if(/video|वीडियो/.test(s))go("video");
- else if(/study|पढ़ाई/.test(s))go("study");
- else if(/writer|लिखो/.test(s))go("writer");
+ else if(/study|पढ़ाई|पढ़ना/.test(s))go("study");
+ else if(/writer|लिखो|लिखना/.test(s))go("writer");
  else if(/food|खाना/.test(s))go("food");
  else if(/health|सेहत/.test(s))go("health");
  else if(/project|प्रोजेक्ट/.test(s))go("project");
  else if(/edit|एडिट/.test(s))go("edit");
  else if(/voice/.test(s))go("voice");
- else if(/settings|सेटिंग/.test(s))go("settings");
  else if(/youtube/.test(s))window.open("https://www.youtube.com","_blank");
  else if(/google|गूगल/.test(s))window.open("https://www.google.com","_blank");
  else{
@@ -609,7 +668,11 @@ function hideLoading(){
 }
 
 setTimeout(hideLoading,1500);
-window.addEventListener("load",hideLoading);
+window.addEventListener("load",()=>{
+ hideLoading();
+ startBablu();
+});
 </script>
 
-</body></html>
+</body>
+ </html>
