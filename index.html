@@ -2,27 +2,47 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bablu AI</title>
 <script src="https://js.puter.com/v2/" defer></script>
+
 <style>
-*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#05070d;color:#fff}
+*{box-sizing:border-box;font-family:Arial}
+body{margin:0;background:#05070d;color:#fff}
 header{height:58px;padding:10px 14px;background:#090d18;border-bottom:1px solid #293552;display:flex;justify-content:space-between;align-items:center}
-main{max-width:760px;margin:auto;padding:12px}.s{display:none}.on{display:block}
+main{max-width:760px;margin:auto;padding:12px}
+.s{display:none}
+.s.on{display:block}
+.s.on.chat{display:flex}
 button,input,textarea,select{border:1px solid #303d5c;border-radius:13px;background:#0d1422;color:#fff;padding:10px;margin:3px}
-input,textarea,select{width:100%}textarea{min-height:90px}
-.bar{display:flex;background:#0c121e;border:1px solid #303d5c;border-radius:18px;padding:3px}.bar input{border:0;margin:0}
-.chat{height:calc(100vh - 58px);display:flex;flex-direction:column}.msgs{flex:1;overflow:auto}
+input,textarea,select{width:100%}
+textarea{min-height:90px}
+.bar{display:flex;background:#0c121e;border:1px solid #303d5c;border-radius:18px;padding:3px}
+.bar input{border:0;margin:0}
+.chat{height:calc(100vh - 58px);flex-direction:column}
+.msgs{flex:1;overflow:auto}
 .user,.ai{padding:11px;margin:8px 0;border-radius:16px;white-space:pre-wrap;line-height:1.5}
-.user{background:#162642}.ai{background:#0c121d}.menu{position:absolute;right:10px;top:55px;background:#0a0f1a;border:1px solid #303d5c;border-radius:14px;padding:6px;z-index:9}
-.menu button{display:block;width:210px;text-align:left}.tabs{display:flex;overflow:auto}.active{border-color:#6677ff}
+.user{background:#162642}.ai{background:#0c121d}
+.speak{margin-top:6px}
+.menu{position:absolute;right:10px;top:55px;background:#0a0f1a;border:1px solid #303d5c;border-radius:14px;padding:6px;z-index:9}
+.menu button{display:block;width:210px;text-align:left}
+.tabs{display:flex;overflow:auto}.active{border-color:#6677ff}
 .load{position:fixed;inset:0;background:#05070d;display:flex;align-items:center;justify-content:center;z-index:99}
-.logo{text-align:center;font-size:28px}.logo small{display:block;font-size:13px;color:#9ba8c7;margin-top:8px}
+.logo{text-align:center;font-size:28px}
+.logo small{display:block;font-size:13px;color:#9ba8c7;margin-top:8px}
 .spin{width:28px;height:28px;border:3px solid #303d5c;border-top-color:#fff;border-radius:50%;margin:18px auto;animation:r 1s linear infinite}
-@keyframes r{to{transform:rotate(360deg)}}.think{opacity:.6}
+@keyframes r{to{transform:rotate(360deg)}}
+.think{opacity:.6}
 img,video{max-width:100%;width:100%;border-radius:14px}
+pre{background:#05070d;padding:10px;border-radius:10px;overflow:auto;white-space:pre-wrap}
+code{font-family:monospace}
 </style></head><body>
 
-<div id="loading" class="load"><div class="logo">🤖 Bablu AI<div class="spin"></div><small>Starting...</small></div></div>
+<div id="loading" class="load">
+<div class="logo">🤖 Bablu AI<div class="spin"></div><small>Starting...</small></div>
+</div>
 
-<header><b>🤖 Bablu AI</b><button onclick="menu()">☰</button>
+<header>
+<b>🤖 Bablu AI</b>
+<button onclick="menu()">☰</button>
+
 <div id="mn" class="menu" style="display:none">
 <button onclick="go('history')">💬 Chat History</button>
 <button onclick="go('image')">🖼️ Image</button>
@@ -36,7 +56,8 @@ img,video{max-width:100%;width:100%;border-radius:14px}
 <button onclick="go('project')">🚀 Project</button>
 <button onclick="go('edit')">🎨 Editing</button>
 <button onclick="go('settings')">⚙️ Settings</button>
-</div></header>
+</div>
+</header>
 
 <main>
 
@@ -49,274 +70,505 @@ img,video{max-width:100%;width:100%;border-radius:14px}
 <button onclick="quick('Help me write something')">✍️ Write something</button>
 <button onclick="quick('Create an image')">🖼️ Create an image</button>
 </div>
+
 <div id="hm" class="msgs" style="display:none"></div>
-<div class="bar"><input id="hi" placeholder="Ask anything..." onkeydown="if(event.key=='Enter')sendHome()">
-<button onclick="voice('hi')">🎙️</button><button onclick="sendHome()">➤</button></div>
+
+<div class="bar">
+<input id="hi" placeholder="Ask anything..." onkeydown="if(event.key=='Enter')sendHome()">
+<button onclick="voice('hi')">🎙️</button>
+<button onclick="sendHome()">➤</button>
+</div>
+
 <button onclick="stop()">⏹ Stop</button>
+<button onclick="clearHome()">🗑️ Clear</button>
 </section>
 
 <section id="history" class="s">
-<button onclick="go('home')">← Home</button><h2>💬 Chat History</h2>
+<button onclick="go('home')">← Home</button>
+<h2>💬 Chat History</h2>
 <div id="old" class="msgs"></div>
 <button onclick="clearHome()">🗑️ Clear History</button>
 </section>
 
 <section id="image" class="s">
-<button onclick="go('home')">← Home</button><h2>🖼️ AI Image</h2>
-<textarea id="ip" placeholder="Describe image..."></textarea><button onclick="image()">✨ Generate</button><p id="is"></p><div id="ir"></div>
+<button onclick="go('home')">← Home</button>
+<h2>🖼️ AI Image</h2>
+<textarea id="ip" placeholder="Describe image..."></textarea>
+<button onclick="image()">✨ Generate</button>
+<p id="is"></p><div id="ir"></div>
 </section>
 
 <section id="video" class="s">
-<button onclick="go('home')">← Home</button><h2>🎬 AI Video</h2>
-<textarea id="vp" placeholder="Describe video..."></textarea><button onclick="video()">✨ Generate</button><p id="vs"></p><div id="vr"></div>
+<button onclick="go('home')">← Home</button>
+<h2>🎬 AI Video</h2>
+<textarea id="vp" placeholder="Describe video..."></textarea>
+<button onclick="video()">✨ Generate</button>
+<p id="vs"></p><div id="vr"></div>
 </section>
 
 <section id="study" class="s">
-<button onclick="go('home')">← Home</button><h2>📚 Study</h2>
-<select id="cl"></select><input id="sp" placeholder="Ask your study question..."><button onclick="study()">🧠 Teach</button><div id="sr"></div>
+<button onclick="go('home')">← Home</button>
+<h2>📚 Study</h2>
+<select id="cl"></select>
+<input id="sp" placeholder="Ask your study question...">
+<button onclick="study()">🧠 Teach</button>
+<div id="sr"></div>
 </section>
 
 <section id="writer" class="s">
-<button onclick="go('home')">← Home</button><h2>✍️ Writer</h2>
-<textarea id="wp" placeholder="What should I write?"></textarea><button onclick="writer()">✍️ Create</button><div id="wr"></div>
+<button onclick="go('home')">← Home</button>
+<h2>✍️ Writer</h2>
+<textarea id="wp" placeholder="What should I write?"></textarea>
+<button onclick="writer()">✍️ Create</button>
+<div id="wr"></div>
 </section>
 
 <section id="voice" class="s">
-<button onclick="go('home')">← Home</button><h2>🎙️ Voice Studio</h2>
+<button onclick="go('home')">← Home</button>
+<h2>🎙️ Voice Studio</h2>
 <textarea id="sc" placeholder="Write text..."></textarea>
-<button onclick="speak($('sc').value)">🔊 Speak</button><button onclick="stop()">⏹ Stop</button>
-<div class="ai"><button onclick="record()">🔴 Record</button><button onclick="stopRec()">⏹ Stop Recording</button><button onclick="saveVoice()">💾 Save</button><button onclick="playVoice()">▶️ Play</button><p id="vs1">No voice saved</p></div>
+<button onclick="speak($('sc').value)">🔊 Speak</button>
+<button onclick="stop()">⏹ Stop</button>
+<div class="ai">
+<button onclick="record()">🔴 Record</button>
+<button onclick="stopRec()">⏹ Stop Recording</button>
+<button onclick="saveVoice()">💾 Save</button>
+<button onclick="playVoice()">▶️ Play</button>
+<p id="vs1">No voice saved</p>
+</div>
 </section>
 
 <section id="food" class="s">
-<button onclick="go('home')">← Home</button><h2>🍎 Food AI</h2>
-<input id="ff" type="file" accept="image/*" onchange="prevFood()"><img id="fi" style="display:none">
-<textarea id="fq" placeholder="Ask about this food..."></textarea><button onclick="food()">🧠 Analyze</button><div id="fr"></div>
+<button onclick="go('home')">← Home</button>
+<h2>🍎 Food AI</h2>
+<input id="ff" type="file" accept="image/*" onchange="prevFood()">
+<img id="fi" style="display:none">
+<textarea id="fq" placeholder="Ask about this food..."></textarea>
+<button onclick="food()">🧠 Analyze</button>
+<div id="fr"></div>
 </section>
 
 <section id="health" class="s">
-<button onclick="go('home')">← Home</button><h2>❤️ Daily Health</h2>
+<button onclick="go('home')">← Home</button>
+<h2>❤️ Daily Health</h2>
 <div class="ai">💧 Water · 🍽️ Meals · 😴 Sleep · 📱 Breaks<br>🕐 <b id="tm"></b></div>
-<textarea id="hq" placeholder="Ask Bablu..."></textarea><button onclick="health()">🧠 Ask</button><div id="hr"></div>
+<textarea id="hq" placeholder="Ask Bablu..."></textarea>
+<button onclick="health()">🧠 Ask</button>
+<div id="hr"></div>
 </section>
 
 <section id="rem" class="s">
-<button onclick="go('home')">← Home</button><h2>🔔 Reminders</h2>
-<button onclick="notify()">🔔 Enable</button><input id="wm" type="number" value="60">
-<button onclick="startRem()">▶️ Start</button><button onclick="stopRem()">⏹ Stop</button><p id="rs"></p>
+<button onclick="go('home')">← Home</button>
+<h2>🔔 Reminders</h2>
+<button onclick="notify()">🔔 Enable</button>
+<input id="wm" type="number" value="60">
+<button onclick="startRem()">▶️ Start</button>
+<button onclick="stopRem()">⏹ Stop</button>
+<p id="rs"></p>
 </section>
 
 <section id="project" class="s">
-<button onclick="go('home')">← Home</button><h2>🚀 Project</h2>
-<div id="tabs" class="tabs"></div><button onclick="newTab()">＋ Tab</button><button onclick="closeTab()">×</button>
-<textarea id="pp" placeholder="What do you want to build?"></textarea><button onclick="project()">🧠 Build</button><div id="pr"></div>
+<button onclick="go('home')">← Home</button>
+<h2>🚀 Project</h2>
+<div id="tabs" class="tabs"></div>
+<button onclick="newTab()">＋ Tab</button>
+<button onclick="closeTab()">×</button>
+<textarea id="pp" placeholder="What do you want to build?"></textarea>
+<button onclick="project()">🧠 Build</button>
+<div id="pr"></div>
 </section>
 
 <section id="edit" class="s">
-<button onclick="go('home')">← Home</button><h2>🎨 Editing</h2>
-<input id="ef" type="file" accept="image/*" onchange="prevEdit()"><div id="epv"></div>
-<textarea id="eq" placeholder="Describe the edit..."></textarea><button onclick="edit()">✨ Edit</button><div id="er"></div>
+<button onclick="go('home')">← Home</button>
+<h2>🎨 Editing</h2>
+<input id="ef" type="file" accept="image/*" onchange="prevEdit()">
+<div id="epv"></div>
+<textarea id="eq" placeholder="Describe the edit..."></textarea>
+<button onclick="edit()">✨ Edit</button>
+<div id="er"></div>
 </section>
 
 <section id="settings" class="s">
-<button onclick="go('home')">← Home</button><h2>⚙️ Settings</h2>
-<select id="set"></select><button onclick="saveClass()">💾 Save Class</button>
-<div class="ai"><h3>🤖 Bablu Assistant</h3><button onclick="bablu()">🎙️ Start / Stop</button><p id="bs">🔴 OFF</p></div>
-<button onclick="hist(1)">History ON</button><button onclick="hist(0)">History OFF</button>
+<button onclick="go('home')">← Home</button>
+<h2>⚙️ Settings</h2>
+<select id="set"></select>
+<button onclick="saveClass()">💾 Save Class</button>
+<div class="ai">
+<h3>🤖 Bablu Assistant</h3>
+<button onclick="bablu()">🎙️ Start / Stop</button>
+<p id="bs">🔴 OFF</p>
+</div>
+<button onclick="hist(1)">History ON</button>
+<button onclick="hist(0)">History OFF</button>
 </section>
 
-</main><script>
+</main>
 
-const $=x=>document.getElementById(x),C=["Select Class","Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
+<script>
+const $=x=>document.getElementById(x);
+const C=["Select Class","Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
 ["cl","set"].forEach(x=>$(x).innerHTML=C.map(y=>`<option>${y}</option>`).join(""));
-let H=JSON.parse(localStorage.h||"[]"),ctl,rec,MR,VB,VU,rem,bab=0,tabs=JSON.parse(localStorage.tabs||"[]"),tab=0;
+
+let H=JSON.parse(localStorage.h||"[]"),ctl,rec,MR,VB,VU,rem,bab=0;
+let tabs=JSON.parse(localStorage.tabs||"[]"),tab=0;
 if(!tabs.length)tabs=[{n:"Tab 1",p:"",o:""}];
 
-function menu(){$("mn").style.display=$("mn").style.display=="none"?"block":"none"}
+function menu(){
+ $("mn").style.display=$("mn").style.display=="none"?"block":"none";
+}
+
 function go(x){
  document.querySelectorAll(".s").forEach(e=>e.classList.remove("on"));
- $(x).classList.add("on");$("mn").style.display="none";
- if(x=="project")draw();if(x=="history")loadHistory();
+ $(x).classList.add("on");
+ $("mn").style.display="none";
+ if(x=="project")draw();
+ if(x=="history")loadHistory();
 }
-function add(b,t,c){
- let d=document.createElement("div");d.className=t;
- d.textContent=(t=="user"?"👤 ":"🤖 ")+c;
- $(b).append(d);$(b).scrollTop=$(b).scrollHeight;return d
-}
-function ai(b,c){return add(b,"ai",c)}
-function think(b){return add(b,"ai think","🧠 Thinking...")}
+
 function speak(t){
- if(!t)return;speechSynthesis.cancel();
+ if(!t)return;
+ speechSynthesis.cancel();
  let u=new SpeechSynthesisUtterance(t);
  u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";
- speechSynthesis.speak(u)
+ speechSynthesis.speak(u);
 }
+
 function stop(){
  speechSynthesis.cancel();
  if(ctl)ctl.abort();
- document.querySelector(".think")?.remove()
+ document.querySelectorAll(".think").forEach(x=>x.remove());
 }
 
+function add(b,t,c){
+ let d=document.createElement("div");
+ d.className=t;
+ d.textContent=(t=="user"?"👤 ":"🤖 ")+c;
+ $(b).append(d);
+
+ if(t=="ai"){
+  let s=document.createElement("button");
+  s.className="speak";
+  s.textContent="🔊 Speak";
+  s.onclick=()=>speak(c);
+  $(b).append(s);
+ }
+
+ $(b).scrollTop=$(b).scrollHeight;
+ return d;
+}
+
+function ai(b,c){return add(b,"ai",c)}
+function think(b){return add(b,"ai think","🧠 Thinking...")}
+
 async function ask(q,b,mode="chat",extra=""){
- add(b,"user",q);let th=think(b);ctl=new AbortController();
+ add(b,"user",q);
+ let th=think(b);
+ ctl=new AbortController();
+
  try{
-  let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({message:q+"\n"+extra,history:mode=="chat"?H:[]}),signal:ctl.signal});
-  let d=await r.json();th.remove();let a=d.reply||"No response";ai(b,a);
+  let r=await fetch("/api",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    message:q+"\n"+extra,
+    history:mode=="chat"?H:[]
+   }),
+   signal:ctl.signal
+  });
+
+  let d=await r.json();
+  th.remove();
+
+  let a=d.reply||"No response";
+  ai(b,a);
+
   if(mode=="chat"&&localStorage.hist!="0"){
    H.push({role:"user",content:q},{role:"assistant",content:a});
-   H=H.slice(-30);localStorage.h=JSON.stringify(H)
+   H=H.slice(-30);
+   localStorage.h=JSON.stringify(H);
   }
  }catch(e){
   th.remove();
-  if(e.name!="AbortError")ai(b,"❌ Server se response nahi mila.")
+  if(e.name!="AbortError")ai(b,"❌ Server se response nahi mila.");
  }
  ctl=null;
 }
 
 function sendHome(){
- let q=$("hi").value.trim();if(!q)return;
- $("hi").value="";$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm")
+ let q=$("hi").value.trim();
+ if(!q)return;
+ $("hi").value="";
+ $("welcome").style.display="none";
+ $("hm").style.display="block";
+ ask(q,"hm");
 }
-function quick(q){$("hi").value=q;sendHome()}
+
+function quick(q){
+ $("hi").value=q;
+ sendHome();
+}
 
 function loadHistory(){
- let o=$("old");o.innerHTML="";
+ let o=$("old");
+ o.innerHTML="";
  if(!H.length){ai("old","📭 No chat history");return}
- for(let i=0;i<H.length;i+=2)if(H[i+1]){
-  add("old","user",H[i].content);ai("old",H[i+1].content)
+ for(let i=0;i<H.length;i+=2){
+  if(H[i+1]){
+   add("old","user",H[i].content);
+   ai("old",H[i+1].content);
+  }
  }
 }
+
 function clearHome(){
- H=[];localStorage.h="[]";$("hm").innerHTML="";$("old").innerHTML="";
- $("hm").style.display="none";$("welcome").style.display="block"
+ H=[];
+ localStorage.h="[]";
+ $("hm").innerHTML="";
+ $("old").innerHTML="";
+ $("hm").style.display="none";
+ $("welcome").style.display="block";
 }
 
 function voice(id){
  let S=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!S)return alert("Voice supported nahi.");
- rec=new S;rec.lang="hi-IN";
- rec.onresult=e=>$(id).value=e.results[0][0].transcript;rec.start()
+ rec=new S;
+ rec.lang="hi-IN";
+ rec.onresult=e=>$(id).value=e.results[0][0].transcript;
+ rec.start();
 }
 
 async function image(){
- let p=$("ip").value.trim();if(!p)return;
+ let p=$("ip").value.trim();
+ if(!p)return;
  $("is").innerText="🧠 Creating...";
  try{
-  if(!window.puter)throw Error("Puter not ready");
+  if(!window.puter)throw Error();
   $("ir").innerHTML="";
   $("ir").append(await puter.ai.txt2img(p,{model:"gpt-image-2",quality:"low"}));
-  $("is").innerText="✅ Ready"
+  $("is").innerText="✅ Ready";
  }catch(e){$("is").innerText="❌ Image service unavailable"}
 }
 
 async function video(){
- let p=$("vp").value.trim();if(!p)return;
+ let p=$("vp").value.trim();
+ if(!p)return;
  $("vs").innerText="🧠 Generating...";
  try{
-  if(!window.puter)throw Error("Puter not ready");
+  if(!window.puter)throw Error();
   $("vr").innerHTML="";
   $("vr").append(await puter.ai.txt2vid(p,{model:"sora-2",seconds:4}));
-  $("vs").innerText="✅ Ready"
+  $("vs").innerText="✅ Ready";
  }catch(e){$("vs").innerText="❌ Video service unavailable"}
 }
 
 function study(){
  let q=$("sp").value,c=$("cl").value;
- if(q&&c!="Select Class"){ask(q,"sr","study",`Teach as a ${c} teacher.`);$("sp").value=""}
+ if(q&&c!="Select Class"){
+  ask(q,"sr","study",`Teach as a ${c} teacher.`);
+  $("sp").value="";
+ }
 }
+
 function writer(){
- let q=$("wp").value;if(q)ask(q,"wr","writer","Create polished writing.")
+ let q=$("wp").value;
+ if(q)ask(q,"wr","writer","Create polished writing.");
 }
+
 function health(){
- ask($("hq").value||"Give a simple healthy routine.","hr","health","Give general wellness guidance only.")
+ ask($("hq").value||"Give a simple healthy routine.","hr","health","Give general wellness guidance only.");
 }
+
 function prevFood(){
  let f=$("ff").files[0];
- if(f){$("fi").src=URL.createObjectURL(f);$("fi").style.display="block"}
+ if(f){
+  $("fi").src=URL.createObjectURL(f);
+  $("fi").style.display="block";
+ }
 }
+
 async function food(){
- let f=$("ff").files[0];if(!f)return alert("Photo select karo.");
- let x=await new Promise(r=>{let a=new FileReader;a.onload=()=>r(a.result);a.readAsDataURL(f)});
- let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
- body:JSON.stringify({message:$("fq").value||"Analyze this food.",image:x})});
- let d=await r.json();ai("fr",d.reply||"Analysis nahi mila.")
+ let f=$("ff").files[0];
+ if(!f)return alert("Photo select karo.");
+ let x=await new Promise(r=>{
+  let a=new FileReader();
+  a.onload=()=>r(a.result);
+  a.readAsDataURL(f);
+ });
+ let r=await fetch("/api",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({message:$("fq").value||"Analyze this food.",image:x})
+ });
+ let d=await r.json();
+ ai("fr",d.reply||"Analysis nahi mila.");
 }
+
 function notify(){
- Notification.requestPermission().then(x=>$("rs").innerText=x=="granted"?"✅ Enabled":"⚠️ Denied")
+ Notification.requestPermission().then(x=>
+  $("rs").innerText=x=="granted"?"✅ Enabled":"⚠️ Denied"
+ );
 }
+
 function startRem(){
- stopRem();let m=+$("wm").value||60;notify();
- rem=setInterval(()=>Notification.permission=="granted"&&new Notification("Bablu AI",{body:"💧 Paani peene ka time hai."}),m*60000);
- $("rs").innerText=`💧 Every ${m} minutes`
+ stopRem();
+ let m=+$("wm").value||60;
+ notify();
+ rem=setInterval(()=>{
+  if(Notification.permission=="granted")
+   new Notification("Bablu AI",{body:"💧 Paani peene ka time hai."});
+ },m*60000);
+ $("rs").innerText=`💧 Every ${m} minutes`;
 }
-function stopRem(){if(rem)clearInterval(rem);rem=null}
+
+function stopRem(){
+ if(rem)clearInterval(rem);
+ rem=null;
+}
+
 function newTab(){
- tabs.push({n:"Tab "+(tabs.length+1),p:"",o:""});tab=tabs.length-1;save();draw()
+ tabs.push({n:"Tab "+(tabs.length+1),p:"",o:""});
+ tab=tabs.length-1;
+ save();
+ draw();
 }
+
 function closeTab(){
- if(tabs.length>1){tabs.splice(tab,1);tab=Math.max(0,tab-1);save();draw()}
+ if(tabs.length>1){
+  tabs.splice(tab,1);
+  tab=Math.max(0,tab-1);
+  save();
+  draw();
+ }
 }
-function save(){localStorage.tabs=JSON.stringify(tabs)}
+
+function save(){
+ localStorage.tabs=JSON.stringify(tabs);
+}
+
 function draw(){
- $("tabs").innerHTML=tabs.map((x,i)=>`<button class="${i==tab?"active":""}" onclick="sw(${i})">${x.n}</button>`).join("");
- $("pp").value=tabs[tab].p;$("pr").innerText=tabs[tab].o
+ $("tabs").innerHTML=tabs.map((x,i)=>
+  `<button class="${i==tab?"active":""}" onclick="sw(${i})">${x.n}</button>`
+ ).join("");
+ $("pp").value=tabs[tab].p;
+ $("pr").innerText=tabs[tab].o;
 }
-function sw(i){tabs[tab].p=$("pp").value;save();tab=i;draw()}
+
+function sw(i){
+ tabs[tab].p=$("pp").value;
+ save();
+ tab=i;
+ draw();
+}
 
 async function project(){
- let q=$("pp").value;if(!q)return;
- tabs[tab].p=q;$("pr").innerText="🧠 Building...";
- let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},
- body:JSON.stringify({message:q,history:[]})});
- let d=await r.json();tabs[tab].o=d.reply||"No response";save();draw()
+ let q=$("pp").value;
+ if(!q)return;
+ tabs[tab].p=q;
+ $("pr").innerText="🧠 Building...";
+
+ try{
+  let r=await fetch("/api",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({message:q,history:[]})
+  });
+  let d=await r.json();
+  tabs[tab].o=d.reply||"No response";
+ }catch(e){
+  tabs[tab].o="❌ Server se response nahi mila.";
+ }
+ save();
+ draw();
 }
 
 function prevEdit(){
  let f=$("ef").files[0];
- if(f)$("epv").innerHTML=`<img src="${URL.createObjectURL(f)}">`
+ if(f)$("epv").innerHTML=`<img src="${URL.createObjectURL(f)}">`;
 }
+
 async function edit(){
- let f=$("ef").files[0],p=$("eq").value;if(!f||!p)return;
+ let f=$("ef").files[0],p=$("eq").value;
+ if(!f||!p)return;
  try{
-  if(!window.puter)throw Error("Puter not ready");
-  let x=await new Promise(r=>{let a=new FileReader;a.onload=()=>r(a.result);a.readAsDataURL(f)});
+  if(!window.puter)throw Error();
+  let x=await new Promise(r=>{
+   let a=new FileReader();
+   a.onload=()=>r(a.result);
+   a.readAsDataURL(f);
+  });
   $("er").innerHTML="";
-  $("er").append(await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:x,quality:"low"}))
- }catch(e){$("er").innerText="❌ Edit service unavailable"}
+  $("er").append(await puter.ai.txt2img(p,{
+   model:"gpt-image-2",
+   input_image:x,
+   quality:"low"
+  }));
+ }catch(e){
+  $("er").innerText="❌ Edit service unavailable";
+ }
 }
-function saveClass(){$("cl").value=$("set").value;localStorage.studyClass=$("set").value}
-function hist(v){localStorage.hist=v}
+
+function saveClass(){
+ $("cl").value=$("set").value;
+ localStorage.studyClass=$("set").value;
+}
+
+function hist(v){
+ localStorage.hist=v;
+}
 
 async function record(){
  let s=await navigator.mediaDevices.getUserMedia({audio:true}),a=[];
- MR=new MediaRecorder(s);MR.ondataavailable=e=>a.push(e.data);
+ MR=new MediaRecorder(s);
+ MR.ondataavailable=e=>a.push(e.data);
  MR.onstop=()=>{
-  VB=new Blob(a,{type:"audio/webm"});VU=URL.createObjectURL(VB);
-  s.getTracks().forEach(t=>t.stop());$("vs1").innerText="🎙️ Recorded"
+  VB=new Blob(a,{type:"audio/webm"});
+  VU=URL.createObjectURL(VB);
+  s.getTracks().forEach(t=>t.stop());
+  $("vs1").innerText="🎙️ Recorded";
  };
- MR.start()
+ MR.start();
 }
-function stopRec(){if(MR)MR.stop()}
+
+function stopRec(){
+ if(MR)MR.stop();
+}
+
 function saveVoice(){
  if(!VB)return;
- let r=new FileReader;r.onload=()=>localStorage.voice=r.result;r.readAsDataURL(VB)
+ let r=new FileReader;
+ r.onload=()=>localStorage.voice=r.result;
+ r.readAsDataURL(VB);
 }
-function playVoice(){let u=VU||localStorage.voice;if(u)new Audio(u).play()}
+
+function playVoice(){
+ let u=VU||localStorage.voice;
+ if(u)new Audio(u).play();
+}
 
 function bablu(){
- bab=!bab;$("bs").innerText=b?"🟢 ON":"🔴 OFF";
- if(b){speak("Bablu Assistant activated");listen()}else stop()
+ bab=!bab;
+ $("bs").innerText=b?"🟢 ON":"🔴 OFF";
+ if(b){
+  speak("Bablu Assistant activated");
+  listen();
+ }else stop();
 }
+
 function listen(){
  if(!bab)return;
- let S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S)return;
- rec=new S;rec.lang="hi-IN";
+ let S=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!S)return;
+ rec=new S;
+ rec.lang="hi-IN";
  rec.onresult=e=>cmd(e.results[0][0].transcript);
- rec.onend=()=>bab&&setTimeout(listen,300);rec.start()
+ rec.onend=()=>bab&&setTimeout(listen,300);
+ rec.start();
 }
+
 function cmd(q){
  let s=q.toLowerCase();
+
  if(/home|होम/.test(s))go("home");
  else if(/image|इमेज/.test(s))go("image");
  else if(/video|वीडियो/.test(s))go("video");
@@ -328,29 +580,36 @@ function cmd(q){
  else if(/edit|एडिट/.test(s))go("edit");
  else if(/voice/.test(s))go("voice");
  else if(/settings|सेटिंग/.test(s))go("settings");
- else if(/youtube/.test(s))open("https://www.youtube.com");
- else if(/google|गूगल/.test(s))open("https://www.google.com");
+ else if(/youtube/.test(s))window.open("https://www.youtube.com","_blank");
+ else if(/google|गूगल/.test(s))window.open("https://www.google.com","_blank");
  else{
-  go("home");$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm")
+  go("home");
+  $("welcome").style.display="none";
+  $("hm").style.display="block";
+  ask(q,"hm");
  }
 }
-function open(u){window.open(u,"_blank")}
 
 setInterval(()=>{
- $("tm").innerText=new Date().toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"})
+ $("tm").innerText=new Date().toLocaleTimeString("en-IN",{
+  hour:"numeric",minute:"2-digit"
+ });
 },1000);
 
 if(localStorage.studyClass){
- $("cl").value=localStorage.studyClass;$("set").value=localStorage.studyClass
+ $("cl").value=localStorage.studyClass;
+ $("set").value=localStorage.studyClass;
 }
 
 draw();
 
-/* SAFE LOADING */
 function hideLoading(){
- let x=$("loading");if(x)x.style.display="none"
+ let x=$("loading");
+ if(x)x.style.display="none";
 }
+
 setTimeout(hideLoading,1500);
 window.addEventListener("load",hideLoading);
+</script>
 
-</script></body></html>
+</body></html>
