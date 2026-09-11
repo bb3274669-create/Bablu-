@@ -1,15 +1,5 @@
-<!DOCTYPE html><html><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bablu AI</title><script src="https://js.puter.com/v2/" defer></script>
-<style>
-*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#05070d;color:#fff}
-header{height:58px;padding:10px 14px;background:#090d18;display:flex;justify-content:space-between}
-main{max-width:760px;margin:auto;padding:12px}.s{display:none}.s.on{display:block}.chat{height:calc(100vh - 58px);display:flex!important;flex-direction:column}
-.msgs{flex:1;overflow:auto}.user,.ai{padding:10px;margin:7px 0;border-radius:15px;white-space:pre-wrap;line-height:1.5}.user{background:#162642}.ai{background:#0c121d}
-button,input,textarea,select{border:1px solid #303d5c;border-radius:12px;background:#0d1422;color:#fff;padding:10px;margin:3px}input,textarea,select{width:100%}textarea{min-height:80px}
-.bar{display:flex;border:1px solid #303d5c;border-radius:17px;padding:3px}.bar input{border:0;margin:0}.mini{font-size:12px;padding:7px 9px}.menu{position:absolute;right:10px;top:55px;background:#0a0f1a;padding:6px;border:1px solid #303d5c;border-radius:13px;z-index:5}.menu button{display:block;width:190px;text-align:left}
-.tabs{display:flex;overflow:auto}.active{border-color:#6677ff}img,video{max-width:100%;width:100%;border-radius:12px}pre{background:#05070d;padding:8px;white-space:pre-wrap;overflow:auto}
-.pop{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;z-index:20}.popbox{background:#0c121e;padding:18px;border-radius:16px;text-align:center}
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bablu AI</title><script src="https://js.puter.com/v2/" defer></script><style>
+*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#05070d;color:#fff}header{height:58px;padding:10px 14px;background:#090d18;display:flex;justify-content:space-between;align-items:center}main{max-width:760px;margin:auto;padding:10px}.s{display:none!important}.s.on{display:block!important}.chat.on{display:flex!important;flex-direction:column;height:calc(100vh - 58px)}.msgs{flex:1;overflow:auto}.user,.ai{padding:10px;margin:7px 0;border-radius:15px;white-space:pre-wrap;line-height:1.5}.user{background:#162642}.ai{background:#0c121d}button,input,textarea,select{border:1px solid #303d5c;border-radius:12px;background:#0d1422;color:#fff;padding:10px;margin:3px}input,textarea,select{width:100%}textarea{min-height:80px}.bar{display:flex;border:1px solid #303d5c;border-radius:17px;padding:3px}.bar input{border:0;margin:0}.mini{font-size:12px;padding:7px 9px}.menu{position:absolute;right:10px;top:55px;background:#0a0f1a;padding:6px;border:1px solid #303d5c;border-radius:13px;z-index:10}.menu button{display:block;width:190px;text-align:left}.tabs{display:flex;overflow:auto}.active{border-color:#6677ff}img,video{max-width:100%;width:100%;border-radius:12px}pre{background:#05070d;padding:8px;white-space:pre-wrap;overflow:auto}.pop{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;z-index:20}.popbox{background:#0c121e;padding:18px;border-radius:16px;text-align:center}
 </style></head><body>
 
 <header><b>🤖 Bablu AI</b><button class="mini" onclick="menu()">☰</button>
@@ -25,13 +15,10 @@ button,input,textarea,select{border:1px solid #303d5c;border-radius:12px;backgro
 
 <section id="home" class="s on chat">
 <div id="welcome" class="msgs"><div class="ai">👋 Welcome to Bablu AI</div><p>What would you like to do?</p>
-<button onclick="quick('Help me with my study')">📚 Study</button>
-<button onclick="quick('I want to build a project')">🚀 Project</button>
-<button onclick="quick('Help me write something')">✍️ Writer</button>
-<button onclick="quick('Create an image')">🖼️ Image</button></div>
+<button onclick="quick('Help me with my study')">📚 Study</button><button onclick="quick('I want to build a project')">🚀 Project</button><button onclick="quick('Help me write something')">✍️ Writer</button><button onclick="quick('Create an image')">🖼️ Image</button></div>
 <div id="hm" class="msgs" style="display:none"></div>
 <div class="bar"><input id="hi" placeholder="Ask anything..." onkeydown="if(event.key=='Enter')sendHome()"><button class="mini" onclick="voice('hi')">🎙️</button><button class="mini" onclick="sendHome()">➤</button></div>
-<div><button class="mini" onclick="stop()">⏹ Stop</button><button class="mini" onclick="clearHome()">🗑️ Clear</button><button class="mini" onclick="go('history')">💬 Chat History</button></div>
+<div><button class="mini" onclick="stop()">⏹ Stop</button><button class="mini" onclick="clearHome()">🗑️ Clear</button><button class="mini" onclick="go('history')">💬 History</button></div>
 </section>
 
 <section id="history" class="s"><button onclick="go('home')">← Home</button><h2>💬 Chat History</h2><div id="old"></div><button class="mini" onclick="clearCH()">🗑️ Clear History</button></section>
@@ -40,17 +27,15 @@ button,input,textarea,select{border:1px solid #303d5c;border-radius:12px;backgro
 
 <section id="video" class="s"><button onclick="go('home')">← Home</button><h2>🎬 AI Video</h2><textarea id="vp" placeholder="Describe video..."></textarea><button onclick="video()">✨ Generate</button><p id="vs"></p><div id="vr"></div></section>
 
-<section id="study" class="s"><button onclick="go('home')">← Home</button><h2>📚 Study</h2><select id="cl"></select><div id="sr" class="msgs"></div>
-<div class="bar"><input id="sp" placeholder="Ask study question..." onkeydown="if(event.key=='Enter')study()"><button class="mini" onclick="voice('sp')">🎙️</button><button class="mini" onclick="study()">➤</button></div>
-<button class="mini" onclick="stop()">⏹ Stop</button><button class="mini" onclick="clearStudy()">🗑️ Clear</button><button class="mini" onclick="go('studyHistory')">📖 Study History</button></section>
+<section id="study" class="s"><button onclick="go('home')">← Home</button><h2>📚 Study</h2><select id="cl"></select><div id="sr" class="msgs"></div><div class="bar"><input id="sp" placeholder="Ask study question..." onkeydown="if(event.key=='Enter')study()"><button class="mini" onclick="voice('sp')">🎙️</button><button class="mini" onclick="study()">➤</button></div><button class="mini" onclick="stop()">⏹ Stop</button><button class="mini" onclick="clearStudy()">🗑️ Clear</button><button class="mini" onclick="go('studyHistory')">📖 History</button></section>
 
 <section id="studyHistory" class="s"><button onclick="go('study')">← Study</button><h2>📖 Study History</h2><div id="sh"></div><button class="mini" onclick="clearSH()">🗑️ Clear History</button></section>
 
 <section id="writer" class="s"><button onclick="go('home')">← Home</button><h2>✍️ Writer</h2><textarea id="wp" placeholder="What should I write?"></textarea><button onclick="writer()">✍️ Create</button><div id="wr"></div></section>
 
-<section id="voice" class="s"><button onclick="go('home')">← Home</button><h2>🎙️ Voice Studio</h2><textarea id="sc"></textarea><button onclick="speak($('sc').value)">🔊 Speak</button><button class="mini" onclick="stop()">⏹ Stop</button><div class="ai"><button onclick="record()">🔴 Record</button><button onclick="stopRec()">⏹ Stop</button><button onclick="saveVoice()">💾 Save</button><button onclick="playVoice()">▶️ Play</button><p id="vs1">No voice saved</p></div></section>
+<section id="voice" class="s"><button onclick="go('home')">← Home</button><h2>🎙️ Voice Studio</h2><textarea id="sc" placeholder="Write text..."></textarea><button onclick="speak($('sc').value)">🔊 Speak</button><button class="mini" onclick="stop()">⏹ Stop</button><div class="ai"><button onclick="record()">🔴 Record</button><button onclick="stopRec()">⏹ Stop</button><button onclick="saveVoice()">💾 Save</button><button onclick="playVoice()">▶️ Play</button><p id="vs1">No voice saved</p></div></section>
 
-<section id="food" class="s"><button onclick="go('home')">← Home</button><h2>🍎 Food AI</h2><button class="mini" onclick="pick('food')">🖼️</button><input id="fc" type="file" accept="image/*" capture="environment" hidden onchange="foodFile(this)"><input id="fg" type="file" accept="image/*" hidden onchange="foodFile(this)"><img id="fi" style="display:none"><p id="fs"></p><div id="fr"></div></section>
+<section id="food" class="s"><button onclick="go('home')">← Home</button><h2>🍎 Food AI</h2><button class="mini" onclick="pick('food')">🖼️</button><input id="fc" type="file" accept="image/*" capture="environment" hidden onchange="foodFile(this)"><input id="fg" type="file" accept="image/*" hidden onchange="foodFile(this)"><img id="fi" style="display:none"><p id="fs">Image select karo 🤖</p><div id="fr"></div></section>
 
 <section id="health" class="s"><button onclick="go('home')">← Home</button><h2>❤️ Daily Health</h2><div class="ai">💧 Water · 🍽️ Meals · 😴 Sleep · 📱 Breaks<br>🕐 <b id="tm"></b></div><textarea id="hq" placeholder="Ask Bablu..."></textarea><button onclick="health()">🧠 Ask</button><div id="hr"></div></section>
 
@@ -60,12 +45,11 @@ button,input,textarea,select{border:1px solid #303d5c;border-radius:12px;backgro
 
 <section id="edit" class="s"><button onclick="go('home')">← Home</button><h2>🎨 Editing</h2><button class="mini" onclick="pick('edit')">🖼️</button><input id="ec" type="file" accept="image/*" capture="environment" hidden onchange="editFile(this)"><input id="eg" type="file" accept="image/*" hidden onchange="editFile(this)"><div id="epv"></div><textarea id="eq" placeholder="Describe edit..."></textarea><button onclick="edit()">✨ Edit</button><div id="er"></div></section>
 
-<section id="settings" class="s"><button onclick="go('home')">← Home</button><h2>⚙️ Settings</h2><select id="set"></select><button onclick="saveClass()">💾 Save Class</button><p id="hs"></p><button class="mini" onclick="setHist(1)">🟢 History ON</button><button class="mini" onclick="setHist(0)">⚪ History OFF</button><div class="ai">🤖 “Hey Bablu” works while this page is open.</div></section>
+<section id="settings" class="s"><button onclick="go('home')">← Home</button><h2>⚙️ Settings</h2><select id="set"></select><button onclick="saveClass()">💾 Save Class</button><p id="hs"></p><button class="mini" onclick="setHist(1)">🟢 History ON</button><button class="mini" onclick="setHist(0)">⚪ History OFF</button></section>
 
 </main><script>
-const $=id=>document.getElementById(id),C=["Select Class","Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];
-["cl","set"].forEach(x=>$(x).innerHTML=C.map(y=>`<option>${y}</option>`).join(""));
-let chat=[],studyChat=[],CH=JSON.parse(localStorage.CH||"[]"),SH=JSON.parse(localStorage.SH||"[]"),ctl,rec,MR,VB,VU,rem,tabs=JSON.parse(localStorage.tabs||"[]"),tab=0,bab=0;
+const $=x=>document.getElementById(x),C=["Select Class","Nursery","LKG","UKG",...Array.from({length:12},(_,i)=>"Class "+(i+1))];["cl","set"].forEach(x=>$(x).innerHTML=C.map(y=>`<option>${y}</option>`).join(""));
+let chat=[],studyChat=[],CH=JSON.parse(localStorage.CH||"[]"),SH=JSON.parse(localStorage.SH||"[]"),ctl,rec,MR,VB,VU,rem,tabs=JSON.parse(localStorage.tabs||"[]"),tab=0;
 if(!tabs.length)tabs=[{n:"Tab 1",p:"",o:""}];
 
 function menu(){$("mn").style.display=$("mn").style.display=="none"?"block":"none"}
@@ -73,33 +57,30 @@ function go(x){document.querySelectorAll(".s").forEach(e=>e.classList.remove("on
 function speak(t){if(!t)return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?"hi-IN":"en-IN";speechSynthesis.speak(u)}
 function stop(){speechSynthesis.cancel();if(ctl)ctl.abort();document.querySelectorAll(".think").forEach(x=>x.remove())}
 function clean(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/```([\s\S]*?)```/g,"<pre>$1</pre>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")}
-function add(b,t,c){let d=document.createElement("div");d.className=t;d.innerHTML=t=="ai"?"🤖 "+clean(c):"👤 "+c;$(b).append(d);if(t=="ai"){let s=document.createElement("button");s.className="mini";s.textContent="🔊 Speak";s.onclick=()=>speak(c);$(b).append(s)}$(b).scrollTop=$(b).scrollHeight;return d}
-function ai(b,c){return add(b,"ai",c)}function think(b){return add(b,"ai think","🧠 Thinking...")}
+function add(b,t,c){let d=document.createElement("div");d.className=t;d.innerHTML=t=="ai"?"🤖 "+clean(c):"👤 "+clean(c);$(b).append(d);if(t=="ai"){let s=document.createElement("button");s.className="mini";s.textContent="🔊 Speak";s.onclick=()=>speak(c);$(b).append(s)}$(b).scrollTop=$(b).scrollHeight;return d}
 
 async function ask(q,b,mode="chat"){
- let a=mode=="chat"?chat:studyChat;a.push({role:"user",content:q});if(mode=="chat")save(CH,chat,"CH");else save(SH,studyChat,"SH");
- let th=think(b);ctl=new AbortController();
- try{let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,mode,history:a.slice(-12)}),signal:ctl.signal}),d=await r.json();th.remove();let z=d.reply||"No response";ai(b,z);a.push({role:"assistant",content:z});if(mode=="chat")save(CH,chat,"CH");else save(SH,studyChat,"SH")}
- catch(e){th.remove();if(e.name!="AbortError")ai(b,"❌ Server se response nahi mila.")}ctl=null
+ let arr=mode=="chat"?chat:studyChat;add(b,"user",q);arr.push({role:"user",content:q});let th=add(b,"ai think","🧠 Thinking...");ctl=new AbortController();
+ try{let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,mode,history:arr.slice(-12)}),signal:ctl.signal}),d=await r.json();th.remove();let a=d.reply||"No response";add(b,"ai",a);arr.push({role:"assistant",content:a});if(mode=="chat")save(CH,chat,"CH");else save(SH,studyChat,"SH")}catch(e){th.remove();if(e.name!="AbortError")add(b,"ai","❌ Server se response nahi mila.")}ctl=null
 }
-function save(list,a,key){if(!a.length)return;let id=a.id||(a.id=Date.now()),x=list.findIndex(s=>s.id==id),z={id,title:a.find(v=>v.role=="user")?.content?.slice(0,40)||"New",messages:a};if(x>=0)list[x]=z;else list.unshift(z);localStorage[key]=JSON.stringify(list.slice(0,50))}
+function save(list,a,key){if(!a.length)return;let id=a.id||(a.id=Date.now()),i=list.findIndex(x=>x.id==id),z={id,title:a.find(x=>x.role=="user")?.content?.slice(0,40)||"New",messages:a};if(i>=0)list[i]=z;else list.unshift(z);localStorage[key]=JSON.stringify(list.slice(0,50))}
 function sendHome(){let q=$("hi").value.trim();if(!q)return;$("hi").value="";$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm")}
 function quick(q){$("hi").value=q;sendHome()}
 function clearHome(){stop();chat=[];$("hm").innerHTML="";$("hm").style.display="none";$("welcome").style.display="block"}
-function loadH(){let o=$("old");o.innerHTML=CH.length?CH.map(s=>`<div class="ai"><b>💬 ${s.title}</b>${s.messages.map(m=>`<div class="${m.role=="user"?"user":"ai"}">${m.role=="user"?"👤 "+m.content:"🤖 "+clean(m.content)}</div>`).join("")}</div>`).join(""):"📭 No chat history"}
+function loadH(){$("old").innerHTML=CH.length?CH.map(s=>`<div class="ai"><b>💬 ${s.title}</b>${s.messages.map(m=>`<div class="${m.role=="user"?"user":"ai"}">${m.role=="user"?"👤 ":"🤖 "}${clean(m.content)}</div>`).join("")}</div>`).join(""):"📭 No chat history"}
 function clearCH(){CH=[];localStorage.CH="[]";loadH()}
 function study(){let q=$("sp").value.trim();if(!q||$("cl").value=="Select Class")return;$("sp").value="";ask(q,"sr","study")}
 function clearStudy(){stop();studyChat=[];$("sr").innerHTML=""}
-function loadSH(){let o=$("sh");o.innerHTML=SH.length?SH.map(s=>`<div class="ai"><b>📚 ${s.title}</b>${s.messages.map(m=>`<div class="${m.role=="user"?"user":"ai"}">${m.role=="user"?"👤 "+m.content:"🤖 "+clean(m.content)}</div>`).join("")}</div>`).join(""):"📭 No study history"}
+function loadSH(){$("sh").innerHTML=SH.length?SH.map(s=>`<div class="ai"><b>📚 ${s.title}</b>${s.messages.map(m=>`<div class="${m.role=="user"?"user":"ai"}">${m.role=="user"?"👤 ":"🤖 "}${clean(m.content)}</div>`).join("")}</div>`).join(""):"📭 No study history"}
 function clearSH(){SH=[];localStorage.SH="[]";loadSH()}
-function voice(id){let S=SpeechRecognition||webkitSpeechRecognition;if(!S)return;rec=new S;rec.lang="hi-IN";rec.onresult=e=>$(id).value=e.results[0][0].transcript;rec.start()}
+function voice(id){let S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S)return alert("Voice supported nahi.");rec=new S;rec.lang="hi-IN";rec.onresult=e=>$(id).value=e.results[0][0].transcript;rec.start()}
 function writer(){let q=$("wp").value.trim();if(q)ask(q,"wr","writer")}
 function health(){ask($("hq").value||"Give a simple healthy routine.","hr","health")}
 async function image(){let p=$("ip").value.trim();if(!p)return;$("is").innerText="🧠 Creating...";try{$("ir").innerHTML="";$("ir").append(await puter.ai.txt2img(p,{model:"gpt-image-2",quality:"low"}));$("is").innerText="✅ Ready"}catch{$("is").innerText="❌ Image unavailable"}}
 async function video(){let p=$("vp").value.trim();if(!p)return;$("vs").innerText="🧠 Generating...";try{$("vr").innerHTML="";$("vr").append(await puter.ai.txt2vid(p,{model:"sora-2",seconds:4}));$("vs").innerText="✅ Ready"}catch{$("vs").innerText="❌ Video unavailable"}}
-function pick(x){let p=document.createElement("div");p.className="pop";p.innerHTML=`<div class="popbox"><h3>🖼️ Select Image</h3><button onclick="document.querySelector('.pop').remove();$('${x=="food"?"fc":"ec"}').click()">📷 Camera</button><button onclick="document.querySelector('.pop').remove();$('${x=="food"?"fg":"eg"}').click()">🖼️ Gallery</button></div>`;document.body.append(p)}
-function foodFile(x){let f=x.files[0];if(!f)return;$("fi").src=URL.createObjectURL(f);$("fi").style.display="block";food(f)}
-async function food(f){let x=await data(f);try{let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Analyze this food image.",image:x,mode:"food"})}),d=await r.json();ai("fr",d.reply||"Analysis nahi mila")}catch{ai("fr","❌ Analysis nahi ho paya")}}
+function pick(x){let p=document.createElement("div");p.className="pop";let a=x=="food"?"fc":"ec",g=x=="food"?"fg":"eg";p.innerHTML=`<div class="popbox"><h3>🖼️ Select Image</h3><button onclick="this.parentNode.parentNode.remove();$('${a}').click()">📷 Camera</button><button onclick="this.parentNode.parentNode.remove();$('${g}').click()">🖼️ Gallery</button></div>`;document.body.append(p)}
+function foodFile(x){let f=x.files[0];if(!f)return;$("fi").src=URL.createObjectURL(f);$("fi").style.display="block";$("fs").innerText="🧠 Analyzing...";food(f)}
+async function food(f){try{let r=await fetch("/api",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Analyze this food image.",image:await data(f),mode:"food"})}),d=await r.json();add("fr","ai",d.reply||"Analysis nahi mila")}catch{add("fr","ai","❌ Analysis nahi ho paya")}}
 function editFile(x){let f=x.files[0];if(f)$("epv").innerHTML=`<img src="${URL.createObjectURL(f)}">`}
 async function edit(){let f=$("ec").files[0]||$("eg").files[0],p=$("eq").value;if(!f||!p)return;try{$("er").innerHTML="";$("er").append(await puter.ai.txt2img(p,{model:"gpt-image-2",input_image:await data(f),quality:"low"}))}catch{$("er").innerText="❌ Edit unavailable"}}
 function data(f){return new Promise(r=>{let a=new FileReader;a.onload=()=>r(a.result);a.readAsDataURL(f)})}
@@ -116,8 +97,5 @@ function saveClass(){$("cl").value=$("set").value;localStorage.studyClass=$("set
 function setHist(v){localStorage.hist=v;$("hs").innerText=v?"🟢 History ON":"⚪ History OFF"}
 async function record(){let s=await navigator.mediaDevices.getUserMedia({audio:true}),a=[];MR=new MediaRecorder(s);MR.ondataavailable=e=>a.push(e.data);MR.onstop=()=>{VB=new Blob(a,{type:"audio/webm"});VU=URL.createObjectURL(VB);s.getTracks().forEach(t=>t.stop());$("vs1").innerText="🎙️ Recorded"};MR.start()}
 function stopRec(){if(MR)MR.stop()}function saveVoice(){if(VB){let r=new FileReader;r.onload=()=>localStorage.voice=r.result;r.readAsDataURL(VB)}}function playVoice(){let u=VU||localStorage.voice;if(u)new Audio(u).play()}
-
-if(localStorage.studyClass){$("cl").value=$("set").value=localStorage.studyClass}
-$("hs").innerText=localStorage.hist=="0"?"⚪ History OFF":"🟢 History ON";draw()
-setInterval(()=>$("tm").innerText=new Date().toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"}),1000)
+if(localStorage.studyClass){$("cl").value=$("set").value=localStorage.studyClass}$("hs").innerText=localStorage.hist=="0"?"⚪ History OFF":"🟢 History ON";draw();setInterval(()=>$("tm").innerText=new Date().toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"}),1000);
 </script></body></html>
