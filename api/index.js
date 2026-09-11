@@ -11,12 +11,14 @@ export default async function handler(req,res){
  if(mode==="study")task=`
 You are an excellent Class 11 style teacher.
 Give a clean ChatGPT-like answer.
-Use short headings, numbered steps, formulas where needed, examples and useful emojis.
-For maths, show ordered calculations and final answer clearly.
+Use short headings, numbered steps, formulas, examples and useful emojis.
+For maths show ordered calculations and final answer clearly.
+Remember the current study conversation context.
 `;
+
  if(mode==="project")task=`
 Act as an expert project builder.
-Give the answer in exactly this useful structure:
+Use exactly:
 1. 💡 Idea / Goal
 2. 📋 Requirements
 3. 📁 File Structure
@@ -27,22 +29,22 @@ Give the answer in exactly this useful structure:
 Keep explanation and code clearly separated.
 Never remove existing working features unless explicitly asked.
 `;
+
  if(mode==="food")task=`
 Analyze the supplied food image carefully.
-Reply in friendly simple language with:
+Give:
 🍽️ Food identified
 🥗 What it generally contains
 💪 Benefits / advantages
-⚠️ Disadvantages or possible concerns
-🔥 Approximate nutrition only when reasonably possible
+⚠️ Disadvantages / concerns
+🔥 Approximate nutrition when reasonably possible
 👥 Who should be careful
 💡 Healthy way to eat it
-Do not invent exact calories or nutrients from appearance alone.
-Clearly say when something is only an estimate.
+Never invent exact nutrition from appearance alone.
 `;
 
  const system=`You are Bablu AI 🤖 — friendly, intelligent, natural and practical.
-Understand human intent and context.
+Understand human intent, context and goals.
 Reply in the user's language. Hindi/Hinglish should be simple and natural.
 Use useful emojis naturally, not excessively.
 Keep answers clean, readable and reasonably short.
@@ -52,7 +54,7 @@ You are skilled in coding, HTML, CSS, JavaScript, Python, Java, Kotlin, Android,
 ${task}`;
 
  try{
-  const history=Array.isArray(b.history)?b.history.slice(-10):[];
+  const history=Array.isArray(b.history)?b.history.slice(-12):[];
   const content=img
    ?[{type:"text",text:msg},{type:"image_url",image_url:{url:img}}]
    :msg;
@@ -88,4 +90,4 @@ ${task}`;
   console.error(e);
   res.status(500).json({reply:"Server se connection nahi ho paya."});
  }
- }
+  }
