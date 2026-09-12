@@ -26,9 +26,16 @@ function clean(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").re
 function add(b,t,c){let d=document.createElement("div");d.className=t;d.innerHTML=t=="ai"?"🤖 "+clean(c):"👤 "+clean(c);$(b).append(d);if(t=="ai"){let s=document.createElement("button");s.className="mini";s.textContent="🔊 Speak";s.onclick=()=>speak(c);$(b).append(s)}$(b).scrollTop=$(b).scrollHeight;return d}
 
 async function ask(q,b,mode="chat",history=null){
-let a=history||(mode=="chat"?chat:studyChat),h=a.slice(-14);add(b,"user",q);a.push({role:"user",content:q});let th=add(b,"ai think","🧠 Thinking...");ctl=new AbortController();
-try{let r=await fetch("https://bablu-ai-api.bb3274669.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,history:h}),signal:ctl.signal}),d=await r.json(),z=d.reply||"No response";th.remove();add(b,"ai",z);a.push({role:"assistant",content:z});if(mode=="chat")save(CH,chat,"CH");else if(mode=="study")save(SH,studyChat,"SH")}catch(e){th.remove();if(e.name!="AbortError")add(b,"ai","❌ Cloudflare AI se response nahi mila.")}ctl=null}
-
+let a=history||(mode=="chat"?chat:studyChat),h=a.slice(-14);
+add(b,"user",q);a.push({role:"user",content:q});
+let th=add(b,"ai think","🧠 Thinking...");ctl=new AbortController();
+try{
+let r=await fetch("https://bablu-ai-api.bb3274669.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,history:h}),signal:ctl.signal});
+let d=await r.json(),z=d.reply||d.response||d.result?.response||"No response";
+th.remove();add(b,"ai",z);a.push({role:"assistant",content:z});
+if(mode=="chat")save(CH,chat,"CH");else if(mode=="study")save(SH,studyChat,"SH")
+}catch(e){th.remove();if(e.name!="AbortError")add(b,"ai","❌ Cloudflare AI se response nahi mila.")}ctl=null
+  }
 function save(list,a,key){if(!a.length)return;let id=a.id||(a.id=Date.now()),i=list.findIndex(x=>x.id==id),z={id,title:a.find(x=>x.role=="user")?.content?.slice(0,40)||"New",messages:a};if(i>=0)list[i]=z;else list.unshift(z);localStorage[key]=JSON.stringify(list.slice(0,50))}
 function sendHome(){let q=$("hi").value.trim();if(!q)return;$("hi").value="";$("welcome").style.display="none";$("hm").style.display="block";ask(q,"hm")}
 function quick(q){$("hi").value=q;sendHome()}function clearHome(){stop();chat=[];$("hm").innerHTML="";$("hm").style.display="none";$("welcome").style.display="block"}
